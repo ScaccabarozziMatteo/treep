@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "890037553856",
+    "project_id": "treep-mdp",
+    "storage_bucket": "treep-mdp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890037553856:android:8b0a2697a3b06fea737b25",
+        "android_client_info": {
+          "package_name": "com.treep"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890037553856-t24bu3bsnq0fgo02lovlhj5j2uupet64.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.treep",
+            "certificate_hash": "78c66637f01beae77becde44a4f41b0191ace76c"
+          }
+        },
+        {
+          "client_id": "890037553856-u31q3091loeoqf2gelsme90vtef5qr24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPNTLGW9hFSd8oFsZRiUz9YFBLw6yf1L4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890037553856-u31q3091loeoqf2gelsme90vtef5qr24.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

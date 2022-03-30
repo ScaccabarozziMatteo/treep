@@ -1,7 +1,6 @@
 // Here we can build the top navigation, creating all the cases
 
 import React from 'react';
-import Avatar from '@mui/material/Avatar';
 import {StyleSheet, View, Text} from 'react-native';
 
 export default function TopBar() {
@@ -9,7 +8,7 @@ export default function TopBar() {
     <View style={styles.container}>
       <Text>     </Text>
       <Text style={TreepStyle}>Treep </Text>
-      <Avatar>C</Avatar>
+      <Text>     </Text>
     </View>
   );
 }

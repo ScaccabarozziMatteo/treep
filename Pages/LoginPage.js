@@ -23,7 +23,7 @@ export default function LoginPage() {
   if (initializing) {
     return null;
   }
-z
+
   if (!user) {
     return (
       <View>
