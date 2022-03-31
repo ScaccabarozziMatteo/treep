@@ -31,6 +31,7 @@ const App: () => Node = () => {
       />
       <TopBar />
       <ScrollView
+        style={styles.sectionContainer}
         contentInsetAdjustmentBehavior="automatic"
         >
         <View>

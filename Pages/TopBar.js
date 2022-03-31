@@ -11,10 +11,12 @@ export default function TopBar() {
       <Text style={TreepStyle}>Treep </Text>
       <Avatar
       size={25}
+      activeOpacity={100}
       rounded
       source={null}
+      onPress={null}
       >
-      <Icon name='person' onPress={null}/>
+      <Icon name='person' />
         </Avatar>
     </View>
   );
@@ -29,7 +31,7 @@ const TreepStyle = {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
-    height: 52,
+    height: 55,
     flexDirection: 'row', // row
     color: 'black',
     backgroundColor: '#C2185B',
