@@ -7,8 +7,7 @@
  */
 
 import React from 'react';
-import LoginPage from './Pages/LoginPage';
-import TopBar from './Pages/TopBar';
+import MainContainer from "./navigation/MainContainer";
 import type {Node} from 'react';
 import {
   SafeAreaView,
@@ -24,22 +23,8 @@ const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'light';
 
   return (
-    <SafeAreaView>
-      <StatusBar
-        backgroundColor={'#C2185B'}
-        barStyle={!isDarkMode ? 'light-content' : 'dark-content'}
-      />
-      <TopBar />
-      <ScrollView
-        style={styles.sectionContainer}
-        contentInsetAdjustmentBehavior="automatic"
-        >
-        <View>
-          <LoginPage />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+  <MainContainer/>
+);
 };
 
 const styles = StyleSheet.create({
