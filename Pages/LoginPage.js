@@ -27,7 +27,7 @@ export default function LoginPage() {
   if (!user) {
     return (
       <View>
-        <Text>Login</Text>
+        <Text>No user has logged in</Text>
       </View>
     );
   }

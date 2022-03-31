@@ -20,29 +20,20 @@ import {
   View,
 } from 'react-native';
 
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
-
 const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const isDarkMode = useColorScheme() === 'light';
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView>
       <StatusBar
         backgroundColor={'#C2185B'}
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        barStyle={!isDarkMode ? 'light-content' : 'dark-content'}
       />
       <TopBar />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
+        >
+        <View>
           <LoginPage />
         </View>
       </ScrollView>

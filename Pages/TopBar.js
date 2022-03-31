@@ -2,13 +2,20 @@
 
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
+import { Icon, Avatar } from "react-native-elements";
 
 export default function TopBar() {
   return (
     <View style={styles.container}>
       <Text>     </Text>
       <Text style={TreepStyle}>Treep </Text>
-      <Text>     </Text>
+      <Avatar
+      size={25}
+      rounded
+      source={null}
+      >
+      <Icon name='person' onPress={null}/>
+        </Avatar>
     </View>
   );
 }
