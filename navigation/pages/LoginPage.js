@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Text, TextInput, View, Button, StyleSheet } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import auth from "@react-native-firebase/auth";
+import { clear } from "react-native/Libraries/LogBox/Data/LogBoxData";
 
 export default function LoginPage() {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-  const [error, setError] = useState();
+  const [error, setError] = useState('');
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       email: '',
@@ -17,13 +18,15 @@ export default function LoginPage() {
 
   // Login using email and password
   function emailLogin(userData) {
+
     auth().signInWithEmailAndPassword(userData.email, userData.password)
       .then(r => onAuthStateChanged(r.user))
       .catch(error1 => setError(error1.message));
   }
 
+  // Logout function
   function logout() {
-    auth().signOut().then(r => null).catch(error1 => console.log(error1))
+    auth().signOut().then(r => null).catch(error1 => setError(error1))
   }
 
   // Handle user state changes
@@ -46,8 +49,8 @@ export default function LoginPage() {
     return (
 
     <View>
-      <Text style={styles.text}>No user has loggen in! Please sign in</Text>
-      <Text style={{color: 'black', paddingTop: 30, textAlign: 'center'}}>E-Mail</Text>
+      <Text style={styles.text}>No user has logged in! Please sign in :D</Text>
+      <Text style={{color: 'black', paddingTop: 30, textAlign: 'center', fontSize: 20, fontWeight: 'bold'}}>E-Mail</Text>
       <Controller
         control={control}
         rules={{
@@ -65,13 +68,13 @@ export default function LoginPage() {
         )}
         name="email"
       />
-      {errors.email && <Text >This is required.</Text>}
+      {errors.email && <Text style={{color: 'red', alignSelf: 'center'}}>This is required.</Text>}
 
-      <Text style={styles.text}>Password</Text>
+      <Text style={{color: 'black', paddingTop: 30, textAlign: 'center', fontSize: 20, fontWeight: 'bold'}}>Password</Text>
       <Controller
         control={control}
         rules={{
-          maxLength: 100,
+          required: true,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
@@ -86,6 +89,8 @@ export default function LoginPage() {
         )}
         name="password"
       />
+
+      {errors.password && <Text style={{color: 'red', alignSelf: 'center'}}>This is required.</Text>}
 
       <View style={styles.boxButton}>
       <Button title="Login" onPress={handleSubmit(emailLogin)} />
