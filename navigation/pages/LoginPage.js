@@ -1,10 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-import {Input, ScrollView, Button} from 'native-base';
+import { Input, ScrollView, Button, VStack, HStack, Alert } from "native-base";
 import {useForm, Controller} from 'react-hook-form';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { UserCollection } from "../../api/FirebaseApi";
 import auth from "@react-native-firebase/auth";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
+GoogleSignin.configure({
+  webClientId: '890037553856-t24bu3bsnq0fgo02lovlhj5j2uupet64.apps.googleusercontent.com',
+});
 
 export default function LoginPage() {
   // Set an initializing state whilst Firebase connects
@@ -35,6 +40,18 @@ export default function LoginPage() {
       .catch(error1 => setError(error1.message));
   }
 
+
+  async function GoogleSignIn() {
+    // Get the users ID token
+    const { idToken } = await GoogleSignin.signIn();
+
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(googleCredential);
+  }
+
   // Logout function
   function logout() {
     auth()
@@ -59,7 +76,6 @@ export default function LoginPage() {
     return null;
   }
 
-  //If the user is NOT logged, then show to login form
   if (!user) {
     return (
       <ScrollView>
@@ -141,6 +157,7 @@ export default function LoginPage() {
             name="password"
           />
 
+
           {errors.password && (
             <Text style={{color: 'red', alignSelf: 'center'}}>
               This is required.
@@ -151,7 +168,22 @@ export default function LoginPage() {
             <Button onPress={handleSubmit(emailLogin)}>Login </Button>
           </View>
 
-          <Text style={styles.text}>{error}</Text>
+          <View style={styles.boxButton}>
+            <Button onPress={GoogleSignIn} >Google </Button>
+          </View>
+
+          { // WIP, must be changed with a simple toast notification
+            }
+          <Alert w="90%" maxW="400" status="error" colorScheme="error" alignSelf='center'>
+            <VStack space={1} flexShrink={1} w="100%">
+              <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
+                <HStack flexShrink={1} space={2} alignItems="center">
+                  <Alert.Icon />
+              <Text style={styles.text}>{error}</Text>
+                </HStack>
+              </HStack>
+            </VStack>
+          </Alert>
         </View>
       </ScrollView>
     );
