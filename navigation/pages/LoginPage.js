@@ -37,8 +37,7 @@ export default function LoginPage() {
 
   // Logout function
   function logout() {
-    auth()
-      .signOut()
+      UserCollection.logout()
       .then(r => null)
       .catch(error1 => setError(error1));
   }

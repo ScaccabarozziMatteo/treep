@@ -5,16 +5,26 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 
 export class TripCollection {
-   static async getAll() {
-    const trips = await firestore().collection('Trip').get();
-    console.log(trips);
-    return trips;
+   static getAll = async () => {
+    let trips = [];
+    const tripsData = (await firestore().collection('Trip').get()).docs;
+
+    tripsData.forEach((trip) => {
+      trips.push(trip._data);
+    })
+
+    //console.log(trips);
+    return (trips);
   }
 }
 
 export class UserCollection {
+
   static async emailLogin(userData) {
     await auth().signInWithEmailAndPassword(userData.email, userData.password);
   }
 
+  static async logout(){
+    await auth().signOut();
+  }
 }

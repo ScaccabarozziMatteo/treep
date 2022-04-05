@@ -4,12 +4,20 @@ import { TripCollection } from "../../api/FirebaseApi";
 
 export default function HomePage() {
 
-  const [trips, setTrips] = useState(TripCollection.getAll())
-  //console.log(trips._W.Place);
+  const [trips, setTrips] = useState(
+    {description: "" }
+  )
+
   const [refreshing, setRefreshing] = useState(false)
   const onRefresh = () => {
     setRefreshing(true);
-    setTrips(TripCollection.getAll());
+
+    TripCollection.getAll().then(
+      response => {
+        setTrips(response);
+      }
+    );
+
     setRefreshing(false);
   }
 
@@ -24,7 +32,7 @@ export default function HomePage() {
             data={trips}
             renderItem={({item})=>(
               <View>
-                <Text style={styles.text}>{item}</Text>
+                <Text style={styles.text}>{item.description}</Text>
               </View>
             )}
             refreshControl = {<RefreshControl
@@ -46,4 +54,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  text: {
+    fontSize: 20,
+    fontWeight: "bold",
+    alignContent: "center",
+    color: 'white',
+  }
 });
