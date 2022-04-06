@@ -69,7 +69,7 @@ export default function ProfilePage(props) {
         // };
 
         UserCollection.changeProfileImage(user, response)
-          .then((user) => {showToast('success', 'Success', 'Profile image updated!'); onAuthStateChanged(user)})
+          .then(() => {showToast('success', 'Success', 'Profile image updated!'); onAuthStateChanged(UserCollection.getCurrentUser())})
           .catch(error => showToast('error', 'Error', error.message))
       }
     });
