@@ -5,10 +5,10 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 //Pages import
 import HomePage from './pages/HomePage';
-import ProfilePage from './pages/ProfilePage';
 import ExplorePage from './pages/ExplorePage';
 import {Icon, Text} from '@rneui/base';
 import {StatusBar} from 'react-native';
+import LoginPage from "./pages/LoginPage";
 
 // Pages names
 const homeName = 'Home';
@@ -54,7 +54,7 @@ export default function MainContainer() {
         })}>
         <Tab.Screen name={homeName} component={HomePage} />
         <Tab.Screen name={exploreName} component={ExplorePage} />
-        <Tab.Screen name={profileName} component={ProfilePage} />
+        <Tab.Screen name={profileName} component={LoginPage} />
       </Tab.Navigator>
     </NavigationContainer>
   );
