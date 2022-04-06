@@ -33,6 +33,7 @@
     "react-native-safe-area-context": "^3.4.1",
     "react-native-screens": "^3.13.1",
     "react-native-svg": "^12.3.0",
+    "react-native-toast-message": "^2.1.5",
     "react-native-ui-lib": "^6.12.0",
     "react-native-vector-icons": "^9.1.0",
     "stylis": "^4.0.13",

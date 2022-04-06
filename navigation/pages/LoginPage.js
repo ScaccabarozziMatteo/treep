@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import { Input, ScrollView, Button, VStack, HStack, Alert } from "native-base";
+import Toast from 'react-native-toast-message';
 import {useForm, Controller} from 'react-hook-form';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { UserCollection } from "../../api/FirebaseApi";
@@ -8,8 +9,9 @@ import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 GoogleSignin.configure({
-  webClientId: '890037553856-t24bu3bsnq0fgo02lovlhj5j2uupet64.apps.googleusercontent.com',
-});
+  webClientId: '890037553856-u31q3091loeoqf2gelsme90vtef5qr24.apps.googleusercontent.com',
+  offlineAccess: true
+})
 
 export default function LoginPage() {
   // Set an initializing state whilst Firebase connects
@@ -28,6 +30,15 @@ export default function LoginPage() {
     },
   });
 
+  const showToast = (type, title, text) => {
+    Toast.show({
+      type: type,
+      position: 'bottom',
+      text1: title,
+      text2: text
+    });
+  }
+
   const handleHideShowPassword = () => setShow(!show);
 
   // Login using email and password
@@ -43,20 +54,27 @@ export default function LoginPage() {
 
   async function GoogleSignIn() {
     // Get the users ID token
-    const { idToken } = await GoogleSignin.signIn();
 
-    // Create a Google credential with the token
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    let googleCredential
+    await GoogleSignin.signIn()
+      .then(response => {
 
-    // Sign-in the user with the credential
-    return auth().signInWithCredential(googleCredential);
+        console.log(response)
+        // Create a Google credential with the token
+        googleCredential = auth.GoogleAuthProvider.credential(response)
+
+        // Sign-in the user with the credential
+        onAuthStateChanged(auth().signInWithCredential(googleCredential))
+      })
+      .catch((error) => showToast('error', 'Error', error.message));
+
   }
 
   // Logout function
   function logout() {
       UserCollection.logout()
-      .then(r => null)
-      .catch(error1 => setError(error1));
+      .then(() => showToast('success', 'Success!', 'Logout correctly executed'))
+      .catch(error1 => showToast('error', 'Error', error1));
   }
 
   // Handle user state changes
@@ -170,19 +188,6 @@ export default function LoginPage() {
           <View style={styles.boxButton}>
             <Button onPress={GoogleSignIn} >Google </Button>
           </View>
-
-          { // WIP, must be changed with a simple toast notification
-            }
-          <Alert w="90%" maxW="400" status="error" colorScheme="error" alignSelf='center'>
-            <VStack space={1} flexShrink={1} w="100%">
-              <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
-                <HStack flexShrink={1} space={2} alignItems="center">
-                  <Alert.Icon />
-              <Text style={styles.text}>{error}</Text>
-                </HStack>
-              </HStack>
-            </VStack>
-          </Alert>
         </View>
       </ScrollView>
     );

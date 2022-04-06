@@ -9,15 +9,9 @@
 import React from 'react';
 import MainContainer from './navigation/MainContainer';
 import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import Toast from 'react-native-toast-message';
+
+import { StyleSheet, useColorScheme } from 'react-native';
 
 // Important!! It needs in order to keep Native base working
 import {NativeBaseProvider} from 'native-base/src/core/NativeBaseProvider';
@@ -28,6 +22,7 @@ const App: () => Node = () => {
   return (
     <NativeBaseProvider>
       <MainContainer />
+      <Toast />
     </NativeBaseProvider>
   );
 };

@@ -60,3 +60,6 @@ buck-out/
 /ios/Pods/
 
 # Project exclude paths
+
+# Ignore Gradle build output directory
+build
