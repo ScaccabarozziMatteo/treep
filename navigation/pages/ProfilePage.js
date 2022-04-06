@@ -51,12 +51,11 @@ export default function ProfilePage(props) {
     };
 
     launchImageLibrary(options, (response) => {
-      console.log('Response = ', response);
 
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
+        showToast('error', 'ImagePicker', response.error)
       } else if (response.customButton) {
         console.log(
           'User tapped custom button: ',
@@ -70,7 +69,7 @@ export default function ProfilePage(props) {
         // };
 
         UserCollection.changeProfileImage(user, response)
-          .then(() => showToast('success', 'Success', 'Profile image updated!'))
+          .then((user) => {showToast('success', 'Success', 'Profile image updated!'); onAuthStateChanged(user)})
           .catch(error => showToast('error', 'Error', error.message))
       }
     });
