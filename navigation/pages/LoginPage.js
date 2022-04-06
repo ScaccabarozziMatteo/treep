@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-import { Input, ScrollView, Button, VStack, HStack, Alert } from "native-base";
+import { Input, ScrollView, Button, VStack, HStack, Alert, Avatar } from "native-base";
 import Toast from 'react-native-toast-message';
 import {useForm, Controller} from 'react-hook-form';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,6 +10,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 GoogleSignin.configure({
   webClientId: '890037553856-u31q3091loeoqf2gelsme90vtef5qr24.apps.googleusercontent.com',
+  forceConsentPrompt: true,
   offlineAccess: true
 })
 
@@ -17,8 +18,7 @@ export default function LoginPage() {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-  const [error, setError] = useState('');
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = useState('false');
   const {
     control,
     handleSubmit,
@@ -44,29 +44,27 @@ export default function LoginPage() {
   // Login using email and password
   function emailLogin(userData) {
     // Wipe variables
-    setError('');
-    setShow(false);
       UserCollection.emailLogin(userData)
       .then(r => onAuthStateChanged(r.user))
-      .catch(error1 => setError(error1.message));
+      .catch(error1 =>  showToast('error', 'Error', error1.message));
   }
 
 
   async function GoogleSignIn() {
+
     // Get the users ID token
+    const { idToken } = await GoogleSignin.signIn();
 
-    let googleCredential
-    await GoogleSignin.signIn()
-      .then(response => {
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-        console.log(response)
-        // Create a Google credential with the token
-        googleCredential = auth.GoogleAuthProvider.credential(response)
+    // Sign-in the user with the credential
 
-        // Sign-in the user with the credential
-        onAuthStateChanged(auth().signInWithCredential(googleCredential))
-      })
-      .catch((error) => showToast('error', 'Error', error.message));
+    let user = await auth().signInWithCredential(googleCredential);
+
+    showToast('success', 'Great!', 'Welcome back ' + user.additionalUserInfo.profile.given_name + ' :D')
+
+    return user;
 
   }
 
@@ -74,7 +72,7 @@ export default function LoginPage() {
   function logout() {
       UserCollection.logout()
       .then(() => showToast('success', 'Success!', 'Logout correctly executed'))
-      .catch(error1 => showToast('error', 'Error', error1));
+      .catch(error1 => showToast('error', 'Error', error1.message));
   }
 
   // Handle user state changes
@@ -86,8 +84,8 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    return auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
-  }, [onAuthStateChanged]);
+    return  auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
+  }, []);
 
   if (initializing) {
     return null;
@@ -186,7 +184,7 @@ export default function LoginPage() {
           </View>
 
           <View style={styles.boxButton}>
-            <Button onPress={GoogleSignIn} >Google </Button>
+            <Button onPress={() => GoogleSignIn().catch(error => showToast('error', 'Error', error.message))} >Google </Button>
           </View>
         </View>
       </ScrollView>
@@ -197,6 +195,7 @@ export default function LoginPage() {
   return (
     <View>
       <Text style={styles.text}>Welcome {user.email}</Text>
+      <Avatar size={100}></Avatar>
       <View style={styles.boxButton}>
         <Button onPress={logout}>Logout </Button>
       </View>

@@ -3,6 +3,7 @@
 import firebase from '@react-native-firebase/app';
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 export class TripCollection {
    static getAll = async () => {
@@ -26,5 +27,6 @@ export class UserCollection {
 
   static async logout(){
     await auth().signOut();
+    await GoogleSignin.signOut();
   }
 }
