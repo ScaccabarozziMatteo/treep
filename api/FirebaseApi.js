@@ -1,5 +1,6 @@
 // All the code needed to call firebase MUST be in here!
 
+import firebase from '@react-native-firebase/app';
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -7,6 +8,8 @@ import storage from '@react-native-firebase/storage';
 
 
 export class TripCollection {
+
+  // Retrieves ALL the trips on the server
    static getAll = async () => {
     let trips = [];
     const tripsData = (await firestore().collection('Trip').get()).docs;
@@ -18,6 +21,13 @@ export class TripCollection {
     //console.log(trips);
     return (trips);
   }
+
+  // Gets the cover photo of a given trip
+  static async getCoverPhoto(trip) {
+    const imagePath = trip.coverPhoto;
+    const reference = storage().ref(imagePath);
+    return await reference.getDownloadURL();
+  }
 }
 
 export class UserCollection {
@@ -26,7 +36,7 @@ export class UserCollection {
     await auth().signInWithEmailAndPassword(userData.email, userData.password);
   }
 
-  static async logout() {
+  static async logout(){
     await auth().signOut();
     await GoogleSignin.signOut();
   }

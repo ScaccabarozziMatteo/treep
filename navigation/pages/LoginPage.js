@@ -41,6 +41,7 @@ export default function LoginPage() {
       .catch(error1 => showToast("error", "Error", error1.message));
   }
 
+
   async function GoogleSignIn() {
     let user = await UserCollection.signInWithGoogle();
     showToast("success", "Great!", "Welcome back " + user.additionalUserInfo.profile.given_name + " :D");
@@ -75,9 +76,9 @@ export default function LoginPage() {
             style={{
               color: "black",
               paddingTop: 30,
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 20,
-              fontWeight: "bold",
+              fontWeight: 'bold',
             }}>
             E-Mail
           </Text>
@@ -86,14 +87,14 @@ export default function LoginPage() {
             rules={{
               required: true,
             }}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({field: {onChange, onBlur, value}}) => (
               <Input
                 style={styles.input}
                 onBlur={onBlur}
                 width="80%"
                 alignSelf="center"
                 onChangeText={onChange}
-                placeholder={"Type your e-mail"}
+                placeholder={'Type your e-mail'}
                 placeholderTextColor="grey"
                 value={value}
               />
@@ -101,18 +102,18 @@ export default function LoginPage() {
             name="email"
           />
           {errors.email && (
-            <Text style={{ color: "red", alignSelf: "center" }}>
+            <Text style={{color: 'red', alignSelf: 'center'}}>
               This is required.
             </Text>
           )}
 
           <Text
             style={{
-              color: "black",
+              color: 'black',
               paddingTop: 30,
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 20,
-              fontWeight: "bold",
+              fontWeight: 'bold',
             }}>
             Password
           </Text>
@@ -121,7 +122,7 @@ export default function LoginPage() {
             rules={{
               required: true,
             }}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({field: {onChange, onBlur, value}}) => (
               <Input
                 width="80%"
                 alignSelf="center"

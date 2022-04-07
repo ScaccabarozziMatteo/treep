@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { View, Text, SafeAreaView, StyleSheet, FlatList, RefreshControl } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, FlatList, Image, RefreshControl } from "react-native";
 import { TripCollection } from "../../api/FirebaseApi";
 
 export default function HomePage() {
 
   const [trips, setTrips] = useState(
-    {description: "" }
+    {description: "" ,
+              coverPhoto: "",
+    }
   )
 
   const [refreshing, setRefreshing] = useState(false)
+
   const onRefresh = () => {
     setRefreshing(true);
 
@@ -25,7 +28,7 @@ export default function HomePage() {
     <View>
       <SafeAreaView style={styles.container}>
         <View>
-          <Text>This is the home Page</Text>
+
 
           <FlatList
             keyExtractor={(item, index)=>index.toString()}
@@ -33,6 +36,7 @@ export default function HomePage() {
             renderItem={({item})=>(
               <View>
                 <Text style={styles.text}>{item.description}</Text>
+                <Image source = {{uri: item.coverPhoto}}/>
               </View>
             )}
             refreshControl = {<RefreshControl
@@ -41,7 +45,6 @@ export default function HomePage() {
               colors={['#ff00ff']}
             />}
           />
-
         </View>
       </SafeAreaView>
     </View>
