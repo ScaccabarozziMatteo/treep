@@ -44,7 +44,7 @@ export default function HomePage() {
             renderItem={({item})=>(
               <View>
                 <Text style={styles.text}>{item.description}</Text>
-                <Image source = {{uri: item.coverPhoto}} style={{width: 50, height: 50}}/>
+                <Image source = {{uri: item.coverPhoto}} style={{width: 100, height: 100}}/>
               </View>
             )}
             refreshControl = {<RefreshControl
