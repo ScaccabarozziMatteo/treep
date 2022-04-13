@@ -40,10 +40,10 @@ export default function MainContainer() {
               iconName = focused ? 'explore' : 'explore';
             }
               else if(routeName === newTripName) {
-              iconName = focused ? 'pluscircle' : 'pluscircle';
+              iconName = focused ? 'circleplus' : 'circleplus';
             }
             else if(routeName === aroundMeName) {
-              iconName = focused ? 'check' : 'check';
+              iconName = focused ? 'people' : 'people';
             }
 
             return <Icon name={iconName} size={size} color={color} />;
