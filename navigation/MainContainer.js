@@ -17,7 +17,7 @@ const homeName = 'Home';
 const profileName = 'Profile';
 const exploreName = 'Explore';
 const newTripName = 'New Trip';
-const aroundMeName = 'aroundMe';
+const aroundMeName = 'Around Me';
 
 const Tab = createBottomTabNavigator();
 
@@ -40,7 +40,7 @@ export default function MainContainer() {
               iconName = focused ? 'explore' : 'explore';
             }
               else if(routeName === newTripName) {
-              iconName = focused ? 'circleplus' : 'circleplus';
+              iconName = focused ? 'add' : 'add';
             }
             else if(routeName === aroundMeName) {
               iconName = focused ? 'people' : 'people';
