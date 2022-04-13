@@ -4,6 +4,11 @@ import { FlatList, Image, RefreshControl, StyleSheet, Text } from "react-native"
 import React from "react";
 import MapView, {PROVIDER_GOOGLE} from "react-native-maps";
 
+// Position and radius
+const latitude = 45.4642;
+const longitude = 9.1900;
+const nearbyRadius = 4;
+
 export default function AroundMePage() {
 
   return (
@@ -11,10 +16,10 @@ export default function AroundMePage() {
       provider={PROVIDER_GOOGLE}
       style={{flex: 1}}
       region={{
-        latitude: 42.882004,
-        longitude: 74.582748,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitude: latitude,
+        longitude: longitude,
+        latitudeDelta: nearbyRadius*0.0922,
+        longitudeDelta: nearbyRadius*0.0421
     }}
     showsUserLocation
     />
