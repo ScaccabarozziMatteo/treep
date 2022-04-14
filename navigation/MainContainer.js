@@ -11,6 +11,7 @@ import {StatusBar} from 'react-native';
 import LoginPage from "./pages/LoginPage";
 import AroundMePage from "./pages/AroundMePage";
 import NewTripPage from "./pages/NewTripPage.js";
+import MessagesPage from "./pages/MessagesPage.js";
 
 // Pages names
 const homeName = 'Home';
@@ -18,6 +19,7 @@ const profileName = 'Profile';
 const exploreName = 'Explore';
 const newTripName = 'New Trip';
 const aroundMeName = 'Around Me';
+const messagesName = 'Messages';
 
 const Tab = createBottomTabNavigator();
 
@@ -45,6 +47,9 @@ export default function MainContainer() {
             else if(routeName === aroundMeName) {
               iconName = focused ? 'people' : 'people';
             }
+            else if(routeName === messagesName){
+                iconName = focused ? 'message' : 'message';
+            }
 
             return <Icon name={iconName} size={size} color={color} />;
           },
@@ -67,6 +72,7 @@ export default function MainContainer() {
         <Tab.Screen name={profileName} component={LoginPage} />
         <Tab.Screen name={newTripName} component={NewTripPage} />
         <Tab.Screen name={aroundMeName} component={AroundMePage} />
+        <Tab.Screen name={messagesName} component={MessagesPage} />
       </Tab.Navigator>
     </NavigationContainer>
   );
