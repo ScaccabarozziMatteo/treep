@@ -5,6 +5,7 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import storage from '@react-native-firebase/storage';
+import { showToast } from "../utils/Utils";
 
 
 export class TripCollection {
@@ -32,6 +33,10 @@ export class TripCollection {
 
 export class UserCollection {
 
+  static getCurrentUser() {
+    return auth().currentUser;
+  }
+
   static async emailLogin(userData) {
     await auth().signInWithEmailAndPassword(userData.email, userData.password);
   }
@@ -53,12 +58,16 @@ export class UserCollection {
   }
 
   static async changeProfileImage(user, image) {
+    // Firebase storage path
     const imagePath = user.uid + '/profile_image';
     const reference = storage().ref(imagePath);
-    console.log( await reference.getDownloadURL())
-    await reference.putFile(image.assets[0].uri)
-      .then(auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL()}))
+    const task = reference.putFile(image.assets[0].uri)
+      task.on('state_changed', function(snapshot) {
+        showToast('success', 'Progress', 'Uploaded ' + (Math.round(snapshot.bytesTransferred / snapshot.totalBytes)* 100).toString() + ' %')
+
+      });
+
+    // Update user info
+    await task.then(auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL() }))
   }
-
-
 }

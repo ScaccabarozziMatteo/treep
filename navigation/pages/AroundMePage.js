@@ -2,7 +2,7 @@ import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 import { FlatList, Image, RefreshControl, StyleSheet, Text } from "react-native";
 import React from "react";
-import MapView, {PROVIDER_GOOGLE} from "react-native-maps";
+import MapView, {PROVIDER_GOOGLE, Marker} from "react-native-maps";
 
 // Position and radius
 const latitude = 45.4642;
@@ -22,7 +22,13 @@ export default function AroundMePage() {
         longitudeDelta: nearbyRadius*0.0421
     }}
     showsUserLocation
-    />
+    ><Marker
+    coordinate={{latitude: latitude, longitude: longitude}}
+    title={'Example'}
+    description={'This is a sample marker'}
+    style={{backgroundColor: 'blue'}}
+  />
+    </MapView>
   );
 
 }

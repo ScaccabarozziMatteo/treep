@@ -8,6 +8,8 @@ import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import ProfilePage from "./ProfilePage";
 import { showToast } from "../../utils/Utils";
+import { useNavigation } from '@react-navigation/native';
+import RegistrationPage from "./RegistrationPage";
 
 GoogleSignin.configure({
   webClientId: "890037553856-u31q3091loeoqf2gelsme90vtef5qr24.apps.googleusercontent.com",
@@ -20,6 +22,7 @@ export default function LoginPage() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [show, setShow] = useState(false);
+  const [registration, setRegistration] = useState(false);
   const {
     control,
     handleSubmit,
@@ -65,7 +68,7 @@ export default function LoginPage() {
     return null;
   }
 
-  if (!user) {
+  if (!user && !registration) {
     return (
       <ScrollView>
         <View>
@@ -157,15 +160,27 @@ export default function LoginPage() {
             <Button onPress={handleSubmit(emailLogin)}>Login </Button>
           </View>
 
+          {/*
+          <View style={styles.boxButton}>
+            <Button onPress={() => setRegistration(true)}>Registration </Button>
+          </View>
+          */}
+
           <View style={styles.boxButton}>
             <Button
               onPress={() => GoogleSignIn().catch(error => console.log(error.message))}>Google </Button>
           </View>
         </View>
+
       </ScrollView>
     );
   }
 
+  else if(registration) {
+    return (
+      <RegistrationPage/>
+    )
+  }
   // Else if the user is logged, show they're profile page
   return (
     <ProfilePage user={user}/>

@@ -6,6 +6,7 @@ import { UserCollection } from "../../api/FirebaseApi";
 import { showToast } from "../../utils/Utils";
 import { useEffect, useState } from "react";
 import auth from "@react-native-firebase/auth";
+import { Icon } from "@rneui/base";
 
 export default function ProfilePage(props) {
 
@@ -80,7 +81,9 @@ export default function ProfilePage(props) {
       <View>
         <Text style={styles.text}>Welcome {user.email}</Text>
         <Stack direction={'row'}>
-          <Avatar size={100} source={{ uri: user.photoURL }} />
+          <Avatar size={'xl'} source={{ uri: user.photoURL }} >
+            <Avatar.Badge px={2} py={2} m={1} bg={'green.500'} />
+          </Avatar>
           <Text style={{color: 'black', padding: 40}}>{user.displayName}</Text>
         </Stack>
         <Stack>
