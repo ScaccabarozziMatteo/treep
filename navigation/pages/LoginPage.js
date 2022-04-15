@@ -15,7 +15,7 @@ GoogleSignin.configure({
   offlineAccess: true,
 });
 
-export default function LoginPage() {
+export default function LoginPage({ navigation }) {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
@@ -56,7 +56,6 @@ export default function LoginPage() {
   }
 
 
-
   useEffect(() => {
     return auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
   }, []);
@@ -69,16 +68,13 @@ export default function LoginPage() {
     return (
       <ScrollView>
         <View>
-          <Text style={styles.text}>
-            No user has logged in! Please sign in :D
-          </Text>
           <Text
             style={{
               color: "black",
               paddingTop: 30,
-              textAlign: 'center',
+              textAlign: "center",
               fontSize: 20,
-              fontWeight: 'bold',
+              fontWeight: "bold",
             }}>
             E-Mail
           </Text>
@@ -87,14 +83,14 @@ export default function LoginPage() {
             rules={{
               required: true,
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 style={styles.input}
                 onBlur={onBlur}
                 width="80%"
                 alignSelf="center"
                 onChangeText={onChange}
-                placeholder={'Type your e-mail'}
+                placeholder={"Type your e-mail"}
                 placeholderTextColor="grey"
                 value={value}
               />
@@ -102,18 +98,18 @@ export default function LoginPage() {
             name="email"
           />
           {errors.email && (
-            <Text style={{color: 'red', alignSelf: 'center'}}>
+            <Text style={{ color: "red", alignSelf: "center" }}>
               This is required.
             </Text>
           )}
 
           <Text
             style={{
-              color: 'black',
+              color: "black",
               paddingTop: 30,
-              textAlign: 'center',
+              textAlign: "center",
               fontSize: 20,
-              fontWeight: 'bold',
+              fontWeight: "bold",
             }}>
             Password
           </Text>
@@ -122,7 +118,7 @@ export default function LoginPage() {
             rules={{
               required: true,
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 width="80%"
                 alignSelf="center"
@@ -157,6 +153,12 @@ export default function LoginPage() {
             <Button onPress={handleSubmit(emailLogin)}>Login </Button>
           </View>
 
+
+          <View style={styles.boxButton}>
+            <Button onPress={() => navigation.push("Registration")}>Registration </Button>
+          </View>
+
+
           <View style={styles.boxButton}>
             <Button
               onPress={() => GoogleSignIn().catch(error => console.log(error.message))}>Google </Button>
@@ -165,11 +167,10 @@ export default function LoginPage() {
       </ScrollView>
     );
   }
-
   // Else if the user is logged, show they're profile page
   return (
-    <ProfilePage user={user}/>
-  )
+    <ProfilePage user={user} />
+  );
 }
 
 const styles = StyleSheet.create({

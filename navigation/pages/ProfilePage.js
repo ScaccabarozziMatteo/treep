@@ -1,11 +1,10 @@
-import * as React from 'react';
+import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Avatar, Button, Stack } from "native-base";
 import { launchImageLibrary } from "react-native-image-picker";
 import { UserCollection } from "../../api/FirebaseApi";
 import { showToast } from "../../utils/Utils";
 import { useEffect, useState } from "react";
-import auth from "@react-native-firebase/auth";
 
 export default function ProfilePage(props) {
 
@@ -29,37 +28,36 @@ export default function ProfilePage(props) {
   }
 
 
-
   useEffect(() => {
-    return auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
+    return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
   function changeProfileImage() {
 
     let options = {
-      title: 'Select Image',
+      title: "Select Image",
       customButtons: [
         {
-          name: 'customOptionKey',
-          title: 'Choose Photo from Custom Option'
+          name: "customOptionKey",
+          title: "Choose Photo from Custom Option",
         },
       ],
       storageOptions: {
         skipBackup: true,
-        path: 'images',
+        path: "images",
       },
     };
 
     launchImageLibrary(options, (response) => {
 
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        console.log("User cancelled image picker");
       } else if (response.error) {
-        showToast('error', 'ImagePicker', response.error)
+        showToast("error", "ImagePicker", response.error);
       } else if (response.customButton) {
         console.log(
-          'User tapped custom button: ',
-          response.customButton
+          "User tapped custom button: ",
+          response.customButton,
         );
         alert(response.customButton);
       } else {
@@ -69,28 +67,29 @@ export default function ProfilePage(props) {
         // };
 
         UserCollection.changeProfileImage(user, response)
-          .then(() => {showToast('success', 'Success', 'Profile image updated!'); onAuthStateChanged(UserCollection.getCurrentUser())})
-          .catch(error => showToast('error', 'Error', error.message))
+          .then(() => {
+            showToast("success", "Success", "Profile image updated!");
+            onAuthStateChanged(UserCollection.getCurrentUser());
+          })
+          .catch(error => showToast("error", "Error", error.message));
       }
     });
   }
 
   return (
-    <View>
       <View>
         <Text style={styles.text}>Welcome {user.email}</Text>
-        <Stack direction={'row'}>
+        <Stack direction={"row"}>
           <Avatar size={100} source={{ uri: user.photoURL }} />
-          <Text style={{color: 'black', padding: 40}}>{user.displayName}</Text>
+          <Text style={{ color: "black", padding: 40 }}>{user.displayName}</Text>
         </Stack>
         <Stack>
-          <Text onPress={changeProfileImage} style={{color: 'black'}}>Change profile image</Text>
+          <Text onPress={changeProfileImage} style={{ color: "black" }}>Change profile image</Text>
         </Stack>
         <View style={styles.boxButton}>
           <Button onPress={logout}>Logout </Button>
         </View>
       </View>
-    </View>
   );
 }
 

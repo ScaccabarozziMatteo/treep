@@ -41,6 +41,10 @@ export class UserCollection {
     await GoogleSignin.signOut();
   }
 
+  static onAuthStateChange(onAuthStateChanged) {
+    return auth().onAuthStateChanged(onAuthStateChanged);
+  }
+
   static async signInWithGoogle() {
     // Get the users ID token
     const { idToken } = await GoogleSignin.signIn();
