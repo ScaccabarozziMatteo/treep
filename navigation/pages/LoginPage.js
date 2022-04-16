@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button, Input, ScrollView } from "native-base";
+import { Input, ScrollView } from "native-base";
+import { Button } from "react-native-elements";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { UserCollection } from "../../api/FirebaseApi";
@@ -67,7 +68,7 @@ export default function LoginPage({ navigation }) {
   if (!user) {
     return (
       <ScrollView>
-        <View>
+        <View style={{width: '80%', alignSelf: 'center'}}>
           <Text
             style={{
               color: "black",
@@ -87,8 +88,6 @@ export default function LoginPage({ navigation }) {
               <Input
                 style={styles.input}
                 onBlur={onBlur}
-                width="80%"
-                alignSelf="center"
                 onChangeText={onChange}
                 placeholder={"Type your e-mail"}
                 placeholderTextColor="grey"
@@ -120,8 +119,6 @@ export default function LoginPage({ navigation }) {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                width="80%"
-                alignSelf="center"
                 onBlur={onBlur}
                 InputRightElement={
                   <Icon
@@ -150,18 +147,18 @@ export default function LoginPage({ navigation }) {
           )}
 
           <View style={styles.boxButton}>
-            <Button onPress={handleSubmit(emailLogin)}>Login </Button>
+            <Button title={'Login'} onPress={handleSubmit(emailLogin)} />
           </View>
 
 
           <View style={styles.boxButton}>
-            <Button onPress={() => navigation.push("Registration")}>Registration </Button>
+            <Button title={'Sign Up'} onPress={() => navigation.push("Registration")} />
           </View>
 
 
           <View style={styles.boxButton}>
-            <Button
-              onPress={() => GoogleSignIn().catch(error => console.log(error.message))}>Google </Button>
+            <Button title={'Google'}
+              onPress={() => GoogleSignIn().catch(error => console.log(error.message))} />
           </View>
         </View>
       </ScrollView>
@@ -182,7 +179,7 @@ const styles = StyleSheet.create({
   },
   boxButton: {
     paddingTop: 20,
-    width: "40%",
+    width: "100%",
     alignSelf: "center",
   },
   input: {

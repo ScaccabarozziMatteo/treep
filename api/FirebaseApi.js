@@ -1,26 +1,30 @@
 // All the code needed to call firebase MUST be in here!
 
-import firebase from '@react-native-firebase/app';
+import firebase from "@react-native-firebase/app";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import storage from '@react-native-firebase/storage';
+import storage from "@react-native-firebase/storage";
+import { showToast } from "../utils/Utils";
+import ProfilePage from "../navigation/pages/ProfilePage";
+import React from 'react';
+import { err } from "react-native-svg/lib/typescript/xml";
 
 
 export class TripCollection {
 
   // Retrieves ALL the trips on the server
-   static getAll = async () => {
+  static getAll = async () => {
     let trips = [];
-    const tripsData = (await firestore().collection('Trip').get()).docs;
+    const tripsData = (await firestore().collection("Trip").get()).docs;
 
     tripsData.forEach((trip) => {
       trips.push(trip._data);
-    })
+    });
 
     //console.log(trips);
     return (trips);
-  }
+  };
 
   // Gets the cover photo of a given trip
   static async getCoverPhoto(trip) {
@@ -36,7 +40,7 @@ export class UserCollection {
     await auth().signInWithEmailAndPassword(userData.email, userData.password);
   }
 
-  static async logout(){
+  static async logout() {
     await auth().signOut();
     await GoogleSignin.signOut();
   }
@@ -56,13 +60,27 @@ export class UserCollection {
     return await auth().signInWithCredential(googleCredential);
   }
 
-  static async changeProfileImage(user, image) {
-    const imagePath = user.uid + '/profile_image';
-    const reference = storage().ref(imagePath);
-    console.log( await reference.getDownloadURL())
-    await reference.putFile(image.assets[0].uri)
-      .then(auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL()}))
-  }
+}
 
+export async function changeProfileImage(image) {
+  let user = currentUser();
+  const imagePath = user.uid + '/profile_image';
+  const reference = storage().ref(imagePath);
+  await reference.putFile(image.assets[0].uri)
+    .then(auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL()})).done(() => { showToast('success', 'Upload', 'Image uploaded!'); user = currentUser()})
+  return user
+}
 
+export function emailRegistration(userData) {
+  console.log(userData);
+  auth().createUserWithEmailAndPassword(userData.email, userData.password).then(() => setName(userData.name)).catch(error => showToast("error", "Registration", error.message));
+}
+
+function setName(name) {
+  auth().currentUser.updateProfile({ displayName: name }).then(r => {showToast("success", "Registration", "User created! :D");}).catch(error => showToast("error", "Registration", error.message));
+
+}
+
+export function currentUser() {
+  return auth().currentUser;
 }

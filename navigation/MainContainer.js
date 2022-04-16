@@ -86,7 +86,7 @@ export default function MainContainer() {
       })
       }>
         <Stack.Screen
-          name= 'Home'
+          name= 'Tab'
           component={TabContainer}
           options={{ headerShown: false }}
         />
