@@ -36,10 +36,7 @@ export default function LoginPage({ navigation }) {
 
   // Login using email and password
   function emailLogin(userData) {
-    // Wipe variables
-    UserCollection.emailLogin(userData)
-      .then(r => onAuthStateChanged(r.user))
-      .catch(error1 => showToast("error", "Error", error1.message));
+    UserCollection.emailLogin(userData).catch(error1 => showToast("error", "Error", error1.message));
   }
 
 
@@ -68,7 +65,7 @@ export default function LoginPage({ navigation }) {
   if (!user) {
     return (
       <ScrollView>
-        <View style={{width: '80%', alignSelf: 'center'}}>
+        <View style={{ width: "80%", alignSelf: "center" }}>
           <Text
             style={{
               color: "black",
@@ -147,18 +144,18 @@ export default function LoginPage({ navigation }) {
           )}
 
           <View style={styles.boxButton}>
-            <Button title={'Login'} onPress={handleSubmit(emailLogin)} />
+            <Button title={"Login"} onPress={handleSubmit(emailLogin)} />
           </View>
 
 
           <View style={styles.boxButton}>
-            <Button title={'Sign Up'} onPress={() => navigation.push("Registration")} />
+            <Button title={"Sign Up"} onPress={() => navigation.push("Registration")} />
           </View>
 
 
           <View style={styles.boxButton}>
-            <Button title={'Google'}
-              onPress={() => GoogleSignIn().catch(error => console.log(error.message))} />
+            <Button title={"Google"}
+                    onPress={() => GoogleSignIn().catch(error => console.log(error.message))} />
           </View>
         </View>
       </ScrollView>
@@ -166,7 +163,7 @@ export default function LoginPage({ navigation }) {
   }
   // Else if the user is logged, show they're profile page
   return (
-    <ProfilePage user={user} />
+    <ProfilePage />
   );
 }
 

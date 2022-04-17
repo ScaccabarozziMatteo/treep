@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Stack } from "native-base";
 import { Button } from "react-native-elements";
 import { Avatar } from "react-native-ui-lib";
-import { UserCollection } from "../../api/FirebaseApi";
+import { currentUser, UserCollection } from "../../api/FirebaseApi";
 import { showToast } from "../../utils/Utils";
 import { useEffect, useState } from "react";
 import ModalPhoto from "../../utils/ModalPhoto";
@@ -12,7 +12,7 @@ import LoginPage from "./LoginPage";
 export default function ProfilePage(props) {
 
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState(props.user);
+  const [user, setUser] = useState();
   const [showModal, setShowModal] = useState(false);
 
   const pencil = require("../../assets/pencil.png");
@@ -34,6 +34,7 @@ export default function ProfilePage(props) {
 
 
   useEffect(() => {
+    console.log(user)
     return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
@@ -58,7 +59,7 @@ export default function ProfilePage(props) {
         <View style={styles.boxButton}>
           <Button title={"Logout"} onPress={logout} />
         </View>
-        <ModalPhoto typeOfUpload='profile_photo' show={showModal} updateUser={ (response) => { setUser(response)}} updateShow={(response) => setShowModal(response)} modalResponse />
+        <ModalPhoto typeOfUpload='profile_photo' show={showModal} updateUser={ (response) => { onAuthStateChanged(currentUser()); }} updateShow={(response) => setShowModal(response)} modalResponse />
       </View>
     );
   }

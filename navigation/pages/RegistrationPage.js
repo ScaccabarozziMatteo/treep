@@ -8,7 +8,7 @@ import { Button } from "react-native-elements";
 import ModalPhoto from "../../utils/ModalPhoto";
 import { emailRegistration } from "../../api/FirebaseApi";
 
-export default function RegistrationPage() {
+export default function RegistrationPage({ navigation }) {
 
   const [show, setShow] = useState(false);
   const [checked, setCheck] = useState(false);
@@ -30,6 +30,10 @@ export default function RegistrationPage() {
 
   function setCheckCheckbox() {
     setCheck(!checked);
+  }
+
+  function pop() {
+    navigation.pop();
   }
 
   const handleHideShowPassword = () => setShow(!show);
@@ -206,11 +210,11 @@ export default function RegistrationPage() {
         <CheckBox title={"I agree with the treep policy"} onPress={setCheckCheckbox} checked={checked}
                   style={styles.checkbox} />
 
-        <Button title={"Create profile"} disabled={!checked} onPress={handleSubmit(emailRegistration)} />
+        <Button title={"Create profile"} disabled={!checked} onPress={handleSubmit((form) => emailRegistration(form, navigation))} />
 
       </View>
 
-      <ModalPhoto show={showModal} updateShow={(response) => setShowModal(response)} />
+      <ModalPhoto show={showModal} updateShow={(response) => setShowModal(response)} pop={() => pop()}/>
 
     </ScrollView>
   );

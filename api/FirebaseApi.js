@@ -67,17 +67,25 @@ export async function changeProfileImage(image) {
   const imagePath = user.uid + '/profile_image';
   const reference = storage().ref(imagePath);
   await reference.putFile(image.assets[0].uri)
-    .then(auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL()})).done(() => { showToast('success', 'Upload', 'Image uploaded!'); user = currentUser()})
+    .then().done(async () => {
+      await auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL() });
+      showToast('success', 'Upload', 'Image uploaded!');
+      user = currentUser()
+    })
   return user
 }
 
-export function emailRegistration(userData) {
-  console.log(userData);
-  auth().createUserWithEmailAndPassword(userData.email, userData.password).then(() => setName(userData.name)).catch(error => showToast("error", "Registration", error.message));
+export function emailRegistration(userData, navigation) {
+  auth().createUserWithEmailAndPassword(userData.email, userData.password).then(async () => {
+    await setName(userData.name);
+    await navigation.pop()
+  }).catch(error => showToast("error", "Registration", error.message));
 }
 
 function setName(name) {
-  auth().currentUser.updateProfile({ displayName: name }).then(r => {showToast("success", "Registration", "User created! :D");}).catch(error => showToast("error", "Registration", error.message));
+  auth().currentUser.updateProfile({ displayName: name }).then(async () => {
+    showToast("success", "Registration", "User created! :D");
+  }).catch(error => showToast("error", "Registration", error.message));
 
 }
 
