@@ -70,6 +70,7 @@ export default function RegistrationPage({ navigation }) {
               style={styles.input}
               onBlur={onBlur}
               onChangeText={onChange}
+              autoCapitalize={'words'}
               placeholder={"Type your first name and last name"}
               placeholderTextColor="grey"
               value={value}
@@ -107,6 +108,7 @@ export default function RegistrationPage({ navigation }) {
               style={styles.input}
               onBlur={onBlur}
               onChangeText={onChange}
+              autoCapitalize={'none'}
               placeholder={"Type your e-mail"}
               placeholderTextColor="grey"
               value={value}
@@ -151,6 +153,7 @@ export default function RegistrationPage({ navigation }) {
               placeholder={"Password"}
               placeholderTextColor="grey"
               onChangeText={onChange}
+              autoCapitalize={'none'}
               value={value}
               secureTextEntry={!show}
             />
@@ -193,6 +196,7 @@ export default function RegistrationPage({ navigation }) {
               placeholder={"Repeat your password"}
               placeholderTextColor="grey"
               onChangeText={onChange}
+              autoCapitalize={'none'}
               value={value}
               type={'password'}
               secureTextEntry={!show}

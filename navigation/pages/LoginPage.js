@@ -65,7 +65,7 @@ export default function LoginPage({ navigation }) {
   if (!user) {
     return (
       <ScrollView>
-        <View style={{ width: "80%", alignSelf: "center" }}>
+        <View style={{ width: "80%", alignSelf: "center"}}>
           <Text
             style={{
               color: "black",
@@ -86,6 +86,7 @@ export default function LoginPage({ navigation }) {
                 style={styles.input}
                 onBlur={onBlur}
                 onChangeText={onChange}
+                autoCapitalize={'none'}
                 placeholder={"Type your e-mail"}
                 placeholderTextColor="grey"
                 value={value}
@@ -127,6 +128,7 @@ export default function LoginPage({ navigation }) {
                   />
                 }
                 placeholder={"Password"}
+                autoCapitalize={'none'}
                 placeholderTextColor="grey"
                 onChangeText={onChange}
                 value={value}
@@ -172,7 +174,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column", // row
     alignItems: "center",
-    backgroundColor: "grey",
   },
   boxButton: {
     paddingTop: 20,

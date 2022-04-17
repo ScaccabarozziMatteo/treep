@@ -89,6 +89,19 @@ function setName(name) {
 
 }
 
+export async function setUsernameFirebase(user) {
+  const data = {
+    username: user,
+  };
+
+// Add a new document in collection "users" with UID
+  const res = await firestore().collection('users').doc(currentUser().uid).set(data);
+}
+
+export async function getUsername() {
+  return firestore().collection('users').doc(currentUser().uid).get('username')
+}
+
 export function currentUser() {
   return auth().currentUser;
 }
