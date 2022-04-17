@@ -1,18 +1,23 @@
-import * as React from 'react';
-import { StyleSheet, Text, View } from "react-native";
-import { Avatar, Button, Stack } from "native-base";
-import { launchImageLibrary } from "react-native-image-picker";
-import { UserCollection } from "../../api/FirebaseApi";
+import * as React from "react";
+import { StyleSheet, Text, View, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { Stack } from "native-base";
+import { Button } from "react-native-elements";
+import { Avatar } from "react-native-ui-lib";
+import { currentUser, getUsername, setUsernameFirebase, UserCollection } from "../../api/FirebaseApi";
 import { showToast } from "../../utils/Utils";
 import { useEffect, useState } from "react";
-import auth from "@react-native-firebase/auth";
-import { Icon } from "@rneui/base";
+import ModalPhoto from "../../utils/ModalPhoto";
+import LoginPage from "./LoginPage";
 
 export default function ProfilePage(props) {
 
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState(props.user);
+  const [user, setUser] = useState();
+  const [dummyUser, setDummyUser] = useState();
+  const [username, setUsername] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
+  const pencil = require("../../assets/pencil.png");
 
   // Logout function
   function logout() {
@@ -29,72 +34,64 @@ export default function ProfilePage(props) {
     }
   }
 
-
-
   useEffect(() => {
-    return auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
+    setUser(currentUser())
+  }, [dummyUser])
+
+  useEffect(async() => {
+    setUsername(await getUsername())
+    console.log(username)
+    return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
-  function changeProfileImage() {
-
-    let options = {
-      title: 'Select Image',
-      customButtons: [
-        {
-          name: 'customOptionKey',
-          title: 'Choose Photo from Custom Option'
-        },
-      ],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-
-    launchImageLibrary(options, (response) => {
-
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        showToast('error', 'ImagePicker', response.error)
-      } else if (response.customButton) {
-        console.log(
-          'User tapped custom button: ',
-          response.customButton
-        );
-        alert(response.customButton);
-      } else {
-        // You can also display the image using data:
-        // let source = {
-        //   uri: 'data:image/jpeg;base64,' + response.data
-        // };
-
-        UserCollection.changeProfileImage(user, response)
-          .then(() => {showToast('success', 'Success', 'Profile image updated!'); onAuthStateChanged(UserCollection.getCurrentUser())})
-          .catch(error => showToast('error', 'Error', error.message))
-      }
-    });
+  function changeProfileLogo() {
+    setShowModal(true);
   }
 
-  return (
-    <View>
-      <View>
-        <Text style={styles.text}>Welcome {user.email}</Text>
-        <Stack direction={'row'}>
-          <Avatar size={'xl'} source={{ uri: user.photoURL }} >
-            <Avatar.Badge px={2} py={2} m={1} bg={'green.500'} />
-          </Avatar>
-          <Text style={{color: 'black', padding: 40}}>{user.displayName}</Text>
-        </Stack>
-        <Stack>
-          <Text onPress={changeProfileImage} style={{color: 'black'}}>Change profile image</Text>
-        </Stack>
-        <View style={styles.boxButton}>
-          <Button onPress={logout}>Logout </Button>
+  function changeUsername(username) {
+    setUsernameFirebase(username).done(() => setUsername(username))
+  }
+
+  if (initializing) {
+    return null;
+  }
+
+  if (user != null) {
+    return (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View>
+          <Stack direction={"row"}>
+            <Avatar animate={true} badgeProps={{
+              onPress() {
+                changeProfileLogo();
+              }, size: 26, icon: pencil, backgroundColor: "white", borderWidth: 1, borderRadius: 20,
+            }} badgePosition={"BOTTOM_RIGHT"} size={100}
+                    source={user.photoURL !== null ? { uri: user.photoURL } : null} />
+            <Stack direction={"column"} style={{ padding: 40 }}>
+
+              <View>
+                <Text style={{ color: "black" }}>{user.displayName}</Text>
+                <Text style={styles.text}>{user.email}</Text>
+                {username !== '' ? <Text style={{ color: "grey" }}>@{username}</Text> :
+                  <TextInput placeholder={"Click to set @username"} onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)} autoCapitalize={'none'} placeholderTextColor={'grey'} style={{
+                    color: "grey",
+                    fontSize: 13,
+                  }} onPress={changeUsername} />}
+              </View>
+            </Stack>
+          </Stack>
+
+          <View style={styles.boxButton}>
+            <Button title={"Logout"} onPress={logout} />
+          </View>
+          <ModalPhoto typeOfUpload="profile_photo" show={showModal} updateUser={(response) => setDummyUser(response)}
+                      updateShow={(response) => setShowModal(response)} modalResponse />
         </View>
-      </View>
-    </View>
-  );
+      </TouchableWithoutFeedback>
+    );
+  } else {
+    return (<LoginPage />);
+  }
 }
 
 const styles = StyleSheet.create({
@@ -102,7 +99,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column", // row
     alignItems: "center",
-    backgroundColor: "grey",
   },
   boxButton: {
     paddingTop: 20,
@@ -116,7 +112,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "black",
-    textAlign: "center",
   },
 });
 
