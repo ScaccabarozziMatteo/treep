@@ -14,7 +14,7 @@ export default function ProfilePage(props) {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [dummyUser, setDummyUser] = useState();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState('');
   const [showModal, setShowModal] = useState(false);
 
   const pencil = require("../../assets/pencil.png");
@@ -36,11 +36,11 @@ export default function ProfilePage(props) {
 
   useEffect(() => {
     setUser(currentUser())
-    console.log('DUMMYY')
   }, [dummyUser])
 
   useEffect(async() => {
     setUsername(await getUsername())
+    console.log(username)
     return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
@@ -72,7 +72,7 @@ export default function ProfilePage(props) {
               <View>
                 <Text style={{ color: "black" }}>{user.displayName}</Text>
                 <Text style={styles.text}>{user.email}</Text>
-                {username !== "" ? <Text style={{ color: "grey" }}>@{username}</Text> :
+                {username !== '' ? <Text style={{ color: "grey" }}>@{username}</Text> :
                   <TextInput placeholder={"Click to set @username"} onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)} autoCapitalize={'none'} placeholderTextColor={'grey'} style={{
                     color: "grey",
                     fontSize: 13,

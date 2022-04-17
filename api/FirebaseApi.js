@@ -98,7 +98,10 @@ export async function setUsernameFirebase(user) {
 
 export async function getUsername() {
   const doc = await firestore().collection('users').doc(currentUser().uid).get()
-  return doc.data().username
+  if (doc.data() !== undefined)
+    return doc.data().username
+  else
+    return ''
 }
 
 export function currentUser() {
