@@ -3,13 +3,12 @@ import { StyleSheet, Text, View, TextInput, TouchableWithoutFeedback, Keyboard }
 import { Stack } from "native-base";
 import { Button } from "react-native-elements";
 import { Avatar } from "react-native-ui-lib";
-import { currentUser, getUsername, setUsernameFirebase, UserCollection } from "../../api/FirebaseApi";
-import { showToast } from "../../utils/Utils";
+import { currentUser, getUsername, setUsernameFirebase, UserCollection } from "../api/FirebaseApi";
+import { showToast } from "../utils/Utils";
 import { useEffect, useState } from "react";
-import ModalPhoto from "../../utils/ModalPhoto";
-import LoginPage from "./LoginPage";
+import ModalPhoto from "../utils/ModalPhoto";
 
-export default function ProfilePage(props) {
+export default function ProfilePage() {
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
@@ -38,9 +37,11 @@ export default function ProfilePage(props) {
     setUser(currentUser())
   }, [dummyUser])
 
-  useEffect(async() => {
-    setUsername(await getUsername())
-    console.log(username)
+  useEffect(() => {
+    const setUsern = async () => {
+      setUsername(await getUsername())
+    }
+    setUsern()
     return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
@@ -59,7 +60,7 @@ export default function ProfilePage(props) {
   if (user != null) {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View>
+        <View style={{padding: '5%', alignSelf: 'center'}}>
           <Stack direction={"row"}>
             <Avatar animate={true} badgeProps={{
               onPress() {
@@ -89,8 +90,6 @@ export default function ProfilePage(props) {
         </View>
       </TouchableWithoutFeedback>
     );
-  } else {
-    return (<LoginPage />);
   }
 }
 

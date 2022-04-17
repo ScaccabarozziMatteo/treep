@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { TripCollection } from "../../api/FirebaseApi";
+import { TripCollection } from "../api/FirebaseApi";
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView } from "react-native";

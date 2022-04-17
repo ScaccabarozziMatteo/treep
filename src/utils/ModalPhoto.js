@@ -2,10 +2,10 @@ import Modal from "react-native-modal";
 import { Stack, View } from "native-base";
 import { Text } from "@rneui/base";
 import { Button } from "react-native-elements";
-import React, { useState } from "react";
+import React from "react";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { showToast } from "./Utils";
-import { StyleSheet } from "react-native";
+import { PermissionsAndroid, Platform, StyleSheet } from "react-native";
 import { changeProfileImage, currentUser, UserCollection } from "../api/FirebaseApi";
 
 export default function ModalPhoto(props) {
@@ -50,36 +50,46 @@ export default function ModalPhoto(props) {
     });
   }
 
-  function openCamera() {
+  async function openCamera() {
 
     props.updateShow(false);
 
-    launchCamera(options, (response) => {
+    if (Platform.OS === "android") {
+      const request = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+      switch (request) {
+        case PermissionsAndroid.RESULTS.DENIED:
+          showToast("error", "Camera permission", "Permission denied");
+          break;
+        case PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN:
+          showToast("error", "Camera permission", "Permission blocked, please enable it in the device settings");
+          break;
+        case PermissionsAndroid.RESULTS.GRANTED:
 
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (response.error) {
-        console.log(response.error);
-      } else if (response.customButton) {
-        console.log(
-          "User tapped custom button: ",
-          response.customButton,
-        );
-        alert(response.customButton);
-      } else {
-        switch (props.typeOfUpload) {
-          case ("profile_photo"):
-            changeProfilePhoto(response);
-            break;
+          launchCamera(options, (response) => {
 
-        }
+            if (response.errorCode) {
+              showToast("error", "Camera error", response.errorCode);
+            } else if (response.didCancel) {}
+              else {
+              switch (props.typeOfUpload) {
+                case ("profile_photo"):
+                  changeProfilePhoto(response);
+                  break;
+
+              }
+            }
+
+          });
+          break
+        default:
+          showToast("error", "Camera permission", "Generic error, camera should be not available");
+          break;
       }
-
-    });
+    }
   }
 
   async function changeProfilePhoto(response) {
-    await changeProfileImage(response, props)
+    await changeProfileImage(response, props);
   }
 
   return (

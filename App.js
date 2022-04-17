@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import MainContainer from './navigation/MainContainer';
+import MainContainer from './src/MainContainer';
 import type {Node} from 'react';
 import Toast from 'react-native-toast-message';
 

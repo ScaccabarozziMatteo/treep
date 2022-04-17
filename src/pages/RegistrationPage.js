@@ -5,8 +5,8 @@ import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { StyleSheet } from "react-native";
 import { Button } from "react-native-elements";
-import ModalPhoto from "../../utils/ModalPhoto";
-import { emailRegistration } from "../../api/FirebaseApi";
+import ModalPhoto from "../utils/ModalPhoto";
+import { emailRegistration } from "../api/FirebaseApi";
 
 export default function RegistrationPage({ navigation }) {
 
@@ -217,8 +217,6 @@ export default function RegistrationPage({ navigation }) {
         <Button title={"Create profile"} disabled={!checked} onPress={handleSubmit((form) => emailRegistration(form, navigation))} />
 
       </View>
-
-      <ModalPhoto show={showModal} updateShow={(response) => setShowModal(response)} pop={() => pop()}/>
 
     </ScrollView>
   );

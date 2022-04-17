@@ -4,11 +4,11 @@ import { Input, ScrollView } from "native-base";
 import { Button } from "react-native-elements";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { UserCollection } from "../../api/FirebaseApi";
+import { UserCollection } from "../api/FirebaseApi";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import ProfilePage from "./ProfilePage";
-import { showToast } from "../../utils/Utils";
+import { showToast } from "../utils/Utils";
 
 GoogleSignin.configure({
   webClientId: "890037553856-u31q3091loeoqf2gelsme90vtef5qr24.apps.googleusercontent.com",

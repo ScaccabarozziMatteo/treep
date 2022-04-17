@@ -6,7 +6,7 @@ import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import storage from "@react-native-firebase/storage";
 import { showToast } from "../utils/Utils";
-import ProfilePage from "../navigation/pages/ProfilePage";
+import ProfilePage from "../pages/ProfilePage";
 import React from 'react';
 import { err } from "react-native-svg/lib/typescript/xml";
 
@@ -76,6 +76,8 @@ export async function changeProfileImage(image, props) {
 export function emailRegistration(userData, navigation) {
   auth().createUserWithEmailAndPassword(userData.email, userData.password).then(async () => {
     await setName(userData.name);
+    await auth().signOut()
+    await UserCollection.emailLogin(userData)
     await navigation.pop()
   }).catch(error => showToast("error", "Registration", error.message));
 }

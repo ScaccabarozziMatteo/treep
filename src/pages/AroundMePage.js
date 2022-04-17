@@ -1,6 +1,7 @@
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
-import { FlatList, Image, RefreshControl, StyleSheet, Text } from "react-native";
+import { FlatList, Image, PermissionsAndroid, RefreshControl, StyleSheet, Text } from "react-native";
+// you may also import just the functions or constants that you will use from this library
 import React from "react";
 import MapView, {PROVIDER_GOOGLE, Marker} from "react-native-maps";
 
@@ -23,6 +24,7 @@ export default function AroundMePage() {
     }}
     showsUserLocation
     ><Marker
+      onPress={requestLocationPermission}
     coordinate={{latitude: latitude, longitude: longitude}}
     title={'Example'}
     description={'This is a sample marker'}
@@ -41,3 +43,23 @@ const styles = StyleSheet.create({
     color: 'black',
   }
 });
+
+export async function requestLocationPermission()
+{
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+
+    )
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log("You can use the location")
+      alert("You can use the location");
+    } else {
+      console.log("location permission denied")
+      alert("Location permission denied");
+    }
+  } catch (err) {
+    console.warn(err)
+  }
+}
