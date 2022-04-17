@@ -19,7 +19,7 @@ const homeName = "Home";
 const profileName = "Profile";
 const exploreName = "Explore";
 const newTripName = "New Trip";
-const aroundMeName = "aroundMe";
+const aroundMeName = "Around Me";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -44,10 +44,10 @@ function TabContainer() {
               iconName = focused ? "explore" : "explore";
               break;
             case newTripName:
-              iconName = focused ? "plus" : "plus";
+              iconName = focused ? "add" : "add";
               break;
             case aroundMeName:
-              iconName = focused ? "check" : "check";
+              iconName = focused ? "people" : "people";
               break;
           }
 
