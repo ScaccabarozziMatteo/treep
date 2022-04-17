@@ -13,6 +13,7 @@ export default function ProfilePage(props) {
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
+  const [dummyUser, setDummyUser] = useState();
   const [username, setUsername] = useState("");
   const [showModal, setShowModal] = useState(false);
 
@@ -28,15 +29,18 @@ export default function ProfilePage(props) {
   // Handle user state changes
   function onAuthStateChanged(user) {
     setUser(user);
-    console.log(user);
     if (initializing) {
       setInitializing(false);
     }
   }
 
-
   useEffect(() => {
-    setUsername(getUsername)
+    setUser(currentUser())
+    console.log('DUMMYY')
+  }, [dummyUser])
+
+  useEffect(async() => {
+    setUsername(await getUsername())
     return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
@@ -45,7 +49,6 @@ export default function ProfilePage(props) {
   }
 
   function changeUsername(username) {
-    console.log(username)
     setUsernameFirebase(username).done(() => setUsername(username))
   }
 
@@ -81,7 +84,7 @@ export default function ProfilePage(props) {
           <View style={styles.boxButton}>
             <Button title={"Logout"} onPress={logout} />
           </View>
-          <ModalPhoto typeOfUpload="profile_photo" show={showModal} updateUser={(user) => setUser(user)}
+          <ModalPhoto typeOfUpload="profile_photo" show={showModal} updateUser={(response) => setDummyUser(response)}
                       updateShow={(response) => setShowModal(response)} modalResponse />
         </View>
       </TouchableWithoutFeedback>

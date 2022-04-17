@@ -62,17 +62,15 @@ export class UserCollection {
 
 }
 
-export async function changeProfileImage(image) {
+export async function changeProfileImage(image, props) {
   let user = currentUser();
   const imagePath = user.uid + '/profile_image';
   const reference = storage().ref(imagePath);
   await reference.putFile(image.assets[0].uri)
     .then().done(async () => {
       await auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL() });
-      showToast('success', 'Upload', 'Image uploaded!');
-      user = currentUser()
+      showToast('success', 'Upload', 'Image uploaded!'); props.updateUser(Math.random())
     })
-  return user
 }
 
 export function emailRegistration(userData, navigation) {
@@ -99,7 +97,8 @@ export async function setUsernameFirebase(user) {
 }
 
 export async function getUsername() {
-  return firestore().collection('users').doc(currentUser().uid).get('username')
+  const doc = await firestore().collection('users').doc(currentUser().uid).get()
+  return doc.data().username
 }
 
 export function currentUser() {

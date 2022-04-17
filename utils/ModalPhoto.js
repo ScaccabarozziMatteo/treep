@@ -79,9 +79,7 @@ export default function ModalPhoto(props) {
   }
 
   async function changeProfilePhoto(response) {
-    let newUser = await changeProfileImage(response)
-      .catch(error => showToast("error", "Error", error.message));
-    await props.updateUser(newUser);
+    await changeProfileImage(response, props)
   }
 
   return (
