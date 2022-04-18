@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //Pages import
 import HomePage from "./pages/HomePage";
 import ExplorePage from "./pages/ExplorePage";
-import { Icon, Text } from "@rneui/base";
+import { Icon } from "@rneui/base";
 import { StatusBar } from "react-native";
 import LoginPage from "./pages/LoginPage";
 import AroundMePage from "./pages/AroundMePage";

@@ -1,11 +1,16 @@
+/*
+  url icons: https://oblador.github.io/react-native-vector-icons/
+ */
+
+
 import Modal from "react-native-modal";
 import { Stack, View } from "native-base";
-import { Text } from "@rneui/base";
-import { Button } from "react-native-elements";
+import { Icon, Text } from "@rneui/base";
 import React from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { showToast } from "./Utils";
-import { PermissionsAndroid, Platform, StyleSheet } from "react-native";
+import { PermissionsAndroid, Platform, Pressable, StyleSheet } from "react-native";
 import { changeProfileImage, currentUser, UserCollection } from "../api/FirebaseApi";
 
 export default function ModalPhoto(props) {
@@ -69,8 +74,8 @@ export default function ModalPhoto(props) {
 
             if (response.errorCode) {
               showToast("error", "Camera error", response.errorCode);
-            } else if (response.didCancel) {}
-              else {
+            } else if (response.didCancel) {
+            } else {
               switch (props.typeOfUpload) {
                 case ("profile_photo"):
                   changeProfilePhoto(response);
@@ -80,7 +85,7 @@ export default function ModalPhoto(props) {
             }
 
           });
-          break
+          break;
         default:
           showToast("error", "Camera permission", "Generic error, camera should be not available");
           break;
@@ -98,17 +103,29 @@ export default function ModalPhoto(props) {
         width: "110%",
         minHeight: 150,
         alignItems: "center",
-        height: "25%",
+        height: "23%",
         marginBottom: "-5%",
         marginLeft: "-5%",
         position: "absolute",
         bottom: 0,
         backgroundColor: "white",
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20
       }}>
-        <Text style={styles.text}>Choose how to get the picture:</Text>
-        <Stack direction={"row"}>
-          <Button title={"Take from camera"} onPress={openCamera} />
-          <Button title={"Take from gallery"} onPress={openGallery} />
+        <Text h4 style={styles.text}>Choose how to get the picture</Text>
+        <Stack direction={"row"} style={{ width: '100%', height: '80%', alignItems: "center" }}>
+          <Pressable style={({pressed}) => [{opacity: pressed ? 0.5 : 1.0}]} onPress={openCamera}>
+            <Stack style={{alignItems: 'center', marginLeft: '35%'}} direction={"column"}>
+              <Icon name={"camera-alt"} size={70} color={'grey'} />
+              <Text>Camera</Text>
+            </Stack>
+          </Pressable>
+          <Pressable style={({pressed}) => [{opacity: pressed ? 0.5 : 1.0}]} onPress={openGallery}>
+            <Stack style={{alignItems: 'center', marginRight: '20%', position: 'relative'}} direction={"column"}>
+              <Icon name={"photo-library"} size={70} color={'grey'} />
+              <Text>Gallery</Text>
+            </Stack>
+          </Pressable>
         </Stack>
       </View>
     </Modal>
