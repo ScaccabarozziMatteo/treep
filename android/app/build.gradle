@@ -177,6 +177,14 @@ android {
         }
     }
 
+    buildscript {
+      dependencies {
+        // ... other dependencies
+        classpath 'com.google.gms:google-services:4.3.10'
+        // Add me --- /\
+      }
+    }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
