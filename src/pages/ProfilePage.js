@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableWithoutFeedback, Keyboard }
 import { Stack } from "native-base";
 import { Button } from "react-native-elements";
 import { Avatar } from "react-native-ui-lib";
-import { currentUser, getUsername, setUsernameFirebase, UserCollection } from "../api/FirebaseApi";
+import { currentUser, getUserData, getUsername, setUsernameFirebase, UserCollection } from "../api/FirebaseApi";
 import { showToast } from "../utils/Utils";
 import { useEffect, useState } from "react";
 import ModalPhoto from "../utils/ModalPhoto";
@@ -12,6 +12,7 @@ export default function ProfilePage() {
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
+  const [userData, setUserData] = useState('');
   const [dummyUser, setDummyUser] = useState();
   const [username, setUsername] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -34,12 +35,19 @@ export default function ProfilePage() {
   }
 
   useEffect(() => {
-    setUser(currentUser())
+    const setUsern = async () => {
+      await setUserData(await getUserData())
+      await setUsername(await getUsername())
+      await setUser(await currentUser())
+
+    }
+    setUsern()
   }, [dummyUser])
 
   useEffect(() => {
     const setUsern = async () => {
-      setUsername(await getUsername())
+      await setUsername(await getUsername())
+      await setUserData(await getUserData())
     }
     setUsern()
     return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
@@ -71,7 +79,7 @@ export default function ProfilePage() {
             <Stack direction={"column"} style={{ padding: 40 }}>
 
               <View>
-                <Text style={{ color: "black" }}>{user.displayName}</Text>
+                <Text style={{ color: "black" }}>{userData.first_name + ' ' + userData.last_name}</Text>
                 <Text style={styles.text}>{user.email}</Text>
                 {username !== '' ? <Text style={{ color: "grey" }}>@{username}</Text> :
                   <TextInput placeholder={"Click to set @username"} onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)} autoCapitalize={'none'} placeholderTextColor={'grey'} style={{
