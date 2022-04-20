@@ -13,6 +13,7 @@ import AroundMePage from "./pages/AroundMePage";
 import NewTripPage from "./pages/NewTripPage.js";
 import { createStackNavigator } from "@react-navigation/stack";
 import RegistrationPage from "./pages/RegistrationPage";
+import SearchUsers from "./pages/SearchUsers";
 
 // Pages names
 const homeName = "Home";
@@ -24,7 +25,7 @@ const aroundMeName = "Around Me";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function TabContainer() {
+function TabContainer({ navigation }) {
   return (
     <Tab.Navigator
       initialRouteName={homeName}
@@ -62,8 +63,8 @@ function TabContainer() {
         headerTitleAlign: "center",
       })}>
       <Tab.Screen name={homeName} component={HomePage} />
-      <Tab.Screen name={exploreName} component={ExplorePage} />
-      <Tab.Screen name={profileName} component={LoginPage} />
+      <Tab.Screen options={{headerRight: () => <Icon onPress={() => navigation.navigate(SearchUsers)} color={'white'} size={30} name={"person-search"}/>}} name={exploreName} component={ExplorePage} />
+      <Tab.Screen options={{headerRight: () => <Icon onPress={() => null} color={'white'} size={30} name={"settings"}/>}} name={profileName} component={LoginPage} />
       <Tab.Screen name={newTripName} component={NewTripPage} />
       <Tab.Screen name={aroundMeName} component={AroundMePage} />
     </Tab.Navigator>
@@ -91,6 +92,7 @@ export default function MainContainer() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name='Registration' component={RegistrationPage}/>
+        <Stack.Screen name='SearchUsers' options={{title: 'Search Users', animationEnabled: false}} component={SearchUsers}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

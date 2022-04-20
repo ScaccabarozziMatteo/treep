@@ -37,6 +37,7 @@ export default function HomePage() {
 
   return (
     <View>
+      {/*
       <SafeAreaView style={styles.container}>
           <FlatList
             keyExtractor={(item, index)=>index.toString()}
@@ -55,6 +56,7 @@ export default function HomePage() {
           />
 
       </SafeAreaView>
+      */}
     </View>
   );
 }

@@ -1,12 +1,12 @@
-import { Input, ScrollView, Stack, View } from "native-base";
+import { ScrollView, Stack, View } from "native-base";
 import React, { useState } from "react";
-import { CheckBox, Text } from "@rneui/base";
+import { Input, Text, CheckBox, Button } from '@ui-kitten/components';
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { StyleSheet } from "react-native";
-import { Button } from "react-native-elements";
 import ModalPhoto from "../utils/ModalPhoto";
 import { emailRegistration } from "../api/FirebaseApi";
+import { LinearProgress } from "react-native-elements";
 
 export default function RegistrationPage({ navigation }) {
 
@@ -32,8 +32,14 @@ export default function RegistrationPage({ navigation }) {
     setCheck(!checked);
   }
 
-  function pop() {
-    navigation.pop();
+  const captions = (errors) => {
+    return(
+      (errors) ? (
+          <Text style={{ color: "red", alignSelf: "center" }}>
+            {errors.message}
+          </Text>
+        ):null
+    )
   }
 
   const handleHideShowPassword = () => setShow(!show);
@@ -47,18 +53,6 @@ export default function RegistrationPage({ navigation }) {
           alignSelf: "center",
         }
       }>
-
-
-        <Text
-          style={{
-            color: "black",
-            paddingTop: 30,
-            textAlign: "center",
-            fontSize: 20,
-            fontWeight: "bold",
-          }}>
-          Name
-        </Text>
         <Controller
           control={control}
           rules={{
@@ -73,28 +67,16 @@ export default function RegistrationPage({ navigation }) {
               autoCapitalize={'words'}
               placeholder={"Type your first name and last name"}
               placeholderTextColor="grey"
+              status={errors.name ? 'danger' : 'basic'}
+              label={'Full name'}
+              size={'large'}
               value={value}
+              caption={captions(errors.name)}
             />
           )}
           name="name"
         />
-        {errors.name && (
-          <Text style={{ color: "red", alignSelf: "center" }}>
-            {errors.name.message}
-          </Text>
-        )}
 
-
-        <Text
-          style={{
-            color: "black",
-            paddingTop: 30,
-            textAlign: "center",
-            fontSize: 20,
-            fontWeight: "bold",
-          }}>
-          E-Mail
-        </Text>
         <Controller
           control={control}
           rules={{
@@ -112,26 +94,14 @@ export default function RegistrationPage({ navigation }) {
               placeholder={"Type your e-mail"}
               placeholderTextColor="grey"
               value={value}
+              status={errors.email ? 'danger' : 'basic'}
+              size={'large'}
+              label={'E-Mail'}
+              caption={captions(errors.email)}
             />
           )}
           name="email"
         />
-        {errors.email && (
-          <Text style={{ color: "red", alignSelf: "center" }}>
-            {errors.email.message}
-          </Text>
-        )}
-
-        <Text
-          style={{
-            color: "black",
-            paddingTop: 30,
-            textAlign: "center",
-            fontSize: 20,
-            fontWeight: "bold",
-          }}>
-          Password
-        </Text>
         <Controller
           control={control}
           rules={{
@@ -156,26 +126,14 @@ export default function RegistrationPage({ navigation }) {
               autoCapitalize={'none'}
               value={value}
               secureTextEntry={!show}
+              status={errors.password ? 'danger' : 'basic'}
+              size={'large'}
+              label={'Password'}
+              caption={captions(errors.password)}
             />
           )}
           name="password"
         />
-        {errors.password && (
-          <Text style={{ color: "red", alignSelf: "center" }}>
-            {errors.password.message}
-          </Text>
-        )}
-
-        <Text
-          style={{
-            color: "black",
-            paddingTop: 30,
-            textAlign: "center",
-            fontSize: 20,
-            fontWeight: "bold",
-          }}>
-          Repeat password
-        </Text>
         <Controller
           control={control}
           rules={{
@@ -200,22 +158,21 @@ export default function RegistrationPage({ navigation }) {
               value={value}
               type={'password'}
               secureTextEntry={!show}
+              status={errors.repeat_password ? 'danger' : 'basic'}
+              size={'large'}
+              label={'Repeat password'}
+              caption={captions(errors.repeat_password)}
             />
           )}
           name="repeat_password"
         />
-        {errors.repeat_password && (
-          <Text style={{ color: "red", alignSelf: "center" }}>
-            {errors.repeat_password.message}
-          </Text>
-        )}
 
+        <CheckBox onChange={setCheckCheckbox} checked={checked}
+                  style={styles.checkbox} >I agree with the treep policy</CheckBox>
 
-        <CheckBox title={"I agree with the treep policy"} onPress={setCheckCheckbox} checked={checked}
-                  style={styles.checkbox} />
+        <Button disabled={!checked} onPress={handleSubmit((form) => emailRegistration(form, navigation))} >Create profile</Button>
 
-        <Button title={"Create profile"} disabled={!checked} onPress={handleSubmit((form) => emailRegistration(form, navigation))} />
-
+        <LinearProgress value={0.4} variant={'determinate'} />
       </View>
 
     </ScrollView>
@@ -235,11 +192,9 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   checkbox: {
-    backgroundColor: "red",
   },
   input: {
     color: "black",
-    width: "80%",
     alignSelf: "center",
   },
   text: {

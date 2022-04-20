@@ -62,7 +62,7 @@ export default function ProfilePage() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{padding: '5%', alignSelf: 'center'}}>
           <Stack direction={"row"}>
-            <Avatar animate={true} badgeProps={{
+            <Avatar animate badgeProps={{
               onPress() {
                 changeProfileLogo();
               }, size: 26, icon: pencil, backgroundColor: "white", borderWidth: 1, borderRadius: 20,

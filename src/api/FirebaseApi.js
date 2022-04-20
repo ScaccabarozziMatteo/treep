@@ -89,17 +89,21 @@ function setName(name) {
 
 }
 
+function setUserInfo() {
+
+}
+
 export async function setUsernameFirebase(user) {
   const data = {
-    username: user,
+    username: user.toLowerCase(),
   };
 
 // Add a new document in collection "users" with UID
-  const res = await firestore().collection('users').doc(currentUser().uid).set(data);
+  const res = await firestore().collection('users/' + currentUser().uid + '/public_info').doc('personal_data').set(data);
 }
 
 export async function getUsername() {
-  const doc = await firestore().collection('users').doc(currentUser().uid).get()
+  const doc = await firestore().collection('users/' + currentUser().uid + '/public_info').doc('personal_data').get()
   if (doc.data() !== undefined)
     return doc.data().username
   else
@@ -108,4 +112,12 @@ export async function getUsername() {
 
 export function currentUser() {
   return auth().currentUser;
+}
+
+export async function searchUsers(username) {
+  const doc = await firestore().collectionGroup('public_info').where('username', '==', username.toLowerCase()).get()
+  if(doc.empty)
+    return ''
+  else
+    return doc._docs
 }
