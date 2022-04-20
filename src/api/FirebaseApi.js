@@ -7,7 +7,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import storage from "@react-native-firebase/storage";
 import { showToast } from "../utils/Utils";
 import ProfilePage from "../pages/ProfilePage";
-import React from 'react';
+import React from "react";
 import { err } from "react-native-svg/lib/typescript/xml";
 
 
@@ -64,32 +64,41 @@ export class UserCollection {
 
 export async function changeProfileImage(image, props) {
   let user = currentUser();
-  const imagePath = user.uid + '/profile_image';
+  const imagePath = user.uid + "/profile_image";
   const reference = storage().ref(imagePath);
   await reference.putFile(image.assets[0].uri)
     .then().done(async () => {
       await auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL() });
-      showToast('success', 'Upload', 'Image uploaded!'); props.updateUser(Math.random())
-    })
+      showToast("success", "Upload", "Image uploaded!");
+      props.updateUser(Math.random());
+    });
 }
 
 export function emailRegistration(userData, navigation) {
   auth().createUserWithEmailAndPassword(userData.email, userData.password).then(async () => {
-    await setName(userData.name);
-    await auth().signOut()
-    await UserCollection.emailLogin(userData)
-    await navigation.pop()
+    await UserCollection.emailLogin(userData);
+    await setUserInfo(userData);
+    await auth().signOut();
+    await UserCollection.emailLogin(userData);
+    await navigation.pop();
   }).catch(error => showToast("error", "Registration", error.message));
 }
 
-function setName(name) {
-  auth().currentUser.updateProfile({ displayName: name }).then(async () => {
-    showToast("success", "Registration", "User created! :D");
-  }).catch(error => showToast("error", "Registration", error.message));
+function setUserInfo(data) {
 
-}
+  const userData = {
+    first_name: data.first_name,
+    last_name: data.last_name,
+    sex: data.sex,
+    birthdate: data.birthdate,
+  };
 
-function setUserInfo() {
+  auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name })
+    .done(async () => {
+      await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(userData)
+        .done(
+          () => showToast("success", "Registration", "User created! :D"));
+    })
 
 }
 
@@ -99,15 +108,15 @@ export async function setUsernameFirebase(user) {
   };
 
 // Add a new document in collection "users" with UID
-  const res = await firestore().collection('users/' + currentUser().uid + '/public_info').doc('personal_data').set(data);
+  const res = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(data);
 }
 
 export async function getUsername() {
-  const doc = await firestore().collection('users/' + currentUser().uid + '/public_info').doc('personal_data').get()
+  const doc = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").get();
   if (doc.data() !== undefined)
-    return doc.data().username
+    return doc.data().username;
   else
-    return ''
+    return "";
 }
 
 export function currentUser() {
@@ -115,9 +124,9 @@ export function currentUser() {
 }
 
 export async function searchUsers(username) {
-  const doc = await firestore().collectionGroup('public_info').where('username', '==', username.toLowerCase()).get()
-  if(doc.empty)
-    return ''
+  const doc = await firestore().collectionGroup("public_info").where("username", "==", username.toLowerCase()).get();
+  if (doc.empty)
+    return "";
   else
-    return doc._docs
+    return doc._docs;
 }

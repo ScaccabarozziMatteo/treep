@@ -7,11 +7,10 @@ import Modal from "react-native-modal";
 import { Stack, View } from "native-base";
 import { Icon, Text } from "@rneui/base";
 import React from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { showToast } from "./Utils";
 import { PermissionsAndroid, Platform, Pressable, StyleSheet } from "react-native";
-import { changeProfileImage, currentUser, UserCollection } from "../api/FirebaseApi";
+import { changeProfileImage } from "../api/FirebaseApi";
 
 export default function ModalPhoto(props) {
 
