@@ -24,6 +24,7 @@ export default function LoginPage({ navigation }) {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -63,8 +64,8 @@ export default function LoginPage({ navigation }) {
     }
   }
 
-
   useEffect(() => {
+    reset()
     return auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
@@ -139,7 +140,7 @@ export default function LoginPage({ navigation }) {
 
             <Stack direction={'row'}>
               <Text style={styles.text}>Need an account?</Text><Pressable
-              onPress={() => navigation.push("Registration")}><Text style={{ color: "purple" }}>Sign
+              onPress={() => {reset(); navigation.push("Registration")}}><Text style={{ color: "purple" }}>Sign
               Up</Text></Pressable><Text style={styles.text}> now!</Text>
             </Stack>
           </View>
