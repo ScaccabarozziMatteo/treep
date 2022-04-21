@@ -2,10 +2,9 @@ import { ScrollView, Stack, View } from "native-base";
 import React, { useState } from "react";
 import { Input, CheckBox, Button, Datepicker } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { StyleSheet } from "react-native";
 import { emailRegistration } from "../api/FirebaseApi";
-import { LinearProgress } from "react-native-elements";
 import { Select, SelectItem } from "@ui-kitten/components";
 import { Text } from "react-native";
 
@@ -214,7 +213,7 @@ export default function RegistrationPage({ navigation }) {
                   style={{ paddingRight: 10 }}
                   size={25}
                   color={"black"}
-                  name={show ? "visibility-off" : "visibility"}
+                  name={show ? "eye-off-outline" : "eye-outline"}
                   onPress={handleHideShowPassword}
                 />
               }
@@ -245,7 +244,7 @@ export default function RegistrationPage({ navigation }) {
                   style={{ paddingRight: 10 }}
                   size={25}
                   color={"black"}
-                  name={show ? "visibility-off" : "visibility"}
+                  name={show ? "eye-off-outline" : "eye-outline"}
                   onPress={handleHideShowPassword}
                 />
               }
@@ -300,7 +299,7 @@ export default function RegistrationPage({ navigation }) {
 
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps={'handled'}>
       <View style={
         {
           width: "80%",

@@ -1,23 +1,53 @@
 import * as React from "react";
-import { StyleSheet, Text, View, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
-import { Stack } from "native-base";
-import { Button } from "react-native-elements";
-import { Avatar } from "react-native-ui-lib";
-import { currentUser, getUserData, getUsername, setUsernameFirebase, UserCollection } from "../api/FirebaseApi";
+import { StyleSheet, View, TextInput, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
+import { Divider, Text, HStack, VStack } from "native-base";
+import { Avatar, Card } from "react-native-ui-lib";
+import { Button } from "@ui-kitten/components";
+import {
+  currentUser,
+  getUserData,
+  setDescriptionFirebase,
+  setUsernameFirebase,
+  UserCollection,
+} from "../api/FirebaseApi";
 import { showToast } from "../utils/Utils";
 import { useEffect, useState } from "react";
 import ModalPhoto from "../utils/ModalPhoto";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function ProfilePage() {
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-  const [userData, setUserData] = useState('');
+  const [userData, setUserData] = useState("");
   const [dummyUser, setDummyUser] = useState();
-  const [username, setUsername] = useState('');
   const [showModal, setShowModal] = useState(false);
 
   const pencil = require("../../assets/pencil.png");
+
+  function badges() {
+    return (
+      <VStack alignItems={"center"}>
+        <HStack justifyContent={"space-between"} alignContent={"stretch"} width={"80"}>
+          <Icon name={"earth"} color={isActiveBadge(0)} size={40} />
+          <Icon name={"airplane-takeoff"} color={isActiveBadge(1)} size={40} />
+          <Icon name={"comment-text-outline"} color={isActiveBadge(2)} size={40} />
+          <Icon name={"hand-heart"} color={isActiveBadge(3)} size={40} />
+          <Icon name={"professional-hexagon"} color={isActiveBadge(4)} size={40} />
+        </HStack>
+      </VStack>
+    );
+  }
+
+  function isActiveBadge(number) {
+    if (userData !== '')
+      if (userData.badges[number])
+        return "green";
+      else
+        return "grey";
+    else
+      return "grey";
+  }
 
   // Logout function
   function logout() {
@@ -36,20 +66,17 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const setUsern = async () => {
-      await setUserData(await getUserData())
-      await setUsername(await getUsername())
-      await setUser(await currentUser())
-
-    }
-    setUsern()
-  }, [dummyUser])
+      await setUserData(await getUserData());
+      await setUser(await currentUser());
+    };
+    setUsern();
+  }, [dummyUser]);
 
   useEffect(() => {
     const setUsern = async () => {
-      await setUsername(await getUsername())
-      await setUserData(await getUserData())
-    }
-    setUsern()
+      await setUserData(await getUserData());
+    };
+    setUsern();
     return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
@@ -58,7 +85,11 @@ export default function ProfilePage() {
   }
 
   function changeUsername(username) {
-    setUsernameFirebase(username).done(() => setUsername(username))
+    setUsernameFirebase(username).done(() => setDummyUser(Math.random));
+  }
+
+  function changeDescription(description) {
+    setDescriptionFirebase(description).done(() => setDummyUser(Math.random));
   }
 
   if (initializing) {
@@ -67,36 +98,86 @@ export default function ProfilePage() {
 
   if (user != null) {
     return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{padding: '5%', alignSelf: 'center'}}>
-          <Stack direction={"row"}>
-            <Avatar animate badgeProps={{
-              onPress() {
-                changeProfileLogo();
-              }, size: 26, icon: pencil, backgroundColor: "white", borderWidth: 1, borderRadius: 20,
-            }} badgePosition={"BOTTOM_RIGHT"} size={100}
-                    source={user.photoURL !== null ? { uri: user.photoURL } : null} />
-            <Stack direction={"column"} style={{ padding: 40 }}>
+      <ScrollView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View>
+            <VStack justifyContent={"space-between"} alignContent={"stretch"}
+                    style={{ padding: "3%", alignSelf: "center", backgroundColor: "white", margin: "3%" }}>
+              <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
+                <Avatar animate badgeProps={{
+                  onPress() {
+                    changeProfileLogo();
+                  }, size: 26, icon: pencil, backgroundColor: "white", borderWidth: 1, borderRadius: 20,
+                }} badgePosition={"BOTTOM_RIGHT"} size={100}
+                        source={user.photoURL !== null ? { uri: user.photoURL } : null} />
+                <VStack style={{ padding: 20, width: "60%" }}>
 
-              <View>
-                <Text style={{ color: "black" }}>{userData.first_name + ' ' + userData.last_name}</Text>
-                <Text style={styles.text}>{user.email}</Text>
-                {username !== '' ? <Text style={{ color: "grey" }}>@{username}</Text> :
-                  <TextInput placeholder={"Click to set @username"} onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)} autoCapitalize={'none'} placeholderTextColor={'grey'} style={{
+                  <View>
+                    <Text style={styles.title}>{userData.first_name + " " + userData.last_name}</Text>
+                    <Text style={styles.text}>{user.email}</Text>
+                    {userData.username !== "" ? <Text style={{ color: "grey" }}>@{userData.username}</Text> :
+                      <TextInput placeholder={"Click to set @username"}
+                                 onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)}
+                                 autoCapitalize={"none"}
+                                 placeholderTextColor={"grey"} style={{
+                        color: "grey",
+                        fontSize: 13,
+                      }} onPress={changeUsername} />}
+                  </View>
+                </VStack>
+              </HStack>
+
+              {/* Vanity metrics */}
+              <VStack alignItems={"center"}>
+                <HStack backgroundColor={'gray.100'} width={"70%"} alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
+                  <VStack alignItems={"center"}>
+                    <Text style={styles.text}>Trips</Text>
+                    <Text style={styles.text}>23</Text>
+                  </VStack>
+                  <VStack alignItems={"center"}>
+                    <Text style={styles.text}>Follower</Text>
+                    <Text style={styles.text}>100</Text>
+                  </VStack>
+                  <VStack alignItems={"center"}>
+                    <Text style={{ color: "black", width: "105%" }}>Following</Text>
+                    <Text style={styles.text}>140</Text>
+                  </VStack>
+                </HStack>
+              </VStack>
+
+              {/* Description, bio */}
+              <VStack>
+                <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
+                  <Text style={styles.title}>About me</Text>
+                  <Icon name={"square-edit-outline"} color={"black"} size={30} />
+
+                </HStack>
+                {userData.description ? <Text style={styles.text}>{userData.description}</Text> :
+                  <TextInput placeholder={"Click to set a description.."}
+                             onSubmitEditing={(data) => changeDescription(data.nativeEvent.text)}
+                             placeholderTextColor={"grey"} style={{
                     color: "grey",
-                    fontSize: 13,
-                  }} onPress={changeUsername} />}
-              </View>
-            </Stack>
-          </Stack>
+                    fontSize: 15,
+                  }} onPress={changeDescription} />}
+              </VStack>
 
-          <View style={styles.boxButton}>
-            <Button title={"Logout"} onPress={logout} />
+              {/* Badges*/}
+              <VStack>
+                <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
+                  <Text style={styles.title}>My Badges</Text>
+                </HStack>
+                {badges()}
+              </VStack>
+            </VStack>
+
+            <View style={styles.boxButton}>
+              <Button onPress={logout}>Logout</Button>
+            </View>
+            <ModalPhoto typeOfUpload="profile_photo" show={showModal} updateUser={(response) => setDummyUser(response)}
+                        updateShow={(response) => setShowModal(response)} modalResponse />
           </View>
-          <ModalPhoto typeOfUpload="profile_photo" show={showModal} updateUser={(response) => setDummyUser(response)}
-                      updateShow={(response) => setShowModal(response)} modalResponse />
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </ScrollView>
     );
   }
 }
@@ -119,6 +200,12 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "black",
+  },
+  title: {
+    color: "black",
+    fontWeight: "700",
+    width: "90%",
+    marginTop: 30,
   },
 });
 

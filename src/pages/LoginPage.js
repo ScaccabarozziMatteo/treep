@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Pressable, ScrollView, Stack } from "native-base";
 import { Button, Input } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { UserCollection } from "../api/FirebaseApi";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -75,7 +75,7 @@ export default function LoginPage({ navigation }) {
 
   if (!user) {
     return (
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps={'handled'}>
         <View style={{alignSelf: "center", marginTop: '10%'}}>
           <Controller
             control={control}
@@ -109,12 +109,12 @@ export default function LoginPage({ navigation }) {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 onBlur={onBlur}
-                InputRightElement={
+                accessoryRight={
                   <Icon
                     style={{ paddingRight: 10 }}
                     size={25}
                     color={"black"}
-                    name={show ? "visibility-off" : "visibility"}
+                    name={show ? "eye-off-outline" : "eye-outline"}
                     onPress={handleHideShowPassword}
                   />
                 }
@@ -146,8 +146,8 @@ export default function LoginPage({ navigation }) {
           </View>
 
           <View style={styles.boxButton}>
-            <Button title={"Google"}
-                    onPress={() => GoogleSignIn().catch(error => console.log(error.message))}>Google</Button>
+            <Button style={{backgroundColor: '#de5246', borderColor: '#de5246'}}
+                    onPress={() => GoogleSignIn().catch(error => console.log(error.message))}><Icon name={'google'} /></Button>
           </View>
         </View>
       </ScrollView>

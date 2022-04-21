@@ -91,6 +91,7 @@ async function setUserInfo(data) {
     last_name: data.last_name,
     sex: data.sex,
     birthdate: data.birthdate,
+    badges: [false, false, false, false, false]
   };
 
   await auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name })
@@ -105,6 +106,15 @@ async function setUserInfo(data) {
 export async function setUsernameFirebase(user) {
   const data = {
     username: user.toLowerCase(),
+  };
+
+// Add a new document in collection "users" with UID
+  const res = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data);
+}
+
+export async function setDescriptionFirebase(user) {
+  const data = {
+    description: user,
   };
 
 // Add a new document in collection "users" with UID
