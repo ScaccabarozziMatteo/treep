@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button, Input, ScrollView } from "native-base";
+import { Input, ScrollView } from "native-base";
+import { Button } from "react-native-elements";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { UserCollection } from "../../api/FirebaseApi";
+import { UserCollection } from "../api/FirebaseApi";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import ProfilePage from "./ProfilePage";
-import { showToast } from "../../utils/Utils";
+import { showToast } from "../utils/Utils";
 
 GoogleSignin.configure({
   webClientId: "890037553856-u31q3091loeoqf2gelsme90vtef5qr24.apps.googleusercontent.com",
@@ -15,7 +16,7 @@ GoogleSignin.configure({
   offlineAccess: true,
 });
 
-export default function LoginPage() {
+export default function LoginPage({ navigation }) {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
@@ -35,10 +36,7 @@ export default function LoginPage() {
 
   // Login using email and password
   function emailLogin(userData) {
-    // Wipe variables
-    UserCollection.emailLogin(userData)
-      .then(r => onAuthStateChanged(r.user))
-      .catch(error1 => showToast("error", "Error", error1.message));
+    UserCollection.emailLogin(userData).catch(error1 => showToast("error", "Error", error1.message));
   }
 
 
@@ -56,7 +54,6 @@ export default function LoginPage() {
   }
 
 
-
   useEffect(() => {
     return auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
   }, []);
@@ -68,17 +65,14 @@ export default function LoginPage() {
   if (!user) {
     return (
       <ScrollView>
-        <View>
-          <Text style={styles.text}>
-            No user has logged in! Please sign in :D
-          </Text>
+        <View style={{ width: "80%", alignSelf: "center"}}>
           <Text
             style={{
               color: "black",
               paddingTop: 30,
-              textAlign: 'center',
+              textAlign: "center",
               fontSize: 20,
-              fontWeight: 'bold',
+              fontWeight: "bold",
             }}>
             E-Mail
           </Text>
@@ -87,14 +81,13 @@ export default function LoginPage() {
             rules={{
               required: true,
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 style={styles.input}
                 onBlur={onBlur}
-                width="80%"
-                alignSelf="center"
                 onChangeText={onChange}
-                placeholder={'Type your e-mail'}
+                autoCapitalize={'none'}
+                placeholder={"Type your e-mail"}
                 placeholderTextColor="grey"
                 value={value}
               />
@@ -102,18 +95,18 @@ export default function LoginPage() {
             name="email"
           />
           {errors.email && (
-            <Text style={{color: 'red', alignSelf: 'center'}}>
+            <Text style={{ color: "red", alignSelf: "center" }}>
               This is required.
             </Text>
           )}
 
           <Text
             style={{
-              color: 'black',
+              color: "black",
               paddingTop: 30,
-              textAlign: 'center',
+              textAlign: "center",
               fontSize: 20,
-              fontWeight: 'bold',
+              fontWeight: "bold",
             }}>
             Password
           </Text>
@@ -122,10 +115,8 @@ export default function LoginPage() {
             rules={{
               required: true,
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                width="80%"
-                alignSelf="center"
                 onBlur={onBlur}
                 InputRightElement={
                   <Icon
@@ -137,6 +128,7 @@ export default function LoginPage() {
                   />
                 }
                 placeholder={"Password"}
+                autoCapitalize={'none'}
                 placeholderTextColor="grey"
                 onChangeText={onChange}
                 value={value}
@@ -154,22 +146,27 @@ export default function LoginPage() {
           )}
 
           <View style={styles.boxButton}>
-            <Button onPress={handleSubmit(emailLogin)}>Login </Button>
+            <Button title={"Login"} onPress={handleSubmit(emailLogin)} />
           </View>
 
+
           <View style={styles.boxButton}>
-            <Button
-              onPress={() => GoogleSignIn().catch(error => console.log(error.message))}>Google </Button>
+            <Button title={"Sign Up"} onPress={() => navigation.push("Registration")} />
+          </View>
+
+
+          <View style={styles.boxButton}>
+            <Button title={"Google"}
+                    onPress={() => GoogleSignIn().catch(error => console.log(error.message))} />
           </View>
         </View>
       </ScrollView>
     );
   }
-
   // Else if the user is logged, show they're profile page
   return (
-    <ProfilePage user={user}/>
-  )
+    <ProfilePage />
+  );
 }
 
 const styles = StyleSheet.create({
@@ -177,11 +174,10 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column", // row
     alignItems: "center",
-    backgroundColor: "grey",
   },
   boxButton: {
     paddingTop: 20,
-    width: "40%",
+    width: "100%",
     alignSelf: "center",
   },
   input: {
