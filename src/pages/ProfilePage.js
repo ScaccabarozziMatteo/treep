@@ -115,7 +115,7 @@ export default function ProfilePage() {
                   <View>
                     <Text style={styles.title}>{userData.first_name + " " + userData.last_name}</Text>
                     <Text style={styles.text}>{user.email}</Text>
-                    {userData.username !== "" ? <Text style={{ color: "grey" }}>@{userData.username}</Text> :
+                    {userData.username !== undefined ? <Text style={{ color: "grey" }}>@{userData.username}</Text> :
                       <TextInput placeholder={"Click to set @username"}
                                  onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)}
                                  autoCapitalize={"none"}
