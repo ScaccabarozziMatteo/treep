@@ -11,6 +11,7 @@ import {StatusBar} from 'react-native';
 import LoginPage from "./pages/LoginPage";
 import AroundMePage from "./pages/AroundMePage";
 import NewTripPage from "./pages/NewTripPage.js";
+import Feather from "react-native-vector-icons/Feather";
 
 // Pages names
 const homeName = 'Home';
@@ -55,18 +56,15 @@ export default function MainContainer() {
           tabBarLabelStyle: {paddingBottom: 5, fontSize: 13},
           tabBarStyle: {height: 60},
           headerTitleAlign: 'center',
-          headerLeft: () => (
-            <Text style={{fontSize: 18, color: 'white'}}>Left</Text>
-          ),
           headerRight: () => (
-            <Text style={{fontSize: 18, color: 'white'}}>Right</Text>
+            <Feather name="navigation" style={{fontSize: 24, marginRight: 10}}/>
           ),
         })}>
         <Tab.Screen name={homeName} component={HomePage} />
         <Tab.Screen name={exploreName} component={ExplorePage} />
-        <Tab.Screen name={profileName} component={LoginPage} />
         <Tab.Screen name={newTripName} component={NewTripPage} />
         <Tab.Screen name={aroundMeName} component={AroundMePage} />
+        <Tab.Screen name={profileName} component={LoginPage} />
       </Tab.Navigator>
     </NavigationContainer>
   );

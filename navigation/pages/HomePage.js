@@ -3,7 +3,12 @@ import React, { useEffect, useState } from "react";
 import { TripCollection } from "../../api/FirebaseApi";
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
-import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView } from "react-native";
+import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView, TouchableOpacity } from "react-native";
+import FullWidthImage from "react-native-fullwidth-image";
+import Post from "../../components/Post";
+import Feather from "react-native-vector-icons/Feather";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function HomePage() {
 
@@ -37,15 +42,14 @@ export default function HomePage() {
 
   return (
     <View>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView>
           <FlatList
             keyExtractor={(item, index)=>index.toString()}
             data={trips}
+
             renderItem={({item})=>(
-              <View>
-                <Text style={styles.text}>{item.description}</Text>
-                <Image source = {{uri: item.coverPhoto}} style={{width: 100, height: 100}}/>
-              </View>
+                <Post title={item.description} userImage={item.coverPhoto} postImage={item.coverPhoto} likes={item.likes} isLiked="false"/>
+
             )}
             refreshControl = {<RefreshControl
               refreshing={refreshing}
@@ -60,15 +64,14 @@ export default function HomePage() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'grey',
-    alignItems: 'center',
-    justifyContent: 'center',
+  image: {
+
   },
+
   text: {
     fontSize: 20,
     fontWeight: "bold",
     alignContent: "center",
-    color: 'white',
+    color: 'black',
   }
 });
