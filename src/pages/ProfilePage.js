@@ -22,6 +22,7 @@ export default function ProfilePage() {
   const [userData, setUserData] = useState("");
   const [dummyUser, setDummyUser] = useState();
   const [showModal, setShowModal] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const pencil = require("../../assets/pencil.png");
 
@@ -40,7 +41,7 @@ export default function ProfilePage() {
   }
 
   function isActiveBadge(number) {
-    if (userData !== '')
+    if (userData !== "")
       if (userData.badges[number])
         return "green";
       else
@@ -113,23 +114,44 @@ export default function ProfilePage() {
                 <VStack style={{ padding: 20, width: "60%" }}>
 
                   <View>
-                    <Text style={styles.title}>{userData.first_name + " " + userData.last_name}</Text>
-                    <Text style={styles.text}>{user.email}</Text>
-                    {userData.username !== undefined ? <Text style={{ color: "grey" }}>@{userData.username}</Text> :
-                      <TextInput placeholder={"Click to set @username"}
-                                 onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)}
-                                 autoCapitalize={"none"}
+                    {edit ?
+                      // Edit username
+                      <TextInput placeholder={userData.first_name + " " + userData.last_name}
+                                 value={userData.first_name + " " + userData.last_name}
                                  placeholderTextColor={"grey"} style={{
-                        color: "grey",
-                        fontSize: 13,
-                      }} onPress={changeUsername} />}
+                        color: "black",
+                        backgroundColor: 'yellow'
+                      }} onPress={changeUsername} /> :
+                      // Show username
+                      <Text style={styles.title}>{userData.first_name + " " + userData.last_name}</Text>
+                    }
+                    <Text style={styles.text}>{user.email}</Text>
+                    {edit ?
+                      // No existing username, add it!
+                      <TextInput placeholder={userData.username !== undefined ? "@" + userData.username : "Set an @username"}
+                                 autoCapitalize={"none"}
+                                 value={userData.username}
+                                 placeholderTextColor={"grey"} style={{
+                        color: "black",
+                        backgroundColor: 'yellow',
+                      }} onPress={changeUsername} /> :
+
+                      // Show username if edit is not active (or ask to choose a new one if not exists)
+                      (userData.username !== undefined ? <Text style={{ color: "grey" }}>@{userData.username}</Text> :
+                        <TextInput placeholder={"Click to set @username"}
+                                   onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)}
+                                   autoCapitalize={"none"}
+                                   placeholderTextColor={"grey"} style={{
+                          color: "grey",
+                        }} onPress={changeUsername} />)}
                   </View>
                 </VStack>
               </HStack>
 
               {/* Vanity metrics */}
               <VStack alignItems={"center"}>
-                <HStack backgroundColor={'gray.100'} width={"70%"} alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
+                <HStack backgroundColor={"gray.100"} width={"70%"} alignItems={"center"}
+                        justifyContent={"space-between"} alignContent={"stretch"}>
                   <VStack alignItems={"center"}>
                     <Text style={styles.text}>Trips</Text>
                     <Text style={styles.text}>23</Text>
@@ -149,7 +171,9 @@ export default function ProfilePage() {
               <VStack>
                 <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
                   <Text style={styles.title}>About me</Text>
-                  <Icon name={"square-edit-outline"} color={"black"} size={30} />
+                  {edit ?
+                    <Icon name={"content-save-outline"} color={"green"} size={30} onPress={() => setEdit(!edit)} /> :
+                    <Icon name={"square-edit-outline"} color={"black"} size={30} onPress={() => setEdit(!edit)} />}
 
                 </HStack>
                 {userData.description ? <Text style={styles.text}>{userData.description}</Text> :
