@@ -311,7 +311,6 @@ export default function RegistrationPage({ navigation }) {
         {status === 0 ? firstModule() : null}
         {status === 1 ? secondModule() : null}
 
-        <LinearProgress value={progress} variant={"determinate"} />
       </View>
 
     </ScrollView>

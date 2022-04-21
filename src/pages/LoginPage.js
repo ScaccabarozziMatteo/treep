@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Input, ScrollView } from "native-base";
-import { Button } from "react-native-elements";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, ScrollView, Stack } from "native-base";
+import { Button, Input } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { UserCollection } from "../api/FirebaseApi";
@@ -24,6 +24,7 @@ export default function LoginPage({ navigation }) {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -31,6 +32,16 @@ export default function LoginPage({ navigation }) {
       password: "",
     },
   });
+
+  const captions = (errors) => {
+    return (
+      (errors) ? (
+        <Text style={{ color: "red", alignSelf: "center" }}>
+          {errors.message}
+        </Text>
+      ) : null
+    );
+  };
 
   const handleHideShowPassword = () => setShow(!show);
 
@@ -53,8 +64,8 @@ export default function LoginPage({ navigation }) {
     }
   }
 
-
   useEffect(() => {
+    reset()
     return auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
@@ -65,55 +76,35 @@ export default function LoginPage({ navigation }) {
   if (!user) {
     return (
       <ScrollView>
-        <View style={{ width: "80%", alignSelf: "center"}}>
-          <Text
-            style={{
-              color: "black",
-              paddingTop: 30,
-              textAlign: "center",
-              fontSize: 20,
-              fontWeight: "bold",
-            }}>
-            E-Mail
-          </Text>
+        <View style={{alignSelf: "center", marginTop: '10%'}}>
           <Controller
             control={control}
             rules={{
-              required: true,
+              required: { value: true, message: "Missing e-mail." },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 style={styles.input}
                 onBlur={onBlur}
+                size={'large'}
+                label={'E-Mail'}
                 onChangeText={onChange}
-                autoCapitalize={'none'}
-                placeholder={"Type your e-mail"}
+                autoCapitalize={"none"}
+                placeholder={"E-Mail"}
                 placeholderTextColor="grey"
                 value={value}
+                status={errors.email ? "danger" : "basic"}
+                caption={captions(errors.email)}
               />
             )}
             name="email"
           />
-          {errors.email && (
-            <Text style={{ color: "red", alignSelf: "center" }}>
-              This is required.
-            </Text>
-          )}
 
-          <Text
-            style={{
-              color: "black",
-              paddingTop: 30,
-              textAlign: "center",
-              fontSize: 20,
-              fontWeight: "bold",
-            }}>
-            Password
-          </Text>
+
           <Controller
             control={control}
             rules={{
-              required: true,
+              required: { value: true, message: "Missing password." },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
@@ -128,36 +119,35 @@ export default function LoginPage({ navigation }) {
                   />
                 }
                 placeholder={"Password"}
-                autoCapitalize={'none'}
+                autoCapitalize={"none"}
                 placeholderTextColor="grey"
                 onChangeText={onChange}
                 value={value}
+                size={'large'}
+                label={'Password'}
                 secureTextEntry={!show}
+                status={errors.password ? "danger" : "basic"}
+                caption={captions(errors.password)}
               />
             )}
             name="password"
           />
 
+          <Text style={{color: 'black', alignSelf: 'flex-end'}}>Forgot password?</Text>
 
-          {errors.password && (
-            <Text style={{ color: "red", alignSelf: "center" }}>
-              This is required.
-            </Text>
-          )}
+          <View>
+            <Button onPress={handleSubmit(emailLogin)}>Login</Button>
 
-          <View style={styles.boxButton}>
-            <Button title={"Login"} onPress={handleSubmit(emailLogin)} />
+            <Stack direction={'row'}>
+              <Text style={styles.text}>Need an account?</Text><Pressable
+              onPress={() => {reset(); navigation.push("Registration")}}><Text style={{ color: "purple" }}>Sign
+              Up</Text></Pressable><Text style={styles.text}> now!</Text>
+            </Stack>
           </View>
-
-
-          <View style={styles.boxButton}>
-            <Button title={"Sign Up"} onPress={() => navigation.push("Registration")} />
-          </View>
-
 
           <View style={styles.boxButton}>
             <Button title={"Google"}
-                    onPress={() => GoogleSignIn().catch(error => console.log(error.message))} />
+                    onPress={() => GoogleSignIn().catch(error => console.log(error.message))}>Google</Button>
           </View>
         </View>
       </ScrollView>

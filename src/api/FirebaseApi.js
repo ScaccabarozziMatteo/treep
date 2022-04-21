@@ -6,9 +6,7 @@ import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import storage from "@react-native-firebase/storage";
 import { showToast } from "../utils/Utils";
-import ProfilePage from "../pages/ProfilePage";
 import React from "react";
-import { err } from "react-native-svg/lib/typescript/xml";
 
 
 export class TripCollection {
@@ -22,7 +20,6 @@ export class TripCollection {
       trips.push(trip._data);
     });
 
-    //console.log(trips);
     return (trips);
   };
 
@@ -64,13 +61,16 @@ export class UserCollection {
 
 export async function changeProfileImage(image, props) {
   let user = currentUser();
+  let url;
   const imagePath = user.uid + "/profile_image";
   const reference = storage().ref(imagePath);
   await reference.putFile(image.assets[0].uri)
     .then().done(async () => {
+      url = await reference.getDownloadURL();
       await auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL() });
-      showToast("success", "Upload", "Image uploaded!");
-      props.updateUser(Math.random());
+      await firestore().collection("users").doc(currentUser().uid).collection("public_info").doc("personal_data").update({ photoURL: url });
+      await showToast("success", "Upload", "Image uploaded!");
+      await props.updateUser(Math.random());
     });
 }
 
@@ -84,7 +84,7 @@ export function emailRegistration(userData, navigation) {
   }).catch(error => showToast("error", "Registration", error.message));
 }
 
-function setUserInfo(data) {
+async function setUserInfo(data) {
 
   const userData = {
     first_name: data.first_name,
@@ -93,12 +93,12 @@ function setUserInfo(data) {
     birthdate: data.birthdate,
   };
 
-  auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name })
-    .done(async () => {
+  await auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name })
+    .then(async () => {
       await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(userData)
-        .done(
+        .then(
           () => showToast("success", "Registration", "User created! :D"));
-    })
+    });
 
 }
 
@@ -108,13 +108,25 @@ export async function setUsernameFirebase(user) {
   };
 
 // Add a new document in collection "users" with UID
-  const res = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(data);
+  const res = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data);
 }
 
 export async function getUsername() {
   const doc = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").get();
+
   if (doc.data() !== undefined)
-    return doc.data().username;
+    if (doc.data().username !== undefined)
+      return doc.data().username;
+    else
+      return "";
+  else
+    return "";
+}
+
+export async function getUserData() {
+  const doc = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").get();
+  if (doc.data() !== undefined)
+    return doc.data();
   else
     return "";
 }
