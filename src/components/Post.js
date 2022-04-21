@@ -1,4 +1,6 @@
 // Here we can build the top navigation, creating all the cases
+//Useless commit to see what happens
+
 
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { TripCollection } from "../../api/FirebaseApi";
+import { TripCollection} from "../api/FirebaseApi";
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView, TouchableOpacity } from "react-native";
-import FullWidthImage from "react-native-fullwidth-image";
-import Post from "../../components/Post";
-import Feather from "react-native-vector-icons/Feather";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Post from "../components/Post";
+
 
 export default function HomePage() {
 
