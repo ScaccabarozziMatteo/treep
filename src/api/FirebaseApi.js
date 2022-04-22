@@ -103,6 +103,12 @@ async function setUserInfo(data) {
 
 }
 
+export async function updateUserInfo(data) {
+  await auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name }).then(  async () =>
+    await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data))
+  return Math.random()
+}
+
 export async function setUsernameFirebase(user) {
   const data = {
     username: user.toLowerCase(),

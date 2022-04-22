@@ -7,7 +7,7 @@ import {
   currentUser,
   getUserData,
   setDescriptionFirebase,
-  setUsernameFirebase,
+  setUsernameFirebase, updateUserInfo,
   UserCollection,
 } from "../api/FirebaseApi";
 import { showToast } from "../utils/Utils";
@@ -23,8 +23,42 @@ export default function ProfilePage() {
   const [dummyUser, setDummyUser] = useState();
   const [showModal, setShowModal] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [newUserData, setNewUserData] = useState([],
+  );
 
   const pencil = require("../../assets/pencil.png");
+
+  function editingName() {
+    return (
+      <VStack>
+        <TextInput placeholder={userData.first_name}
+                   defaultValue={newUserData.first_name}
+                   placeholderTextColor={"grey"}
+                   onChange={(text) => setNewUserData({first_name:text.nativeEvent.text})}
+                   style={{
+                     color: "black",
+                     backgroundColor: "yellow",
+                   }}
+                   onPress={(newData) => setNewUserData({first_name: newData})} />
+        <TextInput placeholder={userData.last_name}
+                   defaultValue={newUserData.last_name}
+                   placeholderTextColor={"grey"}
+                   onChange={(text) => setNewUserData({last_name:text.nativeEvent.text})}
+                   style={{
+                     color: "black",
+                     backgroundColor: "yellow",
+                   }}/>
+      </VStack>);
+  }
+
+  function iconOnEditing() {
+    return(
+      <HStack marginLeft={-50}>
+        <Icon name={"restore"} color={"red"} size={40} onPress={() => setEdit(!edit)} />
+        <Icon name={"check"} color={"green"} size={40} onPress={() => confirmEdit()} />
+      </HStack>
+    )
+  }
 
   function badges() {
     return (
@@ -38,6 +72,13 @@ export default function ProfilePage() {
         </HStack>
       </VStack>
     );
+  }
+
+  async function confirmEdit() {
+    if (newUserData.first_name !== userData.first_name && newUserData.last_name !== userData.last_name && newUserData.username !== userData.username && newUserData.description !== userData.description) {
+      setDummyUser(await updateUserInfo(newUserData))
+    }
+    setEdit(!edit)
   }
 
   function isActiveBadge(number) {
@@ -64,6 +105,16 @@ export default function ProfilePage() {
       setInitializing(false);
     }
   }
+
+  useEffect(() => {
+      setNewUserData({
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        username: userData.username,
+        description: userData.description,
+      })
+  }, [userData]);
+
 
   useEffect(() => {
     const setUsern = async () => {
@@ -99,7 +150,7 @@ export default function ProfilePage() {
 
   if (user != null) {
     return (
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps={"handled"}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View>
             <VStack justifyContent={"space-between"} alignContent={"stretch"}
@@ -115,35 +166,38 @@ export default function ProfilePage() {
 
                   <View>
                     {edit ?
-                      // Edit username
-                      <TextInput placeholder={userData.first_name + " " + userData.last_name}
-                                 value={userData.first_name + " " + userData.last_name}
-                                 placeholderTextColor={"grey"} style={{
-                        color: "black",
-                        backgroundColor: 'yellow'
-                      }} onPress={changeUsername} /> :
-                      // Show username
+                      // Edit name
+                      editingName()
+                      :
+                      // Show name
                       <Text style={styles.title}>{userData.first_name + " " + userData.last_name}</Text>
                     }
+
+                    {/* Show e-mail*/}
                     <Text style={styles.text}>{user.email}</Text>
                     {edit ?
-                      // No existing username, add it!
-                      <TextInput placeholder={userData.username !== undefined ? "@" + userData.username : "Set an @username"}
-                                 autoCapitalize={"none"}
-                                 value={userData.username}
-                                 placeholderTextColor={"grey"} style={{
-                        color: "black",
-                        backgroundColor: 'yellow',
-                      }} onPress={changeUsername} /> :
+                      // Edit username
+                      <TextInput
+                        placeholder={newUserData.username !== undefined ? "@" + userData.username : "Set an @username"}
+                        autoCapitalize={"none"}
+                        defaultValue={newUserData.username}
+                        placeholderTextColor={"grey"}
+                        onChange={(text) => setNewUserData({username:text.nativeEvent.text})}
+                        style={{
+                          color: "black",
+                          backgroundColor: "yellow",
+                        }} /> :
 
                       // Show username if edit is not active (or ask to choose a new one if not exists)
                       (userData.username !== undefined ? <Text style={{ color: "grey" }}>@{userData.username}</Text> :
                         <TextInput placeholder={"Click to set @username"}
                                    onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)}
                                    autoCapitalize={"none"}
-                                   placeholderTextColor={"grey"} style={{
-                          color: "grey",
-                        }} onPress={changeUsername} />)}
+                                   placeholderTextColor={"grey"}
+                                   style={{
+                                     color: "grey",
+                                   }}
+                                   onPress={changeUsername} />)}
                   </View>
                 </VStack>
               </HStack>
@@ -171,18 +225,36 @@ export default function ProfilePage() {
               <VStack>
                 <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
                   <Text style={styles.title}>About me</Text>
-                  {edit ?
-                    <Icon name={"content-save-outline"} color={"green"} size={30} onPress={() => setEdit(!edit)} /> :
-                    <Icon name={"square-edit-outline"} color={"black"} size={30} onPress={() => setEdit(!edit)} />}
+
+
+                  {// Edit button
+                    edit ?
+                      iconOnEditing() :
+                      <Icon name={"square-edit-outline"} color={"black"} size={30} onPress={() => setEdit(!edit)} />
+                  }
 
                 </HStack>
-                {userData.description ? <Text style={styles.text}>{userData.description}</Text> :
-                  <TextInput placeholder={"Click to set a description.."}
-                             onSubmitEditing={(data) => changeDescription(data.nativeEvent.text)}
-                             placeholderTextColor={"grey"} style={{
-                    color: "grey",
-                    fontSize: 15,
-                  }} onPress={changeDescription} />}
+
+                { // User description
+                  // Edit description
+                  edit ? <TextInput multiline
+                                    defaultValue={newUserData.description}
+                                    onChange={(text) => setNewUserData({description:text.nativeEvent.text})}
+                                    placeholder={userData.description !== undefined ? userData.description : "Set a description.."}
+                                    placeholderTextColor={"grey"} style={{
+                      color: "black",
+                      fontSize: 15,
+                      backgroundColor: "yellow",
+                    }} /> :
+                    // Ask user to add description if it not exists
+                    (userData.description ? <Text style={styles.text}>{userData.description}</Text> :
+                      // Show description
+                      <TextInput placeholder={"Click to set a description.."}
+                                 onSubmitEditing={(data) => changeDescription(data.nativeEvent.text)}
+                                 placeholderTextColor={"grey"} style={{
+                        color: "grey",
+                        fontSize: 15,
+                      }} onPress={changeDescription} />)}
               </VStack>
 
               {/* Badges*/}
