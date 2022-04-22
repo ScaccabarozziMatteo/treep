@@ -103,7 +103,13 @@ async function setUserInfo(data) {
 
 }
 
-export async function updateUserInfo(data) {
+export async function updateUserInfo(first_name, last_name, username, description) {
+  const data = {
+    first_name: first_name,
+    last_name: last_name,
+    username: username,
+    description: description
+  }
   await auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name }).then(  async () =>
     await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data))
   return Math.random()

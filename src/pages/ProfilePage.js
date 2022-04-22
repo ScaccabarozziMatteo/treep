@@ -21,10 +21,14 @@ export default function ProfilePage() {
   const [user, setUser] = useState();
   const [userData, setUserData] = useState("");
   const [dummyUser, setDummyUser] = useState();
+  const [dummyRestoreData, setDummyRestoreData] = useState();
   const [showModal, setShowModal] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [newUserData, setNewUserData] = useState([],
-  );
+  const [newFirstName, setNewFirstName] = useState();
+  const [newLastName, setNewLastName] = useState();
+  const [newUsername, setNewUsername] = useState();
+  const [newDescription, setNewDescription] = useState();
+
 
   const pencil = require("../../assets/pencil.png");
 
@@ -32,29 +36,30 @@ export default function ProfilePage() {
     return (
       <VStack>
         <TextInput placeholder={userData.first_name}
-                   defaultValue={newUserData.first_name}
+                   defaultValue={newFirstName}
                    placeholderTextColor={"grey"}
-                   onChange={(text) => setNewUserData({first_name:text.nativeEvent.text})}
+                   onChange={(text) => setNewFirstName(text.nativeEvent.text)}
                    style={{
                      color: "black",
                      backgroundColor: "yellow",
                    }}
-                   onPress={(newData) => setNewUserData({first_name: newData})} />
+        />
         <TextInput placeholder={userData.last_name}
-                   defaultValue={newUserData.last_name}
+                   defaultValue={newLastName}
                    placeholderTextColor={"grey"}
-                   onChange={(text) => setNewUserData({last_name:text.nativeEvent.text})}
+                   onChange={(text) => setNewLastName(text.nativeEvent.text)}
                    style={{
                      color: "black",
                      backgroundColor: "yellow",
-                   }}/>
+                   }}
+        />
       </VStack>);
   }
 
   function iconOnEditing() {
     return(
       <HStack marginLeft={-50}>
-        <Icon name={"restore"} color={"red"} size={40} onPress={() => setEdit(!edit)} />
+        <Icon name={"restore"} color={"red"} size={40} onPress={() => {setEdit(!edit); setDummyRestoreData(Math.random)}} />
         <Icon name={"check"} color={"green"} size={40} onPress={() => confirmEdit()} />
       </HStack>
     )
@@ -75,8 +80,8 @@ export default function ProfilePage() {
   }
 
   async function confirmEdit() {
-    if (newUserData.first_name !== userData.first_name && newUserData.last_name !== userData.last_name && newUserData.username !== userData.username && newUserData.description !== userData.description) {
-      setDummyUser(await updateUserInfo(newUserData))
+    if (newFirstName !== userData.first_name || newLastName !== userData.last_name || newUsername !== userData.username || newDescription !== userData.description) {
+      setDummyUser(await updateUserInfo(newFirstName, newLastName, newUsername, newDescription))
     }
     setEdit(!edit)
   }
@@ -106,14 +111,13 @@ export default function ProfilePage() {
     }
   }
 
+  // Set into the NEW variables the original values
   useEffect(() => {
-      setNewUserData({
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        username: userData.username,
-        description: userData.description,
-      })
-  }, [userData]);
+    setNewFirstName(userData.first_name)
+    setNewLastName(userData.last_name)
+    setNewUsername(userData.username)
+    setNewDescription(userData.description)
+  }, [userData, dummyRestoreData]);
 
 
   useEffect(() => {
@@ -178,11 +182,11 @@ export default function ProfilePage() {
                     {edit ?
                       // Edit username
                       <TextInput
-                        placeholder={newUserData.username !== undefined ? "@" + userData.username : "Set an @username"}
+                        placeholder={newUsername !== undefined ? "@" + userData.username : "Set an @username"}
                         autoCapitalize={"none"}
-                        defaultValue={newUserData.username}
+                        defaultValue={newUsername}
                         placeholderTextColor={"grey"}
-                        onChange={(text) => setNewUserData({username:text.nativeEvent.text})}
+                        onChange={(text) => setNewUsername(text.nativeEvent.text)}
                         style={{
                           color: "black",
                           backgroundColor: "yellow",
@@ -238,8 +242,8 @@ export default function ProfilePage() {
                 { // User description
                   // Edit description
                   edit ? <TextInput multiline
-                                    defaultValue={newUserData.description}
-                                    onChange={(text) => setNewUserData({description:text.nativeEvent.text})}
+                                    defaultValue={newDescription}
+                                    onChange={(text) => setNewDescription(text.nativeEvent.text)}
                                     placeholder={userData.description !== undefined ? userData.description : "Set a description.."}
                                     placeholderTextColor={"grey"} style={{
                       color: "black",
