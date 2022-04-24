@@ -43,13 +43,6 @@ export default function ProfilePage(props) {
   }, [userData, dummyRestoreData]);
 
   useEffect(() => {
-    return props.navigation.addListener('focus', () => {
-      // do something
-      console.log('Hello World!')
-    });
-  }, [props.navigation]);
-
-  useEffect(() => {
     const updateUserData = async () => {
       await setUserData(await getUserData());
       await setUser(await currentUser());
