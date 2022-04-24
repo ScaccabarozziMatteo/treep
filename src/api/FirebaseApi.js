@@ -29,6 +29,8 @@ export class TripCollection {
     const reference = storage().ref(imagePath);
     return await reference.getDownloadURL();
   }
+
+
 }
 
 export class UserCollection {
@@ -55,6 +57,22 @@ export class UserCollection {
 
     // Sign-in the user with the credential
     return await auth().signInWithCredential(googleCredential);
+  }
+
+  static async getUserById (id) {
+    const doc = await firestore().collection("users/" + id + "/public_info").doc("personal_data").get();
+    if (doc.data() !== undefined)
+      return doc.data();
+    else
+      return "";
+  }
+
+  static async getUserPhotoById (id) {
+    const doc = await firestore().collection("users/" + id + "/public_info").doc("personal_data").get();
+    if (doc.data() !== undefined)
+      return doc.data().photoURL;
+    else
+      return "";
   }
 
 }
@@ -142,3 +160,5 @@ export async function searchUsers(username) {
   else
     return doc._docs;
 }
+
+

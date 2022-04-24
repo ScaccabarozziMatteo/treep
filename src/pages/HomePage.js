@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { TripCollection} from "../api/FirebaseApi";
+import { TripCollection, UserCollection } from "../api/FirebaseApi";
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView, TouchableOpacity } from "react-native";
@@ -12,16 +12,48 @@ export default function HomePage() {
   const [trips, setTrips] = useState(
     {description: "" ,
               coverPhoto: "",
+              userPhoto: "",
+              userID: "",
+              location: "",
     }
   )
+
+  const [userData, setUserData] = useState(
+    {
+      photoURL: "",
+      username: "",
+    }
+  )
+  const [updatedTrips, setUpdatedTrips] = useState(
+    {description: "" ,
+      coverPhoto: "",
+      userPhoto: "",
+      userID: "",
+      location: "",
+      photoURL: "",
+      username: "",
+    }
+  )
+
+
 
   useEffect( () => {
     TripCollection.getAll().then(
       response => {
         setTrips(response);
-      }
-    )}, []
+        response.forEach((t) => {
+            UserCollection.getUserById(t.userID).then(r => {
+              setUserData([...userData, r]);
+            },
+              console.log(userData),
+              );
+        });
+
+      });
+    }, []
   );
+
+
 
   const [refreshing, setRefreshing] = useState(false)
 
@@ -30,7 +62,13 @@ export default function HomePage() {
 
     TripCollection.getAll().then(
       response => {
+
         setTrips(response);
+        response.forEach((t) => {
+          UserCollection.getUserById(t.userID).then(r => {
+            setUserData([...userData, r]);
+          });
+        });
       }
     );
 
@@ -44,10 +82,17 @@ export default function HomePage() {
             keyExtractor={(item, index)=>index.toString()}
             data={trips}
 
-            renderItem={({item})=>(
-                <Post title={item.description} userImage={item.coverPhoto} postImage={item.coverPhoto} likes={item.likes} isLiked="false"/>
-
+            renderItem={({ item }) => (
+              <Post title={item.description}
+                    userImage={item.photoURL}
+                    postImage={item.coverPhoto}
+                    isLiked={false}
+                    username={item.username}
+                    location={item.location}
+                    likes={item.likes}
+              />
             )}
+
             refreshControl = {<RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
