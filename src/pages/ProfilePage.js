@@ -5,7 +5,7 @@ import { Avatar, Card } from "react-native-ui-lib";
 import { Button } from "@ui-kitten/components";
 import {
   currentUser,
-  getUserData,
+  getUserData, logout,
   setDescriptionFirebase,
   setUsernameFirebase, updateUserInfo,
   UserCollection,
@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import ModalPhoto from "../utils/ModalPhoto";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function ProfilePage() {
+export default function ProfilePage(props) {
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
@@ -31,6 +31,30 @@ export default function ProfilePage() {
 
 
   const pencil = require("../../assets/pencil.png");
+
+  // Set into the NEW variables the original values
+  useEffect(() => {
+    setNewFirstName(userData.first_name)
+    setNewLastName(userData.last_name)
+    setNewUsername(userData.username)
+    setNewDescription(userData.description)
+  }, [userData, dummyRestoreData]);
+
+  useEffect(() => {
+    const updateUserData = async () => {
+      await setUserData(await getUserData());
+      await setUser(await currentUser());
+    };
+    updateUserData();
+  }, [dummyUser, props.dummyUser]);
+
+  useEffect(() => {
+    const updateUserData = async () => {
+      await setUserData(await getUserData());
+    };
+    updateUserData();
+    return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
+  }, []);
 
   function editingName() {
     return (
@@ -97,8 +121,8 @@ export default function ProfilePage() {
   }
 
   // Logout function
-  function logout() {
-    UserCollection.logout()
+  function Logout() {
+    logout()
       .then(() => showToast("success", "Logout completed!", "See you soon!"))
       .catch(error1 => showToast("error", "Error", error1.message));
   }
@@ -110,31 +134,6 @@ export default function ProfilePage() {
       setInitializing(false);
     }
   }
-
-  // Set into the NEW variables the original values
-  useEffect(() => {
-    setNewFirstName(userData.first_name)
-    setNewLastName(userData.last_name)
-    setNewUsername(userData.username)
-    setNewDescription(userData.description)
-  }, [userData, dummyRestoreData]);
-
-
-  useEffect(() => {
-    const setUsern = async () => {
-      await setUserData(await getUserData());
-      await setUser(await currentUser());
-    };
-    setUsern();
-  }, [dummyUser]);
-
-  useEffect(() => {
-    const setUsern = async () => {
-      await setUserData(await getUserData());
-    };
-    setUsern();
-    return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
-  }, []);
 
   function changeProfileLogo() {
     setShowModal(true);
@@ -271,7 +270,7 @@ export default function ProfilePage() {
             </VStack>
 
             <View style={styles.boxButton}>
-              <Button onPress={logout}>Logout</Button>
+              <Button onPress={Logout}>Logout</Button>
             </View>
             <ModalPhoto typeOfUpload="profile_photo" show={showModal} updateUser={(response) => setDummyUser(response)}
                         updateShow={(response) => setShowModal(response)} modalResponse />

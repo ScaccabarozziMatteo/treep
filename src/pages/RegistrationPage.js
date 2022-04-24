@@ -49,9 +49,9 @@ export default function RegistrationPage({ navigation }) {
     setCheck(!checked);
   }
 
-  function firstModule() {
+  function firstModule(visibility) {
     return (
-      <View>
+      <View style={{opacity: visibility}}>
         <Controller
           control={control}
           rules={{
@@ -168,9 +168,9 @@ export default function RegistrationPage({ navigation }) {
     );
   }
 
-  function secondModule() {
+  function secondModule(visibility) {
     return (
-      <View>
+      <View style={{opacity: visibility}}>
 
         <Controller
           control={control}
@@ -307,8 +307,8 @@ export default function RegistrationPage({ navigation }) {
         }
       }>
 
-        {status === 0 ? firstModule() : null}
-        {status === 1 ? secondModule() : null}
+        {status === 0 ? firstModule(1) : firstModule(0)}
+        {status === 1 ? secondModule(1) : secondModule(0)}
 
       </View>
 

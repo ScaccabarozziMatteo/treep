@@ -33,30 +33,39 @@ export class TripCollection {
 
 export class UserCollection {
 
-  static async emailLogin(userData) {
-    await auth().signInWithEmailAndPassword(userData.email, userData.password);
-  }
-
-  static async logout() {
-    await auth().signOut();
-    await GoogleSignin.signOut();
-  }
-
   static onAuthStateChange(onAuthStateChanged) {
     return auth().onAuthStateChanged(onAuthStateChanged);
   }
 
-  static async signInWithGoogle() {
-    // Get the users ID token
-    const { idToken } = await GoogleSignin.signIn();
+}
 
-    // Create a Google credential with the token
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-    // Sign-in the user with the credential
-    return await auth().signInWithCredential(googleCredential);
-  }
+export async function emailLogin(userData) {
+  await auth().signInWithEmailAndPassword(userData.email, userData.password);
+}
 
+export async function logout() {
+  await auth().signOut();
+  await GoogleSignin.signOut();
+}
+
+export async function signInWithGoogle() {
+  // Get the users ID token
+  const { idToken } = await GoogleSignin.signIn();
+
+  // Create a Google credential with the token
+  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+  // Sign-in the user with the credential
+  const user = await auth().signInWithCredential(googleCredential);
+
+  const userData = await getUserData();
+
+  // If it is the first login and the DB has not the document with the user data, return 0 and the LoginPage redirect to the CompleteRegistrationPage
+  if(userData === '' || userData.first_name === undefined || userData.last_name === undefined || userData.birthdate === undefined || userData.sex === undefined)
+    return 0
+  else
+    return user
 }
 
 export async function changeProfileImage(image, props) {
@@ -76,10 +85,10 @@ export async function changeProfileImage(image, props) {
 
 export function emailRegistration(userData, navigation) {
   auth().createUserWithEmailAndPassword(userData.email, userData.password).then(async () => {
-    await UserCollection.emailLogin(userData);
+    await emailLogin(userData);
     await setUserInfo(userData);
     await auth().signOut();
-    await UserCollection.emailLogin(userData);
+    await emailLogin(userData);
     await navigation.pop();
   }).catch(error => showToast("error", "Registration", error.message));
 }
@@ -90,6 +99,8 @@ async function setUserInfo(data) {
     first_name: data.first_name,
     last_name: data.last_name,
     sex: data.sex,
+    username: "",
+    description: "",
     birthdate: data.birthdate,
     badges: [false, false, false, false, false]
   };
@@ -101,6 +112,19 @@ async function setUserInfo(data) {
           () => showToast("success", "Registration", "User created! :D"));
     });
 
+}
+
+export async function completeProfile(data) {
+  const doc = {
+    first_name: data.first_name,
+    last_name: data.last_name,
+    birthdate: data.birthdate,
+    sex: data.sex,
+    badges: [true, false, true, false, false],
+    username: "",
+    description: ""
+  }
+  await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(doc)
 }
 
 export async function updateUserInfo(first_name, last_name, username, description) {
@@ -121,7 +145,7 @@ export async function setUsernameFirebase(user) {
   };
 
 // Add a new document in collection "users" with UID
-  const res = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data);
+  await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data);
 }
 
 export async function setDescriptionFirebase(user) {
@@ -130,19 +154,7 @@ export async function setDescriptionFirebase(user) {
   };
 
 // Add a new document in collection "users" with UID
-  const res = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data);
-}
-
-export async function getUsername() {
-  const doc = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").get();
-
-  if (doc.data() !== undefined)
-    if (doc.data().username !== undefined)
-      return doc.data().username;
-    else
-      return "";
-  else
-    return "";
+  await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data);
 }
 
 export async function getUserData() {
