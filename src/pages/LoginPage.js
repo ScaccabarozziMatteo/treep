@@ -17,7 +17,7 @@ GoogleSignin.configure({
   offlineAccess: true,
 });
 
-export default function LoginPage({ navigation }) {
+export default function LoginPage({ navigation, route }) {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
@@ -160,7 +160,7 @@ export default function LoginPage({ navigation }) {
   }
   // Else if the user is logged, show they're profile page
   return (
-    <ProfilePage />
+    <ProfilePage navigation={navigation} update={route.params} />
   );
 }
 

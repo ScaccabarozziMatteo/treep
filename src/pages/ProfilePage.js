@@ -1,17 +1,19 @@
 import * as React from "react";
-import { StyleSheet, View, TextInput, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
-import { Divider, Text, HStack, VStack } from "native-base";
-import { Avatar, Card } from "react-native-ui-lib";
+import { useEffect, useState } from "react";
+import { Keyboard, ScrollView, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { HStack, Text, VStack } from "native-base";
+import { Avatar } from "react-native-ui-lib";
 import { Button } from "@ui-kitten/components";
 import {
   currentUser,
-  getUserData, logout,
+  getUserData,
+  logout,
   setDescriptionFirebase,
-  setUsernameFirebase, updateUserInfo,
+  setUsernameFirebase,
+  updateUserInfo,
   UserCollection,
 } from "../api/FirebaseApi";
 import { showToast } from "../utils/Utils";
-import { useEffect, useState } from "react";
 import ModalPhoto from "../utils/ModalPhoto";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -41,12 +43,19 @@ export default function ProfilePage(props) {
   }, [userData, dummyRestoreData]);
 
   useEffect(() => {
+    return props.navigation.addListener('focus', () => {
+      // do something
+      console.log('Hello World!')
+    });
+  }, [props.navigation]);
+
+  useEffect(() => {
     const updateUserData = async () => {
       await setUserData(await getUserData());
       await setUser(await currentUser());
     };
     updateUserData();
-  }, [dummyUser, props.dummyUser]);
+  }, [dummyUser, props.update]);
 
   useEffect(() => {
     const updateUserData = async () => {
@@ -181,7 +190,7 @@ export default function ProfilePage(props) {
                     {edit ?
                       // Edit username
                       <TextInput
-                        placeholder={newUsername !== undefined ? "@" + userData.username : "Set an @username"}
+                        placeholder={newUsername !== "" ? "@" + userData.username : "Set an @username"}
                         autoCapitalize={"none"}
                         defaultValue={newUsername}
                         placeholderTextColor={"grey"}
@@ -192,7 +201,7 @@ export default function ProfilePage(props) {
                         }} /> :
 
                       // Show username if edit is not active (or ask to choose a new one if not exists)
-                      (userData.username !== undefined ? <Text style={{ color: "grey" }}>@{userData.username}</Text> :
+                      (userData.username !== "" ? <Text style={{ color: "grey" }}>@{userData.username}</Text> :
                         <TextInput placeholder={"Click to set @username"}
                                    onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)}
                                    autoCapitalize={"none"}

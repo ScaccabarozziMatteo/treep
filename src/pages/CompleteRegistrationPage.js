@@ -4,8 +4,7 @@ import { HStack, Stack, View, VStack } from "native-base";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Datepicker, Input, Select, SelectItem } from "@ui-kitten/components";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { completeProfile, getUserData, logout } from "../api/FirebaseApi";
-import { useFocusEffect } from "@react-navigation/native";
+import { completeProfile, logout } from "../api/FirebaseApi";
 
 export default function CompleteRegistrationPage({ navigation }) {
 
@@ -27,15 +26,13 @@ export default function CompleteRegistrationPage({ navigation }) {
     "Other",
   ];
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        logout()
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-      };
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
-      }, [])
-  );
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      logout();
+      navigation.goBack();
+    });
+    return () => backHandler.remove();
+  }, []);
 
 
   const renderOption = (title) => (
@@ -55,7 +52,7 @@ export default function CompleteRegistrationPage({ navigation }) {
   return (
     <ScrollView keyboardShouldPersistTaps={"handled"}>
 
-      <View style={{width: "80%", alignSelf: "center"}}>
+      <View style={{ width: "80%", alignSelf: "center" }}>
         <Controller
           control={control}
           rules={{
@@ -157,8 +154,11 @@ export default function CompleteRegistrationPage({ navigation }) {
           name="birthdate"
         />
 
-        <VStack alignItems={'center'} style={{ width: "100%" }}>
-          <Button onPress={handleSubmit((form) => {completeProfile(form); navigation.navigate('Profile', {dummyUser: Math.random()})})} status={'success'} style={{ width: "60%" }}>
+        <VStack alignItems={"center"} style={{ width: "100%" }}>
+          <Button onPress={handleSubmit(async (form) => {
+            await completeProfile(form);
+            await navigation.navigate("Profile", { update: Math.random() });
+          })} status={"success"} style={{ width: "60%" }}>
             Complete Registration
           </Button>
         </VStack>
