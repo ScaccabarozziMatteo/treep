@@ -16,10 +16,14 @@ export class TripCollection {
     let trips = [];
     const tripsData = (await firestore().collection("Trip").get()).docs;
 
-    tripsData.forEach((trip) => {
-      trips.push(trip._data);
-    });
+    for (const t of tripsData) {
 
+      const userData = await firestore().collection("users/" + t.data().userID + "/public_info").doc("personal_data").get();
+
+      const mergedObj = {...t.data(), ...userData.data()};
+      trips.push(mergedObj);
+    }
+    console.log(trips);
     return (trips);
   };
 

@@ -15,39 +15,15 @@ export default function HomePage() {
               userPhoto: "",
               userID: "",
               location: "",
+              photoURL: "",
+              username: "",
     }
   )
-
-  const [userData, setUserData] = useState(
-    {
-      photoURL: "",
-      username: "",
-    }
-  )
-  const [updatedTrips, setUpdatedTrips] = useState(
-    {description: "" ,
-      coverPhoto: "",
-      userPhoto: "",
-      userID: "",
-      location: "",
-      photoURL: "",
-      username: "",
-    }
-  )
-
-
 
   useEffect( () => {
     TripCollection.getAll().then(
       response => {
         setTrips(response);
-        response.forEach((t) => {
-            UserCollection.getUserById(t.userID).then(r => {
-              setUserData([...userData, r]);
-            },
-              console.log(userData),
-              );
-        });
 
       });
     }, []
@@ -62,13 +38,7 @@ export default function HomePage() {
 
     TripCollection.getAll().then(
       response => {
-
         setTrips(response);
-        response.forEach((t) => {
-          UserCollection.getUserById(t.userID).then(r => {
-            setUserData([...userData, r]);
-          });
-        });
       }
     );
 
@@ -81,7 +51,6 @@ export default function HomePage() {
           <FlatList
             keyExtractor={(item, index)=>index.toString()}
             data={trips}
-
             renderItem={({ item }) => (
               <Post title={item.description}
                     userImage={item.photoURL}
