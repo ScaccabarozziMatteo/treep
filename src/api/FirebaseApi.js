@@ -100,7 +100,7 @@ async function setUserInfo(data) {
     last_name: data.last_name,
     sex: data.sex,
     username: "",
-    description: "",
+    bio: "",
     birthdate: data.birthdate,
     badges: [false, false, false, false, false]
   };
@@ -122,17 +122,17 @@ export async function completeProfile(data) {
     sex: data.sex,
     badges: [true, false, true, false, false],
     username: "",
-    description: ""
+    bio: ""
   }
   await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(doc)
 }
 
-export async function updateUserInfo(first_name, last_name, username, description) {
+export async function updateUserInfo(first_name, last_name, username, bio) {
   const data = {
     first_name: first_name,
     last_name: last_name,
     username: username,
-    description: description
+    bio: bio
   }
   await auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name }).then(  async () =>
     await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data))
@@ -148,9 +148,9 @@ export async function setUsernameFirebase(user) {
   await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data);
 }
 
-export async function setDescriptionFirebase(user) {
+export async function setBioFirebase(user) {
   const data = {
-    description: user,
+    bio: user,
   };
 
 // Add a new document in collection "users" with UID

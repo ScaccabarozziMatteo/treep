@@ -7,8 +7,7 @@ import { Button } from "@ui-kitten/components";
 import {
   currentUser,
   getUserData,
-  logout,
-  setDescriptionFirebase,
+  logout, setBioFirebase,
   setUsernameFirebase,
   updateUserInfo,
   UserCollection,
@@ -29,7 +28,7 @@ export default function ProfilePage(props) {
   const [newFirstName, setNewFirstName] = useState();
   const [newLastName, setNewLastName] = useState();
   const [newUsername, setNewUsername] = useState();
-  const [newDescription, setNewDescription] = useState();
+  const [newBio, setNewBio] = useState();
 
 
   const pencil = require("../../assets/pencil.png");
@@ -39,7 +38,7 @@ export default function ProfilePage(props) {
     setNewFirstName(userData.first_name)
     setNewLastName(userData.last_name)
     setNewUsername(userData.username)
-    setNewDescription(userData.description)
+    setNewBio(userData.bio)
   }, [userData, dummyRestoreData]);
 
   useEffect(() => {
@@ -106,8 +105,8 @@ export default function ProfilePage(props) {
   }
 
   async function confirmEdit() {
-    if (newFirstName !== userData.first_name || newLastName !== userData.last_name || newUsername !== userData.username || newDescription !== userData.description) {
-      setDummyUser(await updateUserInfo(newFirstName, newLastName, newUsername, newDescription))
+    if (newFirstName !== userData.first_name || newLastName !== userData.last_name || newUsername !== userData.username || newBio !== userData.bio) {
+      setDummyUser(await updateUserInfo(newFirstName, newLastName, newUsername, newBio))
     }
     setEdit(!edit)
   }
@@ -145,8 +144,8 @@ export default function ProfilePage(props) {
     setUsernameFirebase(username).done(() => setDummyUser(Math.random));
   }
 
-  function changeDescription(description) {
-    setDescriptionFirebase(description).done(() => setDummyUser(Math.random));
+  function changeBio(bio) {
+    setBioFirebase(bio).done(() => setDummyUser(Math.random));
   }
 
   if (initializing) {
@@ -226,7 +225,7 @@ export default function ProfilePage(props) {
                 </HStack>
               </VStack>
 
-              {/* Description, bio */}
+              {/* Bio */}
               <VStack>
                 <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
                   <Text style={styles.title}>About me</Text>
@@ -240,26 +239,26 @@ export default function ProfilePage(props) {
 
                 </HStack>
 
-                { // User description
-                  // Edit description
+                { // User bio
+                  // Edit bio
                   edit ? <TextInput multiline
-                                    defaultValue={newDescription}
-                                    onChange={(text) => setNewDescription(text.nativeEvent.text)}
-                                    placeholder={userData.description !== undefined ? userData.description : "Set a description.."}
+                                    defaultValue={newBio}
+                                    onChange={(text) => setNewBio(text.nativeEvent.text)}
+                                    placeholder={userData.bio !== undefined ? userData.bio : "Set a description.."}
                                     placeholderTextColor={"grey"} style={{
                       color: "black",
                       fontSize: 15,
                       backgroundColor: "yellow",
                     }} /> :
-                    // Ask user to add description if it not exists
-                    (userData.description ? <Text style={styles.text}>{userData.description}</Text> :
-                      // Show description
+                    // Ask user to add bio if it not exists
+                    (userData.bio ? <Text style={styles.text}>{userData.bio}</Text> :
+                      // Show bio
                       <TextInput placeholder={"Click to set a description.."}
-                                 onSubmitEditing={(data) => changeDescription(data.nativeEvent.text)}
+                                 onSubmitEditing={(data) => changeBio(data.nativeEvent.text)}
                                  placeholderTextColor={"grey"} style={{
                         color: "grey",
                         fontSize: 15,
-                      }} onPress={changeDescription} />)}
+                      }} onPress={changeBio} />)}
               </VStack>
 
               {/* Badges*/}
