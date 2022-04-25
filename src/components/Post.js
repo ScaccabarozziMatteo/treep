@@ -12,14 +12,16 @@ import Entypo from "react-native-vector-icons/Entypo";
 import { red } from "react-native-reanimated/src/reanimated2/Colors";
 import center from "native-base/src/theme/components/center";
 import Fontisto from "react-native-vector-icons/Fontisto";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const Post = (props) => {
 
   const postInfo = [
     {
-      postTitle: props.title,
+      title: props.title,
       postUserImage: props.userImage,
-      postUsername: props.username,
+      username: props.username,
       postImage: props.postImage,
       isLiked: props.isLiked,
       location: props.location,
@@ -45,21 +47,25 @@ const Post = (props) => {
              <View style={{
                flexDirection: 'row',
                alignItems: 'center',
-               justifyContent: 'space-between',
-               padding: 15,
+               justifyContent: "space-around",
+               paddingVertical: 10,
              }}>
-               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                 <Image source={{uri: data.postUserImage}} style={{ width: 40, height: 40, borderRadius: 100 }}/>
-                 <View style={{paddingLeft: 10}}>
-                   <Text style={{fontSize: 15, fontWeight: 'bold', color: 'black'}}>
-                     {data.postUsername}
-                   </Text>
-                 </View>
 
+               {/* USER PHOTO BOX */}
+               <Image source={{uri: data.postUserImage}} style={{ width: 40, height: 40, borderRadius: 100 }}/>
+
+
+               {/* TITLE BOX */}
+               <View>
+                 <Text style={{fontSize: 15, fontWeight: 'bold', color: 'black'}}>
+                   {data.title}
+                 </Text>
                </View>
-              <View style={{justifyContent: "flex-end"}}>
-                <Fontisto name={data.status ? "radio-btn-active": "radio-btn-passive"} style={{fontSize: 25, color: 'black'}}/>
-              </View>
+
+               {/* ACTIVE BOX */}
+                <View>
+                  <Fontisto name={data.status ? "radio-btn-active": "radio-btn-passive"} style={{fontSize: 25, color: 'black'}}/>
+                </View>
 
 
              </View>
@@ -88,22 +94,27 @@ const Post = (props) => {
                flexDirection: 'row',
                justifyContent: 'space-between',
                alignItems: 'center',
+               alignContent: "center",
+               flex: 1,
                paddingHorizontal: 30,
                paddingVertical: 10,
              }}>
 
-               {/* TITLE BOX */}
+               {/* USER BOX */}
                <View style={styles.box}>
-                 <Text style={styles.text}>{data.postTitle}</Text>
+                 <View style={{flexDirection: "row", justifyContent: "space-evenly", paddingHorizontal: 20, alignItems: "center"}}>
+                   <FontAwesome name="user" style={{ color: "black", fontSize: 25, fontWeight: "bold", paddingHorizontal: 5}}/>
+                   <Text style={styles.text}>{data.username}</Text>
+                 </View>
                </View>
 
                {/* LIKE BOX */}
                <View style={styles.box}>
                  <TouchableOpacity
-                   style={{flexDirection:"row", justifyContent:"space-evenly", paddingHorizontal: 40}}
+                   style={{flexDirection:"row", justifyContent:"space-evenly", paddingHorizontal: 40, paddingVertical: 3}}
                    onPress={setLike}>
-                   <AntDesign name={like ? "heart": "hearto"}
-                              style={{fontSize: 20, color: like ? 'red' : 'black', textAlign:"center"}}/>
+                   <Ionicons name={like ? "heart": "heart-outline"}
+                              style={{fontSize: 20, color: like ? 'red' : 'black'}}/>
                    <Text style={styles.text}> {like ? data.likes+1 : data.likes}</Text>
                  </TouchableOpacity>
 
@@ -128,7 +139,7 @@ const Post = (props) => {
 
                {/* ADD TO FAVOURITES BOX*/}
                <View style={styles.box}>
-                 <Feather name="bookmark" style={{fontSize: 20, color: 'black', textAlign:"center"}}/>
+                 <Feather name="bookmark" style={{fontSize: 20, color: 'black', textAlign:"center", paddingVertical: 3}}/>
                </View>
 
              </View>
@@ -148,9 +159,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     elevation: 2,
     backgroundColor: '#FFE4C4',
-    textAlignVertical: "center",
+    alignItems: "center",
     height: 30,
-    width: '45%',
+    width: '47%',
+
   },
   text: {
     fontSize: 15,
