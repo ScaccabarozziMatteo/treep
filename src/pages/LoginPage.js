@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Pressable, ScrollView, Stack } from "native-base";
 import { Button, Input } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import { UserCollection } from "../api/FirebaseApi";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { emailLogin, signInWithGoogle } from "../api/FirebaseApi";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import ProfilePage from "./ProfilePage";
 import { showToast } from "../utils/Utils";
+import CompleteRegistrationPage from "./CompleteRegistrationPage";
 
 GoogleSignin.configure({
   webClientId: "890037553856-u31q3091loeoqf2gelsme90vtef5qr24.apps.googleusercontent.com",
@@ -16,7 +17,7 @@ GoogleSignin.configure({
   offlineAccess: true,
 });
 
-export default function LoginPage({ navigation }) {
+export default function LoginPage({ navigation, route }) {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
@@ -46,14 +47,18 @@ export default function LoginPage({ navigation }) {
   const handleHideShowPassword = () => setShow(!show);
 
   // Login using email and password
-  function emailLogin(userData) {
-    UserCollection.emailLogin(userData).catch(error1 => showToast("error", "Error", error1.message));
+  function EmailLogin(userData) {
+    emailLogin(userData).catch(error1 => showToast("error", "Error", error1.message));
   }
 
 
   async function GoogleSignIn() {
-    let user = await UserCollection.signInWithGoogle();
-    showToast("success", "Great!", "Welcome back " + user.additionalUserInfo.profile.given_name + " :D");
+    const user = await signInWithGoogle();
+    if (await user !== 0) {
+      showToast("success", "Great!", "Welcome back " + user.additionalUserInfo.profile.given_name + " :D");
+    }
+    else
+      navigation.navigate(CompleteRegistrationPage)
   }
 
   // Handle user state changes
@@ -75,7 +80,7 @@ export default function LoginPage({ navigation }) {
 
   if (!user) {
     return (
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps={'handled'}>
         <View style={{alignSelf: "center", marginTop: '10%'}}>
           <Controller
             control={control}
@@ -109,12 +114,12 @@ export default function LoginPage({ navigation }) {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 onBlur={onBlur}
-                InputRightElement={
+                accessoryRight={
                   <Icon
                     style={{ paddingRight: 10 }}
                     size={25}
                     color={"black"}
-                    name={show ? "visibility-off" : "visibility"}
+                    name={show ? "eye-off-outline" : "eye-outline"}
                     onPress={handleHideShowPassword}
                   />
                 }
@@ -136,7 +141,7 @@ export default function LoginPage({ navigation }) {
           <Text style={{color: 'black', alignSelf: 'flex-end'}}>Forgot password?</Text>
 
           <View>
-            <Button onPress={handleSubmit(emailLogin)}>Login</Button>
+            <Button onPress={handleSubmit(EmailLogin)}>Login</Button>
 
             <Stack direction={'row'}>
               <Text style={styles.text}>Need an account?</Text><Pressable
@@ -146,8 +151,8 @@ export default function LoginPage({ navigation }) {
           </View>
 
           <View style={styles.boxButton}>
-            <Button title={"Google"}
-                    onPress={() => GoogleSignIn().catch(error => console.log(error.message))}>Google</Button>
+            <Button style={{backgroundColor: '#de5246', borderColor: '#de5246'}}
+                    onPress={() => GoogleSignIn().catch(error => console.log(error.message))}><Icon name={'google'} /></Button>
           </View>
         </View>
       </ScrollView>
@@ -155,7 +160,7 @@ export default function LoginPage({ navigation }) {
   }
   // Else if the user is logged, show they're profile page
   return (
-    <ProfilePage />
+    <ProfilePage navigation={navigation} update={route.params} />
   );
 }
 

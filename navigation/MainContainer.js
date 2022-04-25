@@ -4,16 +4,19 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 //Pages import
-import HomePage from "./pages/HomePage";
-import ExplorePage from "./pages/ExplorePage";
+import HomePage from "../src/pages/HomePage";
+import { useNavigation } from "@react-navigation/native";
+import ExplorePage from "../src/pages/ExplorePage";
 import { Icon } from "@rneui/base";
 import { StatusBar } from "react-native";
-import LoginPage from "./pages/LoginPage";
-import AroundMePage from "./pages/AroundMePage";
-import NewTripPage from "./pages/NewTripPage.js";
+import LoginPage from "../src/pages/LoginPage";
+import AroundMePage from "../src/pages/AroundMePage";
+import NewTripPage from "../src/pages/NewTripPage.js";
 import { createStackNavigator } from "@react-navigation/stack";
-import RegistrationPage from "./pages/RegistrationPage";
-import SearchUsers from "./pages/SearchUsers";
+import RegistrationPage from "../src/pages/RegistrationPage";
+import SearchUsers from "../src/pages/SearchUsers";
+import CompleteRegistrationPage from "../src/pages/CompleteRegistrationPage";
+import { logout } from "../src/api/FirebaseApi";
 
 // Pages names
 const homeName = "Home";
@@ -92,6 +95,7 @@ export default function MainContainer() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name='Registration' component={RegistrationPage}/>
+        <Stack.Screen name='CompleteRegistrationPage' options={({navigation}) => ({title: 'Complete Registration', animationEnabled: true, headerLeft: () => <Icon size={28} name={"arrow-back"} color={'white'} onPress={() => {logout(); navigation.navigate('Profile')}}/>})} component={CompleteRegistrationPage} />
         <Stack.Screen name='SearchUsers' options={{title: 'Search Users', animationEnabled: false}} component={SearchUsers}/>
       </Stack.Navigator>
     </NavigationContainer>

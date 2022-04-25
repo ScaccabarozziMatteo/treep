@@ -13,11 +13,6 @@ export default function SearchUsers() {
   const [showLoading, setShowLoading] = useState(false);
   const [searchedUsers, setSearchedUsers] = useState();
 
-  const data = new Array(8).fill({
-    title: "Title for Item",
-    description: "Description for Item",
-  });
-
   const renderButton = () => (
     <Button size="tiny">SHOW PROFILE</Button>
   );

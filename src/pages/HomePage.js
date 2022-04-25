@@ -65,7 +65,6 @@ export default function HomePage() {
                     status={item.status}
               />
             )}
-
             refreshControl = {<RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
