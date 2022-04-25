@@ -14,16 +14,19 @@ export class TripCollection {
   // Retrieves ALL the trips on the server
   static getAll = async () => {
     let trips = [];
+
+    //First call in order to retrieve all the info needed about the trips
     const tripsData = (await firestore().collection("Trip").get()).docs;
 
+    //For each trip, we also need to get the relative info about its user
     for (const t of tripsData) {
-
+      //Calls firebase to get the user data
       const userData = await firestore().collection("users/" + t.data().userID + "/public_info").doc("personal_data").get();
-
+      //Merges together the info about the trip and the info about the user
       const mergedObj = {...t.data(), ...userData.data()};
+      //Pushes the retrieved info into an array
       trips.push(mergedObj);
     }
-    console.log(trips);
     return (trips);
   };
 
