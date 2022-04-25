@@ -17,6 +17,8 @@ export default function HomePage() {
               location: "",
               photoURL: "",
               username: "",
+              title: "",
+              status: false,
     }
   )
 
@@ -52,13 +54,15 @@ export default function HomePage() {
             keyExtractor={(item, index)=>index.toString()}
             data={trips}
             renderItem={({ item }) => (
-              <Post title={item.description}
+              <Post title={item.title}
                     userImage={item.photoURL}
                     postImage={item.coverPhoto}
                     isLiked={false}
                     username={item.username}
                     location={item.location}
                     likes={item.likes}
+                    description={item.description}
+                    status={item.status}
               />
             )}
 

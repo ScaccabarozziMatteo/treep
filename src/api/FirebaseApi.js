@@ -74,13 +74,7 @@ export class UserCollection {
       return "";
   }
 
-  static async getUserPhotoById (id) {
-    const doc = await firestore().collection("users/" + id + "/public_info").doc("personal_data").get();
-    if (doc.data() !== undefined)
-      return doc.data().photoURL;
-    else
-      return "";
-  }
+
 
 }
 
