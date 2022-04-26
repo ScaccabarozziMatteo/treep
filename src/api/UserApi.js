@@ -59,6 +59,7 @@ export async function changeProfileImage(image, props) {
     });
 }
 
+// Register a user using email and password
 export function emailRegistration(userData, navigation) {
   auth().createUserWithEmailAndPassword(userData.email, userData.password).then(async () => {
     await emailLogin(userData);

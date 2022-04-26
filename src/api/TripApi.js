@@ -21,12 +21,11 @@ export async function getAll () {
 
 //Gets all the trips of a specified user
 export async function getUserTrips (userId) {
-  let trips = [];
-  const tripsData = (await firestore().collection("Trip").where("userID", "==", userId).get()).docs;
-  for (const t of tripsData){
-    trips.push(t);
-  }
-  return trips;
+  const data = await firestore().collection("Trip").where("userID", "==", userId).get()
+  if (data.empty)
+    return "";
+  else
+    return data._docs;
 }
 
 // Gets the cover photo of a given trip

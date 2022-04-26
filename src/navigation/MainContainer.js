@@ -16,7 +16,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import RegistrationPage from "../pages/RegistrationPage";
 import SearchUsers from "../pages/SearchUsers";
 import CompleteRegistrationPage from "../pages/CompleteRegistrationPage";
-import { logout } from "../api/FirebaseApi";
+import { logout } from "../api/UserApi";
 import UserProfile from "../pages/UserProfile";
 
 // Pages names
