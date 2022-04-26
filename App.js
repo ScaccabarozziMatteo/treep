@@ -7,7 +7,7 @@
  */
 
 import React from "react";
-import MainContainer from "./navigation/MainContainer";
+import MainContainer from "./src/navigation/MainContainer";
 import type { Node } from "react";
 import * as eva from "@eva-design/eva";
 import Toast from "react-native-toast-message";
