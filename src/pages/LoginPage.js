@@ -4,7 +4,7 @@ import { Pressable, ScrollView, Stack } from "native-base";
 import { Button, Input } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { emailLogin, signInWithGoogle } from "../api/UserApi";
+import { emailLogin, signInWithGoogle, onAuthStateChange } from "../api/UserApi";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import ProfilePage from "./ProfilePage";
@@ -70,8 +70,10 @@ export default function LoginPage({ navigation, route }) {
   }
 
   useEffect(() => {
-    reset()
-    return auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
+    const start = () => {
+      return onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
+    }
+    start()
   }, []);
 
   if (initializing) {

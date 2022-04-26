@@ -43,8 +43,10 @@ export default function ProfilePage(props) {
   // useEffect triggers when a user info is changed and the dummyUser is used to triggering the useEffect
   useEffect(() => {
     const updateUserData = async () => {
-      await setUserData(await getUserData());
-      await setUser(await currentUser());
+      const user = await currentUser()
+      const userData = await getUserData()
+      setUserData(userData);
+      setUser(user);
     };
     updateUserData();
   }, [dummyUser, props.update]);
@@ -52,10 +54,11 @@ export default function ProfilePage(props) {
   // Initial action when the page is created
   useEffect(() => {
     const updateUserData = async () => {
-      await setUserData(await getUserData());
+      const userData = await getUserData()
+      setUserData(userData);
+      return onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
     };
     updateUserData();
-    return onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
   // This function is used to handle the name editing
