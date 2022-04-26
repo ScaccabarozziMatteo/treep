@@ -41,6 +41,7 @@ export default function ProfilePage(props) {
     setNewBio(userData.bio)
   }, [userData, dummyRestoreData]);
 
+  // useEffect triggers when a user info is changed and the dummyUser is used to triggering the useEffect
   useEffect(() => {
     const updateUserData = async () => {
       await setUserData(await getUserData());
@@ -49,6 +50,7 @@ export default function ProfilePage(props) {
     updateUserData();
   }, [dummyUser, props.update]);
 
+  // Initial action when the page is created
   useEffect(() => {
     const updateUserData = async () => {
       await setUserData(await getUserData());
@@ -57,6 +59,7 @@ export default function ProfilePage(props) {
     return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
+  // This function is used to handle the name editing
   function editingName() {
     return (
       <VStack>
@@ -81,6 +84,7 @@ export default function ProfilePage(props) {
       </VStack>);
   }
 
+  // This function returns the edit button (2 different cases)
   function iconOnEditing() {
     return(
       <HStack marginLeft={-50}>
@@ -90,6 +94,7 @@ export default function ProfilePage(props) {
     )
   }
 
+  // Return the user badges
   function badges() {
     return (
       <VStack alignItems={"center"}>
@@ -104,6 +109,7 @@ export default function ProfilePage(props) {
     );
   }
 
+  // If user does not edit anything, it does not write on DB
   async function confirmEdit() {
     if (newFirstName !== userData.first_name || newLastName !== userData.last_name || newUsername !== userData.username || newBio !== userData.bio) {
       setDummyUser(await updateUserInfo(newFirstName, newLastName, newUsername, newBio))
@@ -140,10 +146,12 @@ export default function ProfilePage(props) {
     setShowModal(true);
   }
 
+  // Call Firebase function and then set the dummy that triggers the useEffect
   function changeUsername(username) {
     setUsernameFirebase(username).done(() => setDummyUser(Math.random));
   }
 
+  // Call Firebase function and then set the dummy that triggers the useEffect
   function changeBio(bio) {
     setBioFirebase(bio).done(() => setDummyUser(Math.random));
   }
