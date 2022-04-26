@@ -129,7 +129,6 @@ export async function setBioFirebase(user) {
   const data = {
     bio: user,
   };
-
 // Add a new document in collection "users" with UID
   await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data);
 }
