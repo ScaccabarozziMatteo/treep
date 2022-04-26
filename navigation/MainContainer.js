@@ -10,13 +10,13 @@ import {Icon, Text} from '@rneui/base';
 import {StatusBar} from 'react-native';
 import LoginPage from "./pages/LoginPage";
 import AroundMePage from "./pages/AroundMePage";
-import NewTripPage from "./pages/NewTripPage.js";
+import MyTripsPage from "./pages/MyTripsPage.js";
 
 // Pages names
 const homeName = 'Home';
 const profileName = 'Profile';
 const exploreName = 'Explore';
-const newTripName = 'New Trip';
+const tripName = 'Trips';
 const aroundMeName = 'Around Me';
 
 const Tab = createBottomTabNavigator();
@@ -39,7 +39,7 @@ export default function MainContainer() {
             } else if (routeName === exploreName) {
               iconName = focused ? 'explore' : 'explore';
             }
-              else if(routeName === newTripName) {
+              else if(routeName === tripName) {
               iconName = focused ? 'add' : 'add';
             }
             else if(routeName === aroundMeName) {
@@ -65,7 +65,7 @@ export default function MainContainer() {
         <Tab.Screen name={homeName} component={HomePage} />
         <Tab.Screen name={exploreName} component={ExplorePage} />
         <Tab.Screen name={profileName} component={LoginPage} />
-        <Tab.Screen name={newTripName} component={NewTripPage} />
+        <Tab.Screen name={tripName} component={MyTripsPage} />
         <Tab.Screen name={aroundMeName} component={AroundMePage} />
       </Tab.Navigator>
     </NavigationContainer>
