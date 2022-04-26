@@ -1,32 +1,44 @@
 import React, { useEffect, useState } from "react";
 
-import { TripCollection } from "../../api/FirebaseApi";
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
-import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView } from "react-native";
+import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView, TouchableOpacity } from "react-native";
+import Post from "../components/Post";
+import { getAll } from "../api/TripApi";
+
 
 export default function HomePage() {
 
   const [trips, setTrips] = useState(
     {description: "" ,
               coverPhoto: "",
+              userPhoto: "",
+              userID: "",
+              location: "",
+              photoURL: "",
+              username: "",
+              title: "",
+              status: false,
     }
   )
 
   useEffect( () => {
-    TripCollection.getAll().then(
+    getAll().then(
       response => {
         setTrips(response);
-      }
-    )}, []
+
+      });
+    }, []
   );
+
+
 
   const [refreshing, setRefreshing] = useState(false)
 
   const onRefresh = () => {
     setRefreshing(true);
 
-    TripCollection.getAll().then(
+    getAll().then(
       response => {
         setTrips(response);
       }
@@ -37,15 +49,21 @@ export default function HomePage() {
 
   return (
     <View>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView>
           <FlatList
             keyExtractor={(item, index)=>index.toString()}
             data={trips}
-            renderItem={({item})=>(
-              <View>
-                <Text style={styles.text}>{item.description}</Text>
-                <Image source = {{uri: item.coverPhoto}} style={{width: 100, height: 100}}/>
-              </View>
+            renderItem={({ item }) => (
+              <Post title={item.title}
+                    userImage={item.photoURL}
+                    postImage={item.coverPhoto}
+                    isLiked={false}
+                    username={item.username}
+                    location={item.location}
+                    likes={item.likes}
+                    description={item.description}
+                    status={item.status}
+              />
             )}
             refreshControl = {<RefreshControl
               refreshing={refreshing}
@@ -60,15 +78,14 @@ export default function HomePage() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'grey',
-    alignItems: 'center',
-    justifyContent: 'center',
+  image: {
+
   },
+
   text: {
     fontSize: 20,
     fontWeight: "bold",
     alignContent: "center",
-    color: 'white',
+    color: 'black',
   }
 });
