@@ -1,14 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {TripCollection} from '../../api/FirebaseApi';
-import {Container, View} from 'native-base';
-import SafeAreaView from 'react-native/Libraries/Components/SafeAreaView/SafeAreaView';
-import {FlatList, RefreshControl, StyleSheet} from 'react-native';
-import MyPosts from '../../components/MyPosts';
+import {View} from 'native-base';
+import {StyleSheet} from 'react-native';
 import {Button} from '@rneui/base';
 import NewTripPage from './NewTripPage';
 import AroundMePage from './AroundMePage';
-
-
+import * as TripCollection from '../api/TripApi';
 
 export default function HomePage({navigation}) {
   const [trips, setTrips] = useState({description: '', coverPhoto: ''});
@@ -29,14 +25,13 @@ export default function HomePage({navigation}) {
         },
       ]}>
       <Button
-        onPress={() => navigation.navigate('NewTripPage')}
+        onPress={() => navigation.navigate(NewTripPage)}
         title="Add new trip"
       />
       <Button
-        onPress={() => navigation.navigate('AroundMePage')}
-        title="Around Me"
+        onPress={() => navigation.navigate(AroundMePage)}
+        title="Around me"
       />
-
       <View style={{flex: 2, backgroundColor: 'white'}} />
       <View style={{flex: 2, backgroundColor: 'lightgrey'}} />
       <View style={{flex: 2, backgroundColor: 'white'}} />
@@ -57,5 +52,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignContent: 'center',
     color: 'black',
+  },
+  boxButton: {
+    paddingTop: 20,
+    width: '40%',
+    alignSelf: 'center',
   },
 });

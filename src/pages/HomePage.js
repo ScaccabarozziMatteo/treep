@@ -32,7 +32,6 @@ export default function HomePage() {
   );
 
 
-
   const [refreshing, setRefreshing] = useState(false)
 
   const onRefresh = () => {
