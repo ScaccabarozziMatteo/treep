@@ -44,8 +44,6 @@ export class TripCollection {
     else
       return "";
   }
-
-}
 }
 
 export class UserCollection {
