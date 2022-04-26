@@ -4,7 +4,7 @@ import { HStack, Stack, View, VStack } from "native-base";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Datepicker, Input, Select, SelectItem } from "@ui-kitten/components";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { completeProfile, logout } from "../api/FirebaseApi";
+import { completeProfile, logout } from "../api/UserApi";
 
 export default function CompleteRegistrationPage({ navigation }) {
 

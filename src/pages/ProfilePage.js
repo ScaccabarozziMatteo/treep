@@ -7,11 +7,10 @@ import { Button } from "@ui-kitten/components";
 import {
   currentUser,
   getUserData,
-  logout, setBioFirebase,
+  logout, onAuthStateChange, setBioFirebase,
   setUsernameFirebase,
   updateUserInfo,
-  UserCollection,
-} from "../api/FirebaseApi";
+} from "../api/UserApi";
 import { showToast } from "../utils/Utils";
 import ModalPhoto from "../utils/ModalPhoto";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -54,7 +53,7 @@ export default function ProfilePage(props) {
       await setUserData(await getUserData());
     };
     updateUserData();
-    return UserCollection.onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
+    return onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
   }, []);
 
   function editingName() {

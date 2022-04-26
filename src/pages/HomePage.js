@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { TripCollection, UserCollection } from "../api/FirebaseApi";
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView, TouchableOpacity } from "react-native";
 import Post from "../components/Post";
+import { getAll } from "../api/TripApi";
 
 
 export default function HomePage() {
@@ -23,7 +23,7 @@ export default function HomePage() {
   )
 
   useEffect( () => {
-    TripCollection.getAll().then(
+    getAll().then(
       response => {
         setTrips(response);
 
@@ -38,7 +38,7 @@ export default function HomePage() {
   const onRefresh = () => {
     setRefreshing(true);
 
-    TripCollection.getAll().then(
+    getAll().then(
       response => {
         setTrips(response);
       }

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { View } from "native-base";
 import { Avatar } from "react-native-ui-lib";
-import { searchUsers } from "../api/FirebaseApi";
+import { searchUsers } from "../api/UserApi";
 import { Button, List, ListItem } from "@ui-kitten/components";
 import { SearchBar } from "react-native-elements";
 

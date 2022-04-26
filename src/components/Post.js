@@ -79,9 +79,7 @@ const Post = (props) => {
                  source={{uri:data.postImage}}
                  style={{ width: "100%", height: 350, borderRadius:10,}}/>
                <View style={{
-                 borderStyle: "solid",
-                 borderWidth: 2,
-                 borderRadius: 15,
+
                  width: '100%',
                  alignItems: "center",
                }}>

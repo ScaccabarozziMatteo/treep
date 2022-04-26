@@ -10,7 +10,7 @@ import React from "react";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { showToast } from "./Utils";
 import { PermissionsAndroid, Platform, Pressable, StyleSheet } from "react-native";
-import { changeProfileImage } from "../api/FirebaseApi";
+import { changeProfileImage } from "../api/UserApi";
 
 export default function ModalPhoto(props) {
 

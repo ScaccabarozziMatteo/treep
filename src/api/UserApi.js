@@ -8,64 +8,22 @@ import storage from "@react-native-firebase/storage";
 import { showToast } from "../utils/Utils";
 import React from "react";
 
-
-export class TripCollection {
-
-  // Retrieves ALL the trips on the server
-  static getAll = async () => {
-    let trips = [];
-
-    //First call in order to retrieve all the info needed about the trips
-    const tripsData = (await firestore().collection("Trip").get()).docs;
-
-    //For each trip, we also need to get the relative info about its user
-    for (const t of tripsData) {
-      //Calls firebase to get the user data
-      const userData = await firestore().collection("users/" + t.data().userID + "/public_info").doc("personal_data").get();
-      //Merges together the info about the trip and the info about the user
-      const mergedObj = {...t.data(), ...userData.data()};
-      //Pushes the retrieved info into an array
-      trips.push(mergedObj);
-    }
-    return (trips);
-  };
-
-  // Gets the cover photo of a given trip
-  static async getCoverPhoto(trip) {
-    const imagePath = trip.coverPhoto;
-    const reference = storage().ref(imagePath);
-    return await reference.getDownloadURL();
-  }
-
-  static async getUserById (id) {
-    const doc = await firestore().collection("users/" + id + "/public_info").doc("personal_data").get();
-    if (doc.data() !== undefined)
-      return doc.data();
-    else
-      return "";
-  }
-
-}
+export async function onAuthStateChange(onAuthStateChanged) {
+  return auth().onAuthStateChanged(onAuthStateChanged);
 }
 
-export class UserCollection {
-
-  static onAuthStateChange(onAuthStateChanged) {
-    return auth().onAuthStateChanged(onAuthStateChanged);
-  }
-
-}
-
-
+//Login with email and password
 export async function emailLogin(userData) {
   await auth().signInWithEmailAndPassword(userData.email, userData.password);
 }
 
+//Logout
 export async function logout() {
   await auth().signOut();
   await GoogleSignin.signOut();
 }
 
+//Log in with Google
 export async function signInWithGoogle() {
   // Get the users ID token
   const { idToken } = await GoogleSignin.signIn();
@@ -85,6 +43,7 @@ export async function signInWithGoogle() {
     return user
 }
 
+//Changes the profile image of the current user
 export async function changeProfileImage(image, props) {
   let user = currentUser();
   let url;

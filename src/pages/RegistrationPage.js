@@ -4,7 +4,7 @@ import { Input, CheckBox, Button, Datepicker } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { StyleSheet } from "react-native";
-import { emailRegistration } from "../api/FirebaseApi";
+import { emailRegistration } from "../api/UserApi";
 import { Select, SelectItem } from "@ui-kitten/components";
 import { Text } from "react-native";
 
