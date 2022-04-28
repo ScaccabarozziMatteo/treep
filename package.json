@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/preset-env": "^7.1.6",
     "@eva-design/eva": "^2.1.1",
+    "@firebase/firestore-types": "^2.5.0",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",

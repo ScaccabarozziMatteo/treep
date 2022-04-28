@@ -5,10 +5,25 @@ import { HStack, Text, VStack } from "native-base";
 import { Avatar } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Button } from "@ui-kitten/components";
+import { addFollow, currentUser, getFollowers, getFollowings, removeFollow } from "../api/UserApi";
 
-export default function UserProfile({navigation, route}) {
+export default function UserProfile({ navigation, route }) {
 
   const userData = route.params.user;
+  const userID = route.params.userID;
+  const [followers, setFollowers] = useState('');
+  const [followings, setFollowings] = useState('');
+  const [dummyState, setDummyState] = useState(0.1); // Trigger that enable the followers/followings check
+
+  useEffect(() => {
+    const updateValue = async () => {
+      const followers = await getFollowers(userID);
+      const followings = await getFollowings(userID);
+      setFollowers(followers);
+      setFollowings(followings);
+    };
+    updateValue();
+  }, [dummyState]);
 
   function badges() {
     return (
@@ -22,6 +37,31 @@ export default function UserProfile({navigation, route}) {
         </HStack>
       </VStack>
     );
+  }
+
+  function buttons() {
+    if (currentUser() != null)
+      return (
+        <HStack justifyContent={"space-between"} alignContent={"stretch"}>
+          <HStack>
+            <Button>Message</Button>
+          </HStack>
+          <HStack>
+            {!followers.includes(currentUser().uid) ?
+              <Button status={'success'} onPress={async () => setDummyState(await addFollow(currentUser().uid, userID))}>Follow</Button> :
+              <Button status={'danger'} onPress={async () => setDummyState(await removeFollow(currentUser().uid, userID))}>Unfollow</Button>
+            }
+          </HStack>
+        </HStack>
+      );
+    else
+      return (
+        <HStack justifyContent={"center"} alignContent={"center"}>
+          <HStack>
+            <Button onPress={() => navigation.navigate("Profile")}>LOGIN to interact with {userData.first_name}</Button>
+          </HStack>
+        </HStack>
+      );
   }
 
   function isActiveBadge(number) {
@@ -64,12 +104,12 @@ export default function UserProfile({navigation, route}) {
                   <Text style={styles.text}>23</Text>
                 </VStack>
                 <VStack alignItems={"center"}>
-                  <Text style={styles.text}>Follower</Text>
-                  <Text style={styles.text}>100</Text>
+                  <Text style={styles.text}>Followers</Text>
+                  <Text style={styles.text}>{followers.length}</Text>
                 </VStack>
                 <VStack alignItems={"center"}>
-                  <Text style={{ color: "black", width: "105%" }}>Following</Text>
-                  <Text style={styles.text}>140</Text>
+                  <Text style={{ color: "black", width: "105%" }}>Followings</Text>
+                  <Text style={styles.text}>{followings.length}</Text>
                 </VStack>
               </HStack>
             </VStack>
@@ -87,14 +127,7 @@ export default function UserProfile({navigation, route}) {
             </VStack>
 
             {/* Buttons*/}
-            <HStack justifyContent={"space-between"} alignContent={"stretch"}>
-              <HStack>
-                <Button>Message</Button>
-              </HStack>
-              <HStack>
-                <Button>Follow</Button>
-              </HStack>
-            </HStack>
+            {buttons()}
 
             {/* Badges*/}
             <VStack>
