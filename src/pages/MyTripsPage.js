@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'native-base';
-import {StyleSheet} from 'react-native';
-import {Button} from '@rneui/base';
+import {HStack, ScrollView, View} from 'native-base';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import {Button, Text} from '@rneui/base';
 import NewTripPage from './NewTripPage';
 import AroundMePage from './AroundMePage';
 import * as TripCollection from '../api/TripApi';
@@ -16,46 +16,91 @@ export default function HomePage({navigation}) {
   }, []);
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          // Try setting `flexDirection` to `"row"`.
-          flexDirection: 'column',
-        },
-      ]}>
-      <Button
-        onPress={() => navigation.navigate(NewTripPage)}
-        title="Add new trip"
-      />
-      <Button
-        onPress={() => navigation.navigate(AroundMePage)}
-        title="Around me"
-      />
-      <View style={{flex: 2, backgroundColor: 'white'}} />
-      <View style={{flex: 2, backgroundColor: 'lightgrey'}} />
-      <View style={{flex: 2, backgroundColor: 'white'}} />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.button}>
+          <Button
+            title="Add new trip"
+            onPress={() => navigation.navigate(NewTripPage)}
+          />
+        </View>
+        <View style={styles.button}>
+          <Button
+            title="Around me"
+            onPress={() => navigation.navigate(AroundMePage)}
+          />
+        </View>
+
+        {/* Latest trips */}
+        <Text style={styles.text}>Latest Trips</Text>
+        <View style={styles.body}>
+          <ScrollView horizontal={true}>
+            <HStack space={3} alignItems="center">
+              <View size={120} bg="primary.400" rounded="md" />
+              <View size={120} bg="secondary.400" rounded="md" />
+              <View size={120} bg="emerald.400" rounded="md" />
+              <View size={120} bg="primary.400" rounded="md" />
+            </HStack>
+          </ScrollView>
+        </View>
+
+        {/* Countries */}
+        <Text style={styles.text}>Countries</Text>
+        <View style={styles.body}>
+          <ScrollView horizontal={true}>
+            <HStack space={3} alignItems="center">
+              <View size={120} bg="primary.400" rounded="md" />
+              <View size={120} bg="secondary.400" rounded="md" />
+              <View size={120} bg="emerald.400" rounded="md" />
+              <View size={120} bg="primary.400" rounded="md" />
+            </HStack>
+          </ScrollView>
+        </View>
+
+        {/* All trips */}
+        <Text style={styles.text}>All Trips</Text>
+        <View style={styles.body}>
+          <ScrollView horizontal={true}>
+            <HStack space={3} alignItems="center">
+              <View size={120} bg="primary.400" rounded="md" />
+              <View size={120} bg="secondary.400" rounded="md" />
+              <View size={120} bg="emerald.400" rounded="md" />
+              <View size={120} bg="primary.400" rounded="md" />
+            </HStack>
+          </ScrollView>
+        </View>
+
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
+  body: {
+    width: '95%',
+    height: 150,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
   },
-
-  image: {},
-
   text: {
+    flex: 1,
     fontSize: 20,
+    margin: 3,
     fontWeight: 'bold',
-    alignContent: 'center',
     color: 'black',
   },
-  boxButton: {
-    paddingTop: 20,
-    width: '40%',
+  button: {
+    flex: 1,
+    width: '99%',
+    height: 38,
     alignSelf: 'center',
+    margin: 3,
+  },
+  container: {
+    flex: 1,
+  },
+  scrollView: {
+    marginHorizontal: 1,
   },
 });
