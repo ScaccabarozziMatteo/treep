@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {HStack, ScrollView, View} from 'native-base';
+import { HStack, Pressable, ScrollView, View } from "native-base";
 import {SafeAreaView, StyleSheet} from 'react-native';
 import {Button, Text} from '@rneui/base';
 import NewTripPage from './NewTripPage';
@@ -36,7 +36,9 @@ export default function HomePage({navigation}) {
         <View style={styles.body}>
           <ScrollView horizontal={true}>
             <HStack space={3} alignItems="center">
-              <View size={120} bg="primary.400" rounded="md" />
+              <Pressable onPress={() => navigation.navigate(NewTripPage)}>
+                <View size={120} bg="primary.400" rounded="md" />
+              </Pressable>
               <View size={120} bg="secondary.400" rounded="md" />
               <View size={120} bg="emerald.400" rounded="md" />
               <View size={120} bg="primary.400" rounded="md" />
