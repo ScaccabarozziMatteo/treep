@@ -19,6 +19,7 @@ export default function HomePage() {
               username: "",
               title: "",
               status: false,
+              postID: "",
     }
   )
 
@@ -57,12 +58,13 @@ export default function HomePage() {
               <Post title={item.title}
                     userImage={item.photoURL}
                     postImage={item.coverPhoto}
-                    isLiked={false}
+                    isLiked={item.isLiked}
                     username={item.username}
                     location={item.location}
-                    likes={item.likes}
+                    likes={item.likes.length}
                     description={item.description}
                     status={item.status}
+                    postID={item.postID}
               />
             )}
             refreshControl = {<RefreshControl
