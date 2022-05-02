@@ -1,18 +1,11 @@
-// Here we can build the top navigation, creating all the cases
-//Useless commit to see what happens
-
-
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { Icon, Avatar } from "react-native-elements";
 import Feather from "react-native-vector-icons/Feather";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Entypo from "react-native-vector-icons/Entypo";
-import { red } from "react-native-reanimated/src/reanimated2/Colors";
 import center from "native-base/src/theme/components/center";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
+
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { removeLike, setLike } from "../api/TripApi";
 
@@ -123,7 +116,7 @@ const Post = (props) => {
                    onPress={like ? () => dislikePost(data.postID) : () => likePost(data.postID)}>
                    <Ionicons name={like ? "heart": "heart-outline"}
                               style={{fontSize: 20, color: like ? 'red' : 'black'}}/>
-                   <Text style={styles.text}> {like ? data.likes : data.likes-1}</Text>
+                   <Text style={styles.text}> {data.isLiked ? (like ? data.likes : data.likes-1) : (like ? data.likes+1 : data.likes)}</Text>
                  </TouchableOpacity>
 
                </View>
