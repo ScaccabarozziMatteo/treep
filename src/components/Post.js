@@ -14,11 +14,13 @@ import center from "native-base/src/theme/components/center";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { removeLike, setLike } from "../api/TripApi";
 
 const Post = (props) => {
 
-  const postInfo = [
+  const [postInfo, setPostInfo] = useState([
     {
+      postID: props.postID,
       title: props.title,
       postUserImage: props.userImage,
       username: props.username,
@@ -29,9 +31,17 @@ const Post = (props) => {
       description: props.description,
       status: props.status,
     }
-  ]
+  ]);
 
-  const [like, setLike] = useState(postInfo.isLiked);
+  const [like, _setLike] = useState(postInfo.isLiked);
+
+  function likePost(postID) {
+    setLike(postID).then(_setLike(!like))
+  }
+
+  function dislikePost(postID) {
+    removeLike(postID).then(_setLike(!like))
+  }
 
   return(
    <View>
@@ -110,10 +120,10 @@ const Post = (props) => {
                <View style={styles.box}>
                  <TouchableOpacity
                    style={{flexDirection:"row", justifyContent:"space-evenly", paddingHorizontal: 40, paddingVertical: 3}}
-                   onPress={setLike}>
+                   onPress={like ? () => dislikePost(data.postID) : () => likePost(data.postID)}>
                    <Ionicons name={like ? "heart": "heart-outline"}
                               style={{fontSize: 20, color: like ? 'red' : 'black'}}/>
-                   <Text style={styles.text}> {like ? data.likes+1 : data.likes}</Text>
+                   <Text style={styles.text}> {like ? data.likes : data.likes-1}</Text>
                  </TouchableOpacity>
 
                </View>

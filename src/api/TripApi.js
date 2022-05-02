@@ -1,5 +1,9 @@
 import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
+import { currentUser } from "./UserApi";
+import firebase from "@react-native-firebase/app";
+
+const FieldValue = firebase.firestore.FieldValue;
 
 // Retrieves ALL the trips on the server
 export async function getAll () {
@@ -10,9 +14,15 @@ export async function getAll () {
   //For each trip, we also need to get the relative info about its user
   for (const t of tripsData) {
     //Calls firebase to get the user data
+    const postID = t._ref._documentPath._parts[1];
+    const isLiked = (t.data().likes).includes(currentUser().uid)
     const userData = await firestore().collection("users/" + t.data().userID + "/public_info").doc("personal_data").get();
     //Merges together the info about the trip and the info about the user
-    const mergedObj = {...t.data(), ...userData.data()};
+    let mergedObj = {...t.data(), ...userData.data()};
+    //Add postID
+    mergedObj = {...mergedObj, postID}
+    //Add isLiked
+    mergedObj = {...mergedObj, isLiked}
     //Pushes the retrieved info into an array
     trips.push(mergedObj);
   }
@@ -34,5 +44,15 @@ export async function getCoverPhoto(tripId) {
   const imagePath = tripId.coverPhoto;
   const reference = storage().ref(imagePath);
   return await reference.getDownloadURL();
+}
+
+export async function setLike(tripID) {
+  await firestore().collection('Trip').doc(tripID).set({likes: FieldValue.arrayUnion(currentUser().uid)}, {merge: true})
+
+}
+
+export async function removeLike(tripID) {
+  await firestore().collection('Trip').doc(tripID).update({likes: FieldValue.arrayRemove(currentUser().uid)})
+
 }
 
