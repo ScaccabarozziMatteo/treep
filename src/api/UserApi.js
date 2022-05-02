@@ -8,6 +8,8 @@ import storage from "@react-native-firebase/storage";
 import { showToast } from "../utils/Utils";
 import React from "react";
 
+const FieldValue = firebase.firestore.FieldValue;
+
 export async function onAuthStateChange(onAuthStateChanged) {
   return auth().onAuthStateChanged(onAuthStateChanged);
 }
@@ -149,6 +151,39 @@ export async function searchUsers(username) {
   const doc = await firestore().collectionGroup("public_info").where("username", "==", username.toLowerCase()).get();
   if (doc.empty)
     return "";
-  else
+  else {
     return doc._docs;
+  }
+}
+
+export async function getFollowers(user) {
+  const doc = await firestore().collection('users/' + user + '/vanity_metrics').doc('followers').get()
+  if (doc.empty || doc.data() === undefined)
+    return "";
+  else {
+    return doc.data().followers;
+  }
+}
+
+export async function getFollowings(user) {
+  const doc = await firestore().collection('users/' + user + '/vanity_metrics').doc('followings').get()
+  if (doc.empty || doc.data() === undefined)
+    return "";
+  else {
+    return doc.data().followings;
+  }
+}
+
+export async function addFollow(userFollower, userFollowing) {
+  await firestore().collection('users/' + userFollower + '/vanity_metrics').doc('followings').set({followings: FieldValue.arrayUnion(userFollowing)}, {merge: true})
+  await firestore().collection('users/' + userFollowing + '/vanity_metrics').doc('followers').set({followers: FieldValue.arrayUnion(userFollower)}, {merge: true})
+
+  return Math.random()
+}
+
+export async function removeFollow(userFollower, userFollowing) {
+  await firestore().collection('users/' + userFollower + '/vanity_metrics').doc('followings').update({followings: FieldValue.arrayRemove(userFollowing)})
+  await firestore().collection('users/' + userFollowing + '/vanity_metrics').doc('followers').update({followers: FieldValue.arrayRemove(userFollower)})
+
+  return Math.random()
 }

@@ -5,7 +5,7 @@ import { HStack, Text, VStack } from "native-base";
 import { Avatar } from "react-native-ui-lib";
 import { Button } from "@ui-kitten/components";
 import {
-  currentUser,
+  currentUser, getFollowers, getFollowings,
   getUserData,
   logout, onAuthStateChange, setBioFirebase,
   setUsernameFirebase,
@@ -20,6 +20,8 @@ export default function ProfilePage(props) {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [userData, setUserData] = useState("");
+  const [followers, setFollowers] = useState('');
+  const [followings, setFollowings] = useState('');
   const [dummyUser, setDummyUser] = useState();
   const [dummyRestoreData, setDummyRestoreData] = useState();
   const [showModal, setShowModal] = useState(false);
@@ -54,10 +56,17 @@ export default function ProfilePage(props) {
   // Initial action when the page is created
   useEffect(() => {
     const updateUserData = async () => {
+      const uid = currentUser().uid
       const userData = await getUserData()
+      const followers = await getFollowers(uid);
+      const followings = await getFollowings(uid);
       setUserData(userData);
+      setFollowers(followers);
+      setFollowings(followings);
       return onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
     };
+    setFollowers(followers);
+    setFollowings(followings);
     updateUserData();
   }, []);
 
@@ -225,12 +234,12 @@ export default function ProfilePage(props) {
                     <Text style={styles.text}>23</Text>
                   </VStack>
                   <VStack alignItems={"center"}>
-                    <Text style={styles.text}>Follower</Text>
-                    <Text style={styles.text}>100</Text>
+                    <Text style={styles.text}>Followers</Text>
+                    <Text style={styles.text}>{followers.length}</Text>
                   </VStack>
                   <VStack alignItems={"center"}>
-                    <Text style={{ color: "black", width: "105%" }}>Following</Text>
-                    <Text style={styles.text}>140</Text>
+                    <Text style={{ color: "black", width: "105%" }}>Followings</Text>
+                    <Text style={styles.text}>{followings.length}</Text>
                   </VStack>
                 </HStack>
               </VStack>
