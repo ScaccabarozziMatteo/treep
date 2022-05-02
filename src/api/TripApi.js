@@ -26,6 +26,7 @@ export async function getAll () {
     //Pushes the retrieved info into an array
     trips.push(mergedObj);
   }
+
   return (trips);
 }
 
@@ -34,7 +35,7 @@ export async function getUserTrips (userId) {
   let trips = [];
   const tripsData = (await firestore().collection("Trip").where("userID", "==", userId).get()).docs;
   for (const t of tripsData){
-    trips.push(t);
+    trips.push(t.data());
   }
   return trips;
 }

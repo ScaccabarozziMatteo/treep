@@ -101,7 +101,7 @@ export async function completeProfile(data) {
     sex: data.sex,
     badges: [true, false, true, false, false],
     username: "",
-    bio: ""
+    bio: "",
   }
   await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(doc)
 }
