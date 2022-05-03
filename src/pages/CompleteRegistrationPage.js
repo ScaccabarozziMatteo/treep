@@ -4,11 +4,13 @@ import { HStack, Stack, View, VStack } from "native-base";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Datepicker, Input, Select, SelectItem } from "@ui-kitten/components";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { completeProfile, logout } from "../api/UserApi";
+import { completeProfile, currentUser, googleUser, logout } from "../api/UserApi";
 
 export default function CompleteRegistrationPage({ navigation }) {
 
   const [selectedIndex, setSelectedIndex] = useState();
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
 
   const maxDate = new Date(2010, 12, 31);
   const minDate = new Date(1900, 1, 1);
@@ -34,6 +36,18 @@ export default function CompleteRegistrationPage({ navigation }) {
     return () => backHandler.remove();
   }, []);
 
+  useEffect(() => {
+    const updateDefaultValue = async () => {
+      const google = await googleUser()
+      setFirstName(google.user.givenName)
+      setValue("first_name", firstName);
+      setLastName(google.user.familyName)
+      setValue("last_name", lastName);
+    }
+
+    updateDefaultValue()
+  }, []);
+
 
   const renderOption = (title) => (
     <SelectItem title={title} />
@@ -51,7 +65,6 @@ export default function CompleteRegistrationPage({ navigation }) {
 
   return (
     <ScrollView keyboardShouldPersistTaps={"handled"}>
-
       <View style={{ width: "80%", alignSelf: "center" }}>
         <Controller
           control={control}
@@ -65,6 +78,7 @@ export default function CompleteRegistrationPage({ navigation }) {
               onChangeText={onChange}
               autoCapitalize={"words"}
               placeholder={"First Name"}
+              defaultValue={firstName}
               placeholderTextColor="grey"
               status={errors.first_name ? "danger" : "basic"}
               label={"First Name"}
@@ -88,6 +102,7 @@ export default function CompleteRegistrationPage({ navigation }) {
               onChangeText={onChange}
               autoCapitalize={"words"}
               placeholder={"Last Name"}
+              defaultValue={lastName}
               placeholderTextColor="grey"
               status={errors.last_name ? "danger" : "basic"}
               label={"Last Name"}

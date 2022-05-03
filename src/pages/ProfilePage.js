@@ -1,6 +1,14 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Keyboard, ScrollView, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import {
+  Keyboard,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { HStack, Text, VStack } from "native-base";
 import { Avatar } from "react-native-ui-lib";
 import { Button } from "@ui-kitten/components";
@@ -30,9 +38,17 @@ export default function ProfilePage(props) {
   const [newLastName, setNewLastName] = useState();
   const [newUsername, setNewUsername] = useState();
   const [newBio, setNewBio] = useState();
+  const [refreshing, setRefreshing] = useState(false)
 
 
   const pencil = require("../../assets/pencil.png");
+
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setDummyUser(Math.random);
+    setRefreshing(false);
+  }
 
   // Set into the NEW variables the original values
   useEffect(() => {
@@ -49,6 +65,10 @@ export default function ProfilePage(props) {
       const userData = await getUserData()
       setUserData(userData);
       setUser(user);
+      const followers = await getFollowers(user.uid);
+      const followings = await getFollowings(user.uid);
+      setFollowers(followers);
+      setFollowings(followings);
     };
     updateUserData();
   }, [dummyUser, props.update]);
@@ -173,7 +193,7 @@ export default function ProfilePage(props) {
 
   if (user != null) {
     return (
-      <ScrollView keyboardShouldPersistTaps={"handled"}>
+      <ScrollView keyboardShouldPersistTaps={"handled"} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View>
             <VStack justifyContent={"space-between"} alignContent={"stretch"}
