@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Input, CheckBox, Button, Datepicker } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TextInput } from "react-native";
 import { emailRegistration } from "../api/UserApi";
 import { Select, SelectItem } from "@ui-kitten/components";
 import { Text } from "react-native";
@@ -60,6 +60,7 @@ export default function RegistrationPage({ navigation }) {
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
               style={styles.input}
+              defaultValue={'pippo'}
               onBlur={onBlur}
               onChangeText={onChange}
               autoCapitalize={"words"}
