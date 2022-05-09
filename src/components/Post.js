@@ -8,8 +8,11 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { removeLike, setLike } from "../api/TripApi";
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import { white } from "react-native-paper/lib/typescript/styles/colors";
+import Svg, { Circle, Path } from "react-native-svg";
 
-const Post = (props) => {
+const Post = (props, navigation) => {
 
   const [postInfo, setPostInfo] = useState([
     {
@@ -42,105 +45,102 @@ const Post = (props) => {
        postInfo.map((data, index) => {
 
          return (
-           <View key={index} style={{
-             paddingBottom: 10,
-             borderBottomColor: 'gray',
-             borderBottomWidth: 0.1,
-           }}>
-             <View style={{
-               flexDirection: 'row',
-               alignItems: 'center',
-               justifyContent: "space-around",
-               paddingVertical: 10,
+           <View style={{overflow: 'hidden', paddingBottom: 5}}>
+             <View key={index} style={{
+               backgroundColor: '#fff',
+               width: '90%',
+               left: '5%',
+               borderRadius: 35,
+               marginTop: 15,
+               shadowColor: '#000',
+               shadowOffset: {width: 1},
+               shadowOpacity: 0.4,
+               shadowRadius: 3,
+               elevation: 5,
+               height: 335,
              }}>
 
-               {/* USER PHOTO BOX */}
-               <Image source={{uri: data.postUserImage}} style={{ width: 40, height: 40, borderRadius: 100 }}/>
-
-
-               {/* TITLE BOX */}
-               <View>
-                 <Text style={{fontSize: 15, fontWeight: 'bold', color: 'black'}}>
-                   {data.title}
-                 </Text>
-               </View>
-
-               {/* ACTIVE BOX */}
-                <View>
-                  <Fontisto name={data.status ? "radio-btn-active": "radio-btn-passive"} style={{fontSize: 25, color: 'black'}}/>
-                </View>
-
-
-             </View>
-
-             <View style={{
-               position: 'relative',
-               justifyContent: 'center',
-               alignItems: 'center',
-             }}>
-               <Image
-                 source={{uri:data.postImage}}
-                 style={{ width: "100%", height: 350, borderRadius:10,}}/>
                <View style={{
-
-                 width: '100%',
-                 alignItems: "center",
+                 position: 'relative',
+                 justifyContent: 'center',
+                 alignItems: 'center',
                }}>
-                 <Text style={{color: 'black', padding: 10}}>
-                   {data.description}
-                 </Text>
-               </View>
-             </View>
-             <View style={{
-               flexDirection: 'row',
-               justifyContent: 'space-between',
-               alignItems: 'center',
-               alignContent: "center",
-               flex: 1,
-               paddingHorizontal: 30,
-               paddingVertical: 10,
-             }}>
+                 <Image
+                   source={{uri:data.postImage}}
+                   style={{ width: "100%", height: 300, borderTopRightRadius: 35, borderTopLeftRadius: 35, borderBottomRightRadius: 35}}/>
 
-               {/* USER BOX */}
-               <View style={styles.box}>
-                 <View style={{flexDirection: "row", justifyContent: "space-evenly", paddingHorizontal: 20, alignItems: "center"}}>
-                   <FontAwesome name="user" style={{ color: "black", fontSize: 25, fontWeight: "bold", paddingHorizontal: 5}}/>
-                   <Text style={styles.text}>{data.username}</Text>
+               </View>
+
+               <Svg style={{
+                 position: 'absolute',
+                 left: '80%',
+                 marginTop: 215,
+                 height: 50,
+                 width: '20%',
+               }}>
+
+                   <Path
+                     d="M 0 50 L 70 50 M 70 50 L 70 0 C 70 0 70 55 0 50 Z"
+                     fill="white"
+
+                     stroke-width="3"
+                   />
+
+               </Svg>
+
+               <View style={{
+                 position: "absolute",
+                 flexDirection: 'row',
+                 alignItems: 'center',
+                 paddingHorizontal: 10,
+                 paddingVertical: 12,
+                 borderTopLeftRadius: 35,
+                 borderBottomLeftRadius: 35,
+                 borderBottomRightRadius: 35,
+                 marginTop: 265,
+                 backgroundColor: 'white',
+                 borderColor: 'gray',
+               }}>
+
+                 <View style={{flex: 1, paddingHorizontal: 10}}>
+                   <Image source={{uri: data.postUserImage}} style={{ width: 40, height: 40, borderRadius: 100 }}/>
                  </View>
-               </View>
 
-               {/* LIKE BOX */}
-               <View style={styles.box}>
-                 <TouchableOpacity
-                   style={{flexDirection:"row", justifyContent:"space-evenly", paddingHorizontal: 40, paddingVertical: 3}}
-                   onPress={like ? () => dislikePost(data.postID) : () => likePost(data.postID)}>
-                   <Ionicons name={like ? "heart": "heart-outline"}
-                              style={{fontSize: 20, color: like ? 'red' : 'black'}}/>
-                   <Text style={styles.text}> {data.isLiked ? (like ? data.likes : data.likes-1) : (like ? data.likes+1 : data.likes)}</Text>
-                 </TouchableOpacity>
 
-               </View>
-
-             </View>
-             <View style={{
-               flexDirection: 'row',
-               justifyContent: 'space-between',
-               alignItems: 'center',
-               paddingHorizontal: 30,
-
-             }}>
-
-               {/* LOCATION BOX*/}
-               <View style={styles.box}>
-                 <View style={{flexDirection: "row", justifyContent: "space-evenly", paddingHorizontal: 20}}>
-                   <Ionicons name="location-sharp" style={{ color: "red", fontSize: 25 }}/>
-                   <Text style={styles.text}>{data.location}</Text>
+                 <View style={{flex: 3}}>
+                   <Text style={{
+                     fontSize: 15,
+                     textAlignVertical: "center",
+                     color: 'black',
+                   }}>
+                     {data.title}
+                   </Text>
+                   <Text style={{
+                     fontSize: 15,
+                     textAlignVertical: "center",
+                     color: 'black',
+                     opacity: 0.4,
+                   }}>
+                     {data.location}
+                   </Text>
                  </View>
-               </View>
 
-               {/* ADD TO FAVOURITES BOX*/}
-               <View style={styles.box}>
-                 <Feather name="bookmark" style={{fontSize: 20, color: 'black', textAlign:"center", paddingVertical: 3}}/>
+                 <View style={{flex: 2, flexDirection: "row", justifyContent: "space-around"}}>
+                   <TouchableOpacity style={{paddingHorizontal: 5}}
+                     onPress={like ? () => dislikePost(data.postID) : () => likePost(data.postID)}>
+                     <Ionicons name={like ? "heart": "heart-outline"}
+                               style={{fontSize: 25, color: like ? 'red' : 'black'}}/>
+                   </TouchableOpacity>
+
+                   <TouchableOpacity style={{paddingHorizontal: 5}}>
+                    <Feather name="bookmark" style={{fontSize: 25, color: 'black'}}/>
+                   </TouchableOpacity>
+
+                   <SimpleLineIcons name="options-vertical" style={{fontSize: 22, color: 'black', paddingHorizontal: 5}}/>
+
+                 </View>
+
+
                </View>
 
              </View>
@@ -149,6 +149,7 @@ const Post = (props) => {
        })
      }
    </View>
+
   )
 }
 
@@ -167,7 +168,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-    fontWeight: "bold",
     textAlign: "center",
     textAlignVertical: "center",
     color: 'black',
