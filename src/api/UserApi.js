@@ -147,6 +147,10 @@ export function currentUser() {
   return auth().currentUser;
 }
 
+export function googleUser() {
+    return GoogleSignin.getCurrentUser()
+}
+
 export async function searchUsers(username) {
   const doc = await firestore().collectionGroup("public_info").where("username", "==", username.toLowerCase()).get();
   if (doc.empty)
