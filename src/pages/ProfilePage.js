@@ -10,8 +10,7 @@ import {
   View,
 } from "react-native";
 import { HStack, Text, VStack } from "native-base";
-import { Avatar } from "react-native-ui-lib";
-import { Button } from "@ui-kitten/components";
+import { Avatar, Button } from "react-native-ui-lib";
 import {
   currentUser, getFollowers, getFollowings,
   getUserData,
@@ -22,14 +21,15 @@ import {
 import { showToast } from "../utils/Utils";
 import ModalPhoto from "../utils/ModalPhoto";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import LinearGradient from "react-native-linear-gradient";
 
 export default function ProfilePage(props) {
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [userData, setUserData] = useState("");
-  const [followers, setFollowers] = useState('');
-  const [followings, setFollowings] = useState('');
+  const [followers, setFollowers] = useState("");
+  const [followings, setFollowings] = useState("");
   const [dummyUser, setDummyUser] = useState();
   const [dummyRestoreData, setDummyRestoreData] = useState();
   const [showModal, setShowModal] = useState(false);
@@ -38,7 +38,7 @@ export default function ProfilePage(props) {
   const [newLastName, setNewLastName] = useState();
   const [newUsername, setNewUsername] = useState();
   const [newBio, setNewBio] = useState();
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
 
 
   const pencil = require("../../assets/pencil.png");
@@ -48,21 +48,21 @@ export default function ProfilePage(props) {
     setRefreshing(true);
     setDummyUser(Math.random);
     setRefreshing(false);
-  }
+  };
 
   // Set into the NEW variables the original values
   useEffect(() => {
-    setNewFirstName(userData.first_name)
-    setNewLastName(userData.last_name)
-    setNewUsername(userData.username)
-    setNewBio(userData.bio)
+    setNewFirstName(userData.first_name);
+    setNewLastName(userData.last_name);
+    setNewUsername(userData.username);
+    setNewBio(userData.bio);
   }, [userData, dummyRestoreData]);
 
   // useEffect triggers when a user info is changed and the dummyUser is used to triggering the useEffect
   useEffect(() => {
     const updateUserData = async () => {
-      const user = await currentUser()
-      const userData = await getUserData()
+      const user = await currentUser();
+      const userData = await getUserData();
       setUserData(userData);
       setUser(user);
       const followers = await getFollowers(user.uid);
@@ -76,8 +76,8 @@ export default function ProfilePage(props) {
   // Initial action when the page is created
   useEffect(() => {
     const updateUserData = async () => {
-      const uid = currentUser().uid
-      const userData = await getUserData()
+      const uid = currentUser().uid;
+      const userData = await getUserData();
       const followers = await getFollowers(uid);
       const followings = await getFollowings(uid);
       setUserData(userData);
@@ -101,6 +101,7 @@ export default function ProfilePage(props) {
                    style={{
                      color: "black",
                      backgroundColor: "yellow",
+                     width: 200,
                    }}
         />
         <TextInput placeholder={userData.last_name}
@@ -117,12 +118,15 @@ export default function ProfilePage(props) {
 
   // This function returns the edit button (2 different cases)
   function iconOnEditing() {
-    return(
+    return (
       <HStack marginLeft={-50}>
-        <Icon name={"restore"} color={"red"} size={40} onPress={() => {setEdit(!edit); setDummyRestoreData(Math.random)}} />
+        <Icon name={"restore"} color={"red"} size={40} onPress={() => {
+          setEdit(!edit);
+          setDummyRestoreData(Math.random);
+        }} />
         <Icon name={"check"} color={"green"} size={40} onPress={() => confirmEdit()} />
       </HStack>
-    )
+    );
   }
 
   // Return the user badges
@@ -143,9 +147,9 @@ export default function ProfilePage(props) {
   // If user does not edit anything, it does not write on DB
   async function confirmEdit() {
     if (newFirstName !== userData.first_name || newLastName !== userData.last_name || newUsername !== userData.username || newBio !== userData.bio) {
-      setDummyUser(await updateUserInfo(newFirstName, newLastName, newUsername, newBio))
+      setDummyUser(await updateUserInfo(newFirstName, newLastName, newUsername, newBio));
     }
-    setEdit(!edit)
+    setEdit(!edit);
   }
 
   function isActiveBadge(number) {
@@ -193,32 +197,33 @@ export default function ProfilePage(props) {
 
   if (user != null) {
     return (
-    <ScrollView style={styles.scrollView} keyboardShouldPersistTaps={"handled"} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
-      <StatusBar backgroundColor={"white"} barStyle={'dark-content'} />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View>
+      <ScrollView style={styles.scrollView} keyboardShouldPersistTaps={"handled"}
+                  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <VStack>
             <VStack justifyContent={"space-between"} alignContent={"stretch"}
-                    style={{ padding: "3%", alignSelf: "center", backgroundColor: "white", margin: "3%" }}>
+                    style={styles.mainContainer}>
               <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
-                <Avatar animate badgeProps={{
-                  onPress() {
-                    changeProfileLogo();
-                  }, size: 26, icon: pencil, backgroundColor: "white", borderWidth: 1, borderRadius: 20,
-                }} badgePosition={"BOTTOM_RIGHT"} size={100}
-                        source={user.photoURL !== null ? { uri: user.photoURL } : null} />
-                <VStack style={{ padding: 20, width: "60%" }}>
+                <LinearGradient style={{borderRadius: 29}} colors={["#376AED", "#49B0E2", "#9CECFB"]}>
+                  <View style={{ margin: 1.8  , backgroundColor: 'white', borderRadius: 28 }}>
+                    <Avatar animate backgroundColor={"transparent"}
+                            imageStyle={{ borderRadius: 22, width: "84%", height: "84%", left: "8%", top: "8%" }}
+                            badgeProps={{
+                              onPress() {
+                                changeProfileLogo();
+                              }, size: 26, icon: pencil, backgroundColor: "white", borderWidth: 1, borderRadius: 20,
+                            }} badgePosition={"BOTTOM_RIGHT"} size={90}
+                            source={user.photoURL !== null ? { uri: user.photoURL } : null} />
+                  </View>
+                </LinearGradient>
+                <VStack style={{ padding: 20 }}>
 
                   <View>
-                    {edit ?
-                      // Edit name
-                      editingName()
-                      :
-                      // Show name
-                      <Text style={styles.title}>{userData.first_name + " " + userData.last_name}</Text>
-                    }
 
-                    {/* Show e-mail*/}
-                    <Text style={styles.text}>{user.email}</Text>
+                    {/* Show e-mail*/
+                      //<Text style={styles.text}>{user.email}</Text>
+                    }
                     {edit ?
                       // Edit username
                       <TextInput
@@ -233,42 +238,30 @@ export default function ProfilePage(props) {
                         }} /> :
 
                       // Show username if edit is not active (or ask to choose a new one if not exists)
-                      (userData.username !== "" ? <Text style={{ color: "grey" }}>@{userData.username}</Text> :
+                      (userData.username !== "" ? <Text style={styles.username}>@{userData.username}</Text> :
                         <TextInput placeholder={"Click to set @username"}
                                    onSubmitEditing={(data) => changeUsername(data.nativeEvent.text)}
                                    autoCapitalize={"none"}
                                    placeholderTextColor={"grey"}
-                                   style={{
-                                     color: "grey",
-                                   }}
+                                   style={{ color: "grey" }}
                                    onPress={changeUsername} />)}
+                    {edit ?
+                      // Edit name
+                      editingName()
+                      :
+                      // Show name
+                      <Text style={styles.name}>{userData.first_name + " " + userData.last_name}</Text>
+                    }
+                    {/* Show user title*/}
+                    <Text style={styles.userTitle}>Explorer</Text>
                   </View>
                 </VStack>
               </HStack>
 
-              {/* Vanity metrics */}
-              <VStack alignItems={"center"}>
-                <HStack backgroundColor={"gray.100"} width={"70%"} alignItems={"center"}
-                        justifyContent={"space-between"} alignContent={"stretch"}>
-                  <VStack alignItems={"center"}>
-                    <Text style={styles.text}>Trips</Text>
-                    <Text style={styles.text}>23</Text>
-                  </VStack>
-                  <VStack alignItems={"center"}>
-                    <Text style={styles.text}>Followers</Text>
-                    <Text style={styles.text}>{followers.length}</Text>
-                  </VStack>
-                  <VStack alignItems={"center"}>
-                    <Text style={{ color: "black", width: "105%" }}>Followings</Text>
-                    <Text style={styles.text}>{followings.length}</Text>
-                  </VStack>
-                </HStack>
-              </VStack>
-
               {/* Bio */}
               <VStack>
                 <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
-                  <Text style={styles.title}>About me</Text>
+                  <Text style={styles.aboutMeTitle}>About me</Text>
 
 
                   {// Edit button
@@ -290,9 +283,9 @@ export default function ProfilePage(props) {
                       fontSize: 15,
                       backgroundColor: "yellow",
                     }} /> :
-                    // Ask user to add bio if it not exists
-                    (userData.bio ? <Text style={styles.text}>{userData.bio}</Text> :
-                      // Show bio
+                    // Show bio
+                    (userData.bio ? <Text style={styles.aboutMeText}>{userData.bio}</Text> :
+                      // Ask user to add bio if it not exists
                       <TextInput placeholder={"Click to set a description.."}
                                  onSubmitEditing={(data) => changeBio(data.nativeEvent.text)}
                                  placeholderTextColor={"grey"} style={{
@@ -301,21 +294,42 @@ export default function ProfilePage(props) {
                       }} onPress={changeBio} />)}
               </VStack>
 
-              {/* Badges*/}
-              <VStack>
-                <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
-                  <Text style={styles.title}>My Badges</Text>
+              {/* Vanity metrics */}
+              <VStack alignItems={"center"}>
+                <HStack backgroundColor={"white"} top={44} borderColor={"black"} borderWidth={0.5} borderRadius={12}
+                        width={"80%"} paddingLeft={5} paddingRight={5} paddingBottom={1} paddingTop={1}
+                        alignItems={"center"}
+                        justifyContent={"space-between"} alignContent={"stretch"}>
+                  <VStack alignItems={"center"}>
+                    <Text style={styles.numberVanity}>23</Text>
+                    <Text style={styles.textVanity}>Trips</Text>
+                  </VStack>
+                  <VStack alignItems={"center"}>
+                    <Text style={styles.numberVanity}>{followings.length}</Text>
+                    <Text style={styles.textVanity}>Following</Text>
+                  </VStack>
+                  <VStack alignItems={"center"}>
+                    <Text style={styles.numberVanity}>{followers.length}</Text>
+                    <Text style={styles.textVanity}>Followers</Text>
+                  </VStack>
                 </HStack>
-                {badges()}
               </VStack>
             </VStack>
 
+            {/* Badges*/}
+            <VStack>
+              <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
+              </HStack>
+              {badges()}
+
+            </VStack>
+
             <View style={styles.boxButton}>
-              <Button onPress={Logout}>Logout</Button>
+              <Button label={'Logout'} style={styles.button} labelStyle={styles.buttonText} onPress={Logout}/>
             </View>
             <ModalPhoto typeOfUpload="profile_photo" show={showModal} updateUser={(response) => setDummyUser(response)}
                         updateShow={(response) => setShowModal(response)} modalResponse />
-          </View>
+          </VStack>
         </TouchableWithoutFeedback>
       </ScrollView>
     );
@@ -348,7 +362,83 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   scrollView: {
-    backgroundColor: "white"
+    backgroundColor: "white",
+  },
+  mainContainer: {
+    padding: "5%",
+    width: "85%",
+    alignSelf: "center",
+    backgroundColor: "white",
+    margin: "4%",
+    shadowColor: "rgba(82, 130, 255, 0.5)",
+    elevation: 8,
+    borderRadius: 16,
+    marginBottom: 50
+  },
+  userTitle: {
+    color: "#376AED",
+    fontFamily: "Barlow",
+    fontWeight: "500",
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  name: {
+    color: "#0D253C",
+    fontFamily: "Avenir",
+    fontWeight: "800",
+    fontSize: 18,
+    marginBottom: 10,
+    lineHeight: 25,
+  },
+  username: {
+    color: "#2D4379",
+    fontFamily: "Barlow",
+    fontWeight: "500",
+    marginBottom: 5,
+    fontSize: 14,
+    lineHeight: 17,
+    letterSpacing: -0.24,
+  },
+  aboutMeTitle: {
+    color: "#0D253C",
+    fontFamily: "Barlow",
+    fontWeight: "800",
+    fontSize: 16,
+    lineHeight: 19,
+  },
+  aboutMeText: {
+    color: "#2D4379",
+    fontFamily: "Barlow",
+    fontWeight: "400",
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 6,
+  },
+  numberVanity: {
+    color: "black",
+    fontFamily: "Barlow",
+    lineHeight: 22,
+    fontSize: 20,
+  },
+  textVanity: {
+    color: "rgba(0, 0, 0, 0.87)",
+    fontFamily: "Barlow",
+    fontWeight: "500",
+    fontSize: 12,
+    lineHeight: 18,
+    textAlign: "center",
+  },
+  button: {
+    backgroundColor: "#386BED",
+    borderColor: "transparent",
+    borderRadius: 12,
+  },
+  buttonText: {
+    fontFamily: 'Barlow',
+    fontSize: 18,
+    fontWeight: "bold",
+    paddingLeft: 15,
+    paddingRight: 15
   }
 });
 
