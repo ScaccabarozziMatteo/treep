@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Pressable, ScrollView, Stack } from "native-base";
+import { StatusBar, StyleSheet, Text, View } from "react-native";
+import { Pressable, VStack, HStack, ScrollView } from "native-base";
 import { Button, Input } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { emailLogin, signInWithGoogle, onAuthStateChange } from "../api/UserApi";
-import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import ProfilePage from "./ProfilePage";
 import { showToast } from "../utils/Utils";
@@ -82,8 +81,10 @@ export default function LoginPage({ navigation, route }) {
 
   if (!user) {
     return (
-      <ScrollView keyboardShouldPersistTaps={'handled'}>
+      <ScrollView keyboardShouldPersistTaps={'handled'} style={{backgroundColor: "black"}}>
         <View style={{alignSelf: "center", marginTop: '10%'}}>
+          <Text style={styles.title}>Sign In</Text>
+          <Text style={styles.subtitle}>Sign in now to access and share your trips  and destinations.</Text>
           <Controller
             control={control}
             rules={{
@@ -140,16 +141,16 @@ export default function LoginPage({ navigation, route }) {
             name="password"
           />
 
-          <Text style={{color: 'black', alignSelf: 'flex-end'}}>Forgot password?</Text>
+          <Text style={{color: 'rgba(255, 255, 255, 0.7)', alignSelf: 'flex-end'}}>Forgot password?</Text>
 
           <View>
-            <Button onPress={handleSubmit(EmailLogin)}>Login</Button>
+            <Button onPress={handleSubmit(EmailLogin)} style={styles.button}>LOGIN</Button>
 
-            <Stack direction={'row'}>
-              <Text style={styles.text}>Need an account?</Text><Pressable
-              onPress={() => {reset(); navigation.push("Registration")}}><Text style={{ color: "purple" }}>Sign
-              Up</Text></Pressable><Text style={styles.text}> now!</Text>
-            </Stack>
+            <HStack>
+              <Text style={styles.text}>Don't have an account?</Text><Pressable
+              onPress={() => {reset(); navigation.push("Registration")}}><Text style={{ color: "white", fontWeight: "bold", width: "110%" }}> Sign
+              Up</Text></Pressable>
+            </HStack>
           </View>
 
           <View style={styles.boxButton}>
@@ -162,7 +163,7 @@ export default function LoginPage({ navigation, route }) {
   }
   // Else if the user is logged, show they're profile page
   return (
-    <ProfilePage navigation={navigation} update={route.params} />
+    <ProfilePage navigation={navigation} showHeader={false} update={route.params} />
   );
 }
 
@@ -172,10 +173,9 @@ const styles = StyleSheet.create({
     flexDirection: "column", // row
     alignItems: "center",
   },
-  boxButton: {
-    paddingTop: 20,
-    width: "100%",
-    alignSelf: "center",
+  button: {
+    backgroundColor: "#3F799D",
+    borderColor: 'rgba(0, 0, 0, 0)'
   },
   input: {
     color: "black",
@@ -183,7 +183,17 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   text: {
-    color: "black",
+    color: "white",
     textAlign: "center",
   },
+  title: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold"
+  },
+  subtitle: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 16,
+    paddingBottom: 40
+  }
 });

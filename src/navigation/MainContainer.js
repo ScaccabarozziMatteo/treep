@@ -16,7 +16,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import RegistrationPage from "../pages/RegistrationPage";
 import SearchUsers from "../pages/SearchUsers";
 import CompleteRegistrationPage from "../pages/CompleteRegistrationPage";
-import { logout } from "../api/UserApi";
+import { currentUser, logout } from "../api/UserApi";
 import UserProfile from "../pages/UserProfile";
 
 // Pages names
@@ -58,19 +58,20 @@ function TabContainer({ navigation }) {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        headerTintColor: "white",
-        headerStyle: { backgroundColor: "#191d3a" },
-        tabBarActiveTintColor: "#191d3a",
+        headerTintColor: "black",
+        tabBarShowLabel: false,
+        headerStyle: { backgroundColor: "white", shadowColor: "rgba(0,0,0, 0.7)"},
+        tabBarActiveTintColor: "#6540F5",
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { paddingBottom: 5, fontSize: 13 },
         tabBarStyle: { height: 60 },
-        headerTitleAlign: "center",
+        headerTitleAlign: "left",
       })}>
       <Tab.Screen name={homeName} component={HomePage} />
-      <Tab.Screen options={{headerRight: () => <Icon onPress={() => navigation.navigate(SearchUsers)} color={'white'} size={30} name={"person-search"}/>}} name={exploreName} component={ExplorePage} />
-      <Tab.Screen options={{headerRight: () => <Icon onPress={() => null} color={'white'} size={30} name={"settings"}/>}} name={profileName} component={LoginPage} />
+      <Tab.Screen options={{headerRight: () => <Icon onPress={() => navigation.navigate(SearchUsers)} color={'black'} size={30} name={"person-search"}/>}} name={exploreName} component={ExplorePage} />
       <Tab.Screen name={newTripName} component={NewTripPage} />
       <Tab.Screen name={aroundMeName} component={AroundMePage} />
+      <Tab.Screen options={{headerShown: false}} name={profileName} component={LoginPage} />
     </Tab.Navigator>
   );
 }
@@ -78,16 +79,15 @@ function TabContainer({ navigation }) {
 export default function MainContainer() {
   return (
     <NavigationContainer>
-      <StatusBar backgroundColor={"#191d3a"} />
       <Stack.Navigator screenOptions={() => ({
         presentation: 'modal',
-        headerTintColor: "white",
-        headerStyle: { backgroundColor: "#191d3a" },
+        headerTintColor: "black",
+        headerStyle: { backgroundColor: "white", shadowColor: "rgba(0,0,0, 0.7)" },
         tabBarActiveTintColor: "#191d3a",
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { paddingBottom: 5, fontSize: 13 },
         tabBarStyle: { height: 60 },
-        headerTitleAlign: "center",
+        headerTitleAlign: "left",
       })
       }>
         <Stack.Screen
@@ -98,7 +98,7 @@ export default function MainContainer() {
         <Stack.Screen name='Registration' component={RegistrationPage}/>
         <Stack.Screen name='CompleteRegistrationPage' options={({navigation}) => ({title: 'Complete Registration', animationEnabled: true, headerLeft: () => <Icon size={28} name={"arrow-back"} color={'white'} onPress={() => {logout(); navigation.navigate('Profile')}}/>})} component={CompleteRegistrationPage} />
         <Stack.Screen name='SearchUsers' options={{title: 'Search Users', animationEnabled: false}} component={SearchUsers}/>
-        <Stack.Screen name='UserProfile' options={{title: 'Search Users', animationEnabled: true}} component={UserProfile}/>
+        <Stack.Screen name='UserProfile' options={{title: 'Searched User', animationEnabled: true}} component={UserProfile}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

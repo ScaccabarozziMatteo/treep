@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Keyboard, ScrollView, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
-import { HStack, Text, VStack } from "native-base";
+import { Keyboard, Text, ScrollView, StatusBar, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { HStack, VStack } from "native-base";
 import { Avatar } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Button } from "@ui-kitten/components";
@@ -44,13 +44,13 @@ export default function UserProfile({ navigation, route }) {
       return (
         <HStack justifyContent={"space-between"} alignContent={"stretch"}>
           <HStack>
-            <Button>Message</Button>
+            {!followers.includes(currentUser().uid) ?
+              <Button style={styles.button} onPress={async () => setDummyState(await addFollow(currentUser().uid, userID))}><Text style={styles.textButton}>Follow</Text></Button> :
+              <Button style={styles.button} onPress={async () => setDummyState(await removeFollow(currentUser().uid, userID))}><Text style={styles.textButton}>Unfollow</Text></Button>
+            }
           </HStack>
           <HStack>
-            {!followers.includes(currentUser().uid) ?
-              <Button status={'success'} onPress={async () => setDummyState(await addFollow(currentUser().uid, userID))}>Follow</Button> :
-              <Button status={'danger'} onPress={async () => setDummyState(await removeFollow(currentUser().uid, userID))}>Unfollow</Button>
-            }
+            <Button style={styles.button} >Message</Button>
           </HStack>
         </HStack>
       );
@@ -75,49 +75,39 @@ export default function UserProfile({ navigation, route }) {
   }
 
   return (
-    <ScrollView keyboardShouldPersistTaps={"handled"}>
+    <ScrollView keyboardShouldPersistTaps={"handled"} style={{backgroundColor: 'white'}}>
+      <StatusBar backgroundColor={"white"} barStyle={'dark-content'} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View>
+        <VStack>
           <VStack justifyContent={"space-between"} alignContent={"stretch"}
-                  style={{ padding: "3%", alignSelf: "center", backgroundColor: "white", margin: "3%" }}>
-            <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
+                  style={styles.mainContainer}>
+            <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"} style={{paddingBottom: 20, paddingLeft: 20, paddingTop: 20}}>
               <Avatar animate size={100} source={userData.photoURL !== null ? { uri: userData.photoURL } : null} />
-              <VStack style={{ padding: 20, width: "60%" }}>
-
+              <VStack style={{ width: "60%" }}>
+                <View>
+                {
+                  /* Show username*/
+                  (userData.username !== "" ? <Text style={styles.username}>@{userData.username}</Text> : null)}
+                </View>
                 <View>
                   {/* Show name*/}
-                  <Text style={styles.title}>{userData.first_name + " " + userData.last_name}</Text>
-
-                  {
-                    /* Show username*/
-                    (userData.username !== "" ? <Text style={{ color: "grey" }}>@{userData.username}</Text> : null)}
+                  <Text style={styles.name}>{userData.first_name + " " + userData.last_name}</Text>
+                </View>
+                <View>
+                  {/* Show name*/}
+                  <Text style={styles.userTitle}>Explorer</Text>
                 </View>
               </VStack>
             </HStack>
 
-            {/* Vanity metrics */}
-            <VStack alignItems={"center"}>
-              <HStack backgroundColor={"gray.100"} width={"70%"} alignItems={"center"}
-                      justifyContent={"space-between"} alignContent={"stretch"}>
-                <VStack alignItems={"center"}>
-                  <Text style={styles.text}>Trips</Text>
-                  <Text style={styles.text}>23</Text>
-                </VStack>
-                <VStack alignItems={"center"}>
-                  <Text style={styles.text}>Followers</Text>
-                  <Text style={styles.text}>{followers.length}</Text>
-                </VStack>
-                <VStack alignItems={"center"}>
-                  <Text style={{ color: "black", width: "105%" }}>Followings</Text>
-                  <Text style={styles.text}>{followings.length}</Text>
-                </VStack>
-              </HStack>
-            </VStack>
+
+            {/* Buttons*/}
+            {buttons()}
 
             {/* Bio */}
             <VStack>
               <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
-                <Text style={styles.title}>About me</Text>
+                <Text style={styles.aboutMeTitle}>About me</Text>
 
               </HStack>
 
@@ -126,18 +116,35 @@ export default function UserProfile({ navigation, route }) {
                 (userData.bio ? <Text style={styles.text}>{userData.bio}</Text> : null)}
             </VStack>
 
-            {/* Buttons*/}
-            {buttons()}
 
-            {/* Badges*/}
-            <VStack>
-              <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
-                <Text style={styles.title}>My Badges</Text>
+            {/* Vanity metrics */}
+            <VStack alignItems={"center"}>
+              <HStack backgroundColor={"white"} width={"70%"} alignItems={"center"}
+                      justifyContent={"space-between"} alignContent={"stretch"}>
+                <VStack alignItems={"center"}>
+                  <Text style={styles.numberVanity}>23</Text>
+                  <Text style={styles.textVanity}>Trips</Text>
+                </VStack>
+                <VStack alignItems={"center"}>
+                  <Text style={styles.numberVanity}>{followers.length}</Text>
+                  <Text style={styles.textVanity}>Followers</Text>
+                </VStack>
+                <VStack alignItems={"center"}>
+                  <Text style={styles.numberVanity}>{followings.length}</Text>
+                  <Text style={styles.textVanity}>Followings</Text>
+                </VStack>
               </HStack>
-              {badges()}
             </VStack>
           </VStack>
-        </View>
+
+          {/* Badges*/}
+          <VStack>
+            <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
+              <Text style={styles.title}>My Badges</Text>
+            </HStack>
+            {badges()}
+          </VStack>
+        </VStack>
       </TouchableWithoutFeedback>
     </ScrollView>
   );
@@ -162,11 +169,65 @@ const styles = StyleSheet.create({
   text: {
     color: "black",
   },
-  title: {
-    color: "black",
-    fontWeight: "700",
+  name: {
+    fontFamily: 'Avenir',
+    color: "#0D253C",
+    fontWeight: "800",
+    fontSize: 18,
+    lineHeight: 25,
+    marginTop: 5
+  },
+  aboutMeTitle: {
+    fontFamily: 'Avenir',
+    color: "#0D253C",
+    fontWeight: "800",
+    fontSize: 18,
+    lineHeight: 25,
     width: "90%",
     marginTop: 30,
   },
+  mainContainer: {
+    padding: "3%",
+    alignSelf: "center",
+    backgroundColor: "white",
+    margin: "3%",
+    shadowColor: "rgba(82, 130, 255, 0.6)",
+    elevation: 8,
+    borderRadius: 16,
+    shadowOpacity: 0.2
+  },
+  button: {
+    backgroundColor: "#386BED",
+    borderColor: 'transparent',
+    borderRadius: 12,
+  },
+  username: {
+    color: "#2D4379",
+    fontFamily: 'Barlow',
+    fontWeight: 'bold',
+    letterSpacing: -0.24,
+    lineHeight: 17,
+    fontSize: 14
+  },
+  userTitle: {
+    color: '#376AED',
+    marginTop: 7,
+    fontSize: 16,
+    lineHeight: 20
+  },
+  numberVanity: {
+    color: 'black',
+    fontFamily: 'Barlow',
+    lineHeight: 22,
+    fontSize: 20
+  },
+  textVanity: {
+    color: 'rgba(0, 0, 0, 0.87)',
+    fontFamily: 'Barlow',
+
+  },
+  textButton: {
+    color: 'black'
+  }
 });
 

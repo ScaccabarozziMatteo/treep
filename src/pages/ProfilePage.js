@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   Keyboard,
   RefreshControl,
-  ScrollView,
+  ScrollView, StatusBar,
   StyleSheet,
   TextInput,
   TouchableWithoutFeedback,
@@ -193,8 +193,9 @@ export default function ProfilePage(props) {
 
   if (user != null) {
     return (
-      <ScrollView keyboardShouldPersistTaps={"handled"} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <ScrollView style={styles.scrollView} keyboardShouldPersistTaps={"handled"} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+      <StatusBar backgroundColor={"white"} barStyle={'dark-content'} />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View>
             <VStack justifyContent={"space-between"} alignContent={"stretch"}
                     style={{ padding: "3%", alignSelf: "center", backgroundColor: "white", margin: "3%" }}>
@@ -346,5 +347,8 @@ const styles = StyleSheet.create({
     width: "90%",
     marginTop: 30,
   },
+  scrollView: {
+    backgroundColor: "white"
+  }
 });
 
