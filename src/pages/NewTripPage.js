@@ -2,6 +2,8 @@ import {View, StyleSheet, Text} from 'react-native';
 import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Button, Datepicker, Input, Select} from '@ui-kitten/components';
+import { VStack } from "native-base";
+import { newTrip } from "../api/TripApi";
 
 export default function NewTripPage() {
 
@@ -9,6 +11,7 @@ export default function NewTripPage() {
 
   const {
     control,
+    handleSubmit,
     formState: {errors},
   } = useForm();
 
@@ -85,7 +88,18 @@ export default function NewTripPage() {
         )}
         name="description"
       />
+      <VStack alignItems={'center'} style={{width: '100%'}}>
+        <Button
+          onPress={handleSubmit(async form => {
+            await newTrip(form);
+          })}
+          status={'success'}
+          style={{width: '60%'}}>
+          Complete Registration
+        </Button>
+      </VStack>
     </View>
+
   );
 }
 

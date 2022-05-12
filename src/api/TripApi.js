@@ -53,3 +53,19 @@ export async function changeCoverImage(tripId) {
   await firestore().collection('Trip').doc('trip_data').update({photoURL: url});
   await showToast('success', 'Upload', 'Cover photo uploaded!');
 }
+
+// Add new Trip
+export async function newTrip(form) {
+  const tripData = {
+    trip_title: form.title,
+    location: form.location,
+    description: form.description,
+  };
+
+  firestore()
+    .collection('Trip')
+    .add(tripData)
+    .then(() => {
+      console.log('Trip added!');
+    });
+}
