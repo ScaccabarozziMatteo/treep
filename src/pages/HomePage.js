@@ -2,7 +2,16 @@ import React, { useEffect, useState } from "react";
 
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
-import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  Text,
+  StyleSheet,
+  RefreshControl,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import Post from "../components/Post";
 import { getAll } from "../api/TripApi";
 
@@ -50,6 +59,7 @@ export default function HomePage() {
 
   return (
     <View>
+      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <SafeAreaView>
           <FlatList
             keyExtractor={(item, index)=>index.toString()}

@@ -205,8 +205,8 @@ export default function ProfilePage(props) {
             <VStack justifyContent={"space-between"} alignContent={"stretch"}
                     style={styles.mainContainer}>
               <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
-                <LinearGradient style={{borderRadius: 29}} colors={["#376AED", "#49B0E2", "#9CECFB"]}>
-                  <View style={{ margin: 1.8  , backgroundColor: 'white', borderRadius: 28 }}>
+                <LinearGradient style={{ borderRadius: 29 }} colors={["#376AED", "#49B0E2", "#9CECFB"]}>
+                  <View style={{ margin: 1.8, backgroundColor: "white", borderRadius: 28 }}>
                     <Avatar animate backgroundColor={"transparent"}
                             imageStyle={{ borderRadius: 22, width: "84%", height: "84%", left: "8%", top: "8%" }}
                             badgeProps={{
@@ -217,7 +217,7 @@ export default function ProfilePage(props) {
                             source={user.photoURL !== null ? { uri: user.photoURL } : null} />
                   </View>
                 </LinearGradient>
-                <VStack style={{ padding: 20 }}>
+                <VStack justifyContent={"space-between"} alignContent={"stretch"} style={{ width: '80%', padding: 20 }}>
 
                   <View>
 
@@ -325,7 +325,7 @@ export default function ProfilePage(props) {
             </VStack>
 
             <View style={styles.boxButton}>
-              <Button label={'Logout'} style={styles.button} labelStyle={styles.buttonText} onPress={Logout}/>
+              <Button label={"Logout"} style={styles.button} labelStyle={styles.buttonText} onPress={Logout} />
             </View>
             <ModalPhoto typeOfUpload="profile_photo" show={showModal} updateUser={(response) => setDummyUser(response)}
                         updateShow={(response) => setShowModal(response)} modalResponse />
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     shadowColor: "rgba(82, 130, 255, 0.5)",
     elevation: 8,
     borderRadius: 16,
-    marginBottom: 50
+    marginBottom: 50,
   },
   userTitle: {
     color: "#376AED",
@@ -434,11 +434,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   buttonText: {
-    fontFamily: 'Barlow',
+    fontFamily: "Barlow",
     fontSize: 18,
     fontWeight: "bold",
     paddingLeft: 15,
-    paddingRight: 15
-  }
+    paddingRight: 15,
+  },
 });
 
