@@ -60,7 +60,7 @@ export default function UserProfile({ navigation, route }) {
             }
           </HStack>
           <HStack>
-            <Button onPress={() => navigation.navigate({ name: 'ChatPage', params: {titlePage: 'Chat with ' + userData.first_name} })} style={styles.button} labelStyle={styles.buttonText} label={'Message'} />
+            <Button onPress={() => navigation.navigate({ name: 'ChatPage', params: {titlePage: 'Chat with ' + userData.first_name, friendID: userID} })} style={styles.button} labelStyle={styles.buttonText} label={'Message'} />
           </HStack>
         </HStack>
       );
