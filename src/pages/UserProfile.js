@@ -60,7 +60,7 @@ export default function UserProfile({ navigation, route }) {
             }
           </HStack>
           <HStack>
-            <Button style={styles.button} labelStyle={styles.buttonText} label={'Message'} />
+            <Button onPress={() => navigation.navigate({ name: 'ChatPage', params: {titlePage: 'Chat with ' + userData.first_name} })} style={styles.button} labelStyle={styles.buttonText} label={'Message'} />
           </HStack>
         </HStack>
       );
@@ -68,7 +68,7 @@ export default function UserProfile({ navigation, route }) {
       return (
         <HStack justifyContent={"center"} alignContent={"center"}>
           <HStack>
-            <Button onPress={() => navigation.navigate("Profile")}>LOGIN to interact with {userData.first_name}</Button>
+            <Button style={styles.button} onPress={() => navigation.navigate("Profile")} label={''}><Text style={styles.buttonText}>LOGIN to interact with {userData.first_name}</Text></Button>
           </HStack>
         </HStack>
       );
@@ -226,8 +226,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Barlow',
     fontSize: 18,
     fontWeight: "bold",
-    paddingLeft: 15,
-    paddingRight: 15
+    color: 'white',
+    paddingLeft: 10,
+    paddingRight: 10
   },
   username: {
     color: "#2D4379",

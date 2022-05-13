@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StatusBar, StyleSheet, View } from "react-native";
 import { Pressable, VStack, HStack, ScrollView } from "native-base";
 import { Input } from "@ui-kitten/components";
 import { Controller, useForm } from "react-hook-form";
@@ -84,6 +84,7 @@ export default function LoginPage({ navigation, route }) {
   if (!user) {
     return (
       <ScrollView keyboardShouldPersistTaps={'handled'} style={{backgroundColor: "black"}}>
+        <StatusBar backgroundColor={"black"} barStyle={"light-content"} />
         <View style={{alignSelf: "center", marginTop: '10%'}}>
           <Text style={styles.title}>Sign In</Text>
           <Text style={styles.subtitle}>Sign in now to access and share your trips and destinations.</Text>
@@ -163,7 +164,7 @@ export default function LoginPage({ navigation, route }) {
   }
   // Else if the user is logged, show they're profile page
   return (
-    <ProfilePage navigation={navigation} showHeader={false} update={route.params} />
+    <ProfilePage navigation={navigation} showHeader={true} update={route.params} />
   );
 }
 

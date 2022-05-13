@@ -18,6 +18,7 @@ import SearchUsers from "../pages/SearchUsers";
 import CompleteRegistrationPage from "../pages/CompleteRegistrationPage";
 import { currentUser, logout } from "../api/UserApi";
 import UserProfile from "../pages/UserProfile";
+import ChatPage from "../pages/ChatPage";
 
 // Pages names
 const homeName = "Home";
@@ -65,7 +66,7 @@ function TabContainer({ navigation }) {
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { fontFamily: "Barlow", paddingBottom: 5, fontSize: 13 },
         tabBarStyle: { height: 60 },
-        headerTitleStyle: { fontFamily: "Barlow" },
+        headerTitleStyle: { fontFamily: "Barlow", fontWeight: '700' },
         headerTitleAlign: "left",
       })}>
       <Tab.Screen name={homeName} component={HomePage} />
@@ -75,7 +76,7 @@ function TabContainer({ navigation }) {
       }} name={exploreName} component={ExplorePage} />
       <Tab.Screen name={newTripName} component={NewTripPage} />
       <Tab.Screen name={aroundMeName} component={AroundMePage} />
-      <Tab.Screen options={{ headerShown: false }} name={profileName} component={LoginPage} />
+      <Tab.Screen options={{headerShown: false}} name={profileName} component={LoginPage} />
     </Tab.Navigator>
   );
 }
@@ -91,7 +92,7 @@ export default function MainContainer() {
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { fontFamily: "Barlow", paddingBottom: 5, fontSize: 13 },
         tabBarStyle: { height: 60 },
-        headerTitleStyle: { fontFamily: "Barlow", fontWeight: "600" },
+        headerTitleStyle: { fontFamily: "Barlow", fontWeight: "700" },
         headerTitleAlign: "left",
       })
       }>
@@ -101,6 +102,9 @@ export default function MainContainer() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Registration" component={RegistrationPage} />
+        <Stack.Screen name="ChatPage" component={ChatPage}
+                      options={({ route }) => ({ headerTitle: route.params.titlePage })}
+        />
         <Stack.Screen name="CompleteRegistrationPage" options={({ navigation }) => ({
           title: "Complete Registration",
           animationEnabled: true,

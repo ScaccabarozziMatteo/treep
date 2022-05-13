@@ -21,6 +21,7 @@ import {
 import { showToast } from "../utils/Utils";
 import ModalPhoto from "../utils/ModalPhoto";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useNavigation } from '@react-navigation/native';
 import LinearGradient from "react-native-linear-gradient";
 
 export default function ProfilePage(props) {
@@ -43,6 +44,7 @@ export default function ProfilePage(props) {
 
   const pencil = require("../../assets/pencil.png");
 
+  const navigation = useNavigation();
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -164,6 +166,7 @@ export default function ProfilePage(props) {
 
   // Logout function
   function Logout() {
+    navigation.setOptions({headerShown: false})
     logout()
       .then(() => showToast("success", "Logout completed!", "See you soon!"))
       .catch(error1 => showToast("error", "Error", error1.message));
@@ -196,6 +199,9 @@ export default function ProfilePage(props) {
   }
 
   if (user != null) {
+
+    navigation.setOptions({ headerShown: true })
+
     return (
       <ScrollView style={styles.scrollView} keyboardShouldPersistTaps={"handled"}
                   refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
