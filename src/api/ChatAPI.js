@@ -24,8 +24,8 @@ export async function setChatsFirestore(friendID, chatID) {
     chatID: chatID,
   };
 
-  await firestore().collection("users/" + currentUser().uid + "/chats").doc(friendID).update(data)
-  await firestore().collection("users/" + friendID + "/chats").doc(currentUser().uid).update(data)
+  await firestore().collection("users/" + currentUser().uid + "/chats").doc(friendID).set(data, {merge: true})
+  await firestore().collection("users/" + friendID + "/chats").doc(currentUser().uid).set(data, {merge: true})
 
 }
 
@@ -34,14 +34,11 @@ export async function sendMessageDB(chatID, message) {
 
   const newReference = DB.ref('/chats/' + chatID).push();
 
-  console.log('Auto generated key: ', newReference.key);
-
   newReference
     .set({
       userID: currentUser().uid,
       body: message,
       timestamp: new Date().getTime(),
     })
-
 }
 
