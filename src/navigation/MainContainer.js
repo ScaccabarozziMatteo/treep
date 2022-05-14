@@ -25,7 +25,6 @@ const homeName = "Home";
 const profileName = "Profile";
 const exploreName = "Explore";
 const newTripName = "New Trip";
-const aroundMeName = "Around Me";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -66,7 +65,7 @@ function TabContainer({ navigation }) {
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { fontFamily: "Barlow", paddingBottom: 5, fontSize: 13 },
         tabBarStyle: { height: 60 },
-        headerTitleStyle: { fontFamily: "Barlow", fontWeight: '700' },
+        headerTitleStyle: { fontFamily: "Barlow", fontWeight: "700" },
         headerTitleAlign: "left",
       })}>
       <Tab.Screen name={homeName} component={HomePage} />
@@ -75,8 +74,7 @@ function TabContainer({ navigation }) {
                                  name={"person-search"} />,
       }} name={exploreName} component={ExplorePage} />
       <Tab.Screen name={newTripName} component={NewTripPage} />
-      <Tab.Screen name={aroundMeName} component={AroundMePage} />
-      <Tab.Screen options={{headerShown: false}} name={profileName} component={LoginPage} />
+      <Tab.Screen options={{ headerShown: false }} name={profileName} component={LoginPage} />
     </Tab.Navigator>
   );
 }
@@ -102,6 +100,7 @@ export default function MainContainer() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Registration" component={RegistrationPage} />
+        <Stack.Screen name="AroundMe" options={{ title: "Around Me" }} component={AroundMePage} />
         <Stack.Screen name="ChatPage" component={ChatPage}
                       options={({ route }) => ({ headerTitle: route.params.titlePage })}
         />
