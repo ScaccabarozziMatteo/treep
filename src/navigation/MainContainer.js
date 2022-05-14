@@ -5,10 +5,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 //Pages import
 import HomePage from "../pages/HomePage";
-import { useNavigation } from "@react-navigation/native";
 import ExplorePage from "../pages/ExplorePage";
 import { Icon } from "@rneui/base";
-import { StatusBar } from "react-native";
 import LoginPage from "../pages/LoginPage";
 import AroundMePage from "../pages/AroundMePage";
 import NewTripPage from "../pages/NewTripPage.js";
@@ -16,7 +14,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import RegistrationPage from "../pages/RegistrationPage";
 import SearchUsers from "../pages/SearchUsers";
 import CompleteRegistrationPage from "../pages/CompleteRegistrationPage";
-import { currentUser, logout } from "../api/UserApi";
+import { logout } from "../api/UserApi";
 import UserProfile from "../pages/UserProfile";
 import ChatPage from "../pages/ChatPage";
 
@@ -43,16 +41,13 @@ function TabContainer({ navigation }) {
               iconName = focused ? "home" : "home";
               break;
             case profileName:
-              iconName = focused ? "person" : "person";
+              iconName = focused ? "person" : "person-outline";
               break;
             case exploreName:
               iconName = focused ? "explore" : "explore";
               break;
             case newTripName:
               iconName = focused ? "add" : "add";
-              break;
-            case aroundMeName:
-              iconName = focused ? "people" : "people";
               break;
           }
 
@@ -85,7 +80,7 @@ export default function MainContainer() {
       <Stack.Navigator screenOptions={() => ({
         presentation: "modal",
         headerTintColor: "black",
-        headerStyle: { backgroundColor: "white", shadowColor: "rgba(0,0,0, 0.7)" },
+        headerStyle: { backgroundColor: "white", shadowColor: "rgba(0,0,0,0.7)" },
         tabBarActiveTintColor: "#191d3a",
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { fontFamily: "Barlow", paddingBottom: 5, fontSize: 13 },
@@ -99,7 +94,12 @@ export default function MainContainer() {
           component={TabContainer}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Registration" component={RegistrationPage} />
+        <Stack.Screen name="Registration" options={{
+          title: "Sign Up",
+          headerTintColor: 'white',
+          headerStyle: { backgroundColor: "black", shadowColor: 'black', height: 100 },
+          headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
+        }} component={RegistrationPage} />
         <Stack.Screen name="AroundMe" options={{ title: "Around Me" }} component={AroundMePage} />
         <Stack.Screen name="ChatPage" component={ChatPage}
                       options={({ route }) => ({ headerTitle: route.params.titlePage })}

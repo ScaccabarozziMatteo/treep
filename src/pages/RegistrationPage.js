@@ -1,12 +1,14 @@
-import { ScrollView, Stack, View } from "native-base";
+import { ScrollView, VStack, HStack, View } from "native-base";
 import React, { useState } from "react";
-import { Input, CheckBox, Button, Datepicker } from "@ui-kitten/components";
+import { Input, CheckBox, Datepicker } from "@ui-kitten/components";
+import { Button } from "react-native-ui-lib";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { StyleSheet, TextInput } from "react-native";
+import { StyleSheet } from "react-native";
 import { emailRegistration } from "../api/UserApi";
 import { Select, SelectItem } from "@ui-kitten/components";
 import { Text } from "react-native";
+import { TextInput } from "react-native-paper";
 
 
 export default function RegistrationPage({ navigation }) {
@@ -31,7 +33,7 @@ export default function RegistrationPage({ navigation }) {
       password: "",
       repeat_password: "",
       sex: "",
-      birthdate: ""
+      birthdate: "",
     },
   });
 
@@ -51,30 +53,32 @@ export default function RegistrationPage({ navigation }) {
 
   function firstModule(visibility) {
     return (
-      <View style={{opacity: visibility}}>
+      <VStack style={styles.container}>
+          <Text style={styles.subtitle}>Sign up now for free and start travelling, explore with Treep.</Text>
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Missing first name." },
+            required: { value: true, message: "Missing first name" },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Input
+            <TextInput
               style={styles.input}
-              defaultValue={'pippo'}
               onBlur={onBlur}
               onChangeText={onChange}
               autoCapitalize={"words"}
-              placeholder={"First Name"}
-              placeholderTextColor="grey"
-              status={errors.first_name ? "danger" : "basic"}
+              error={errors.first_name}
               label={"First Name"}
-              size={"large"}
+              color={'white'}
+              underlineColor={'#BEC2C2'}
+              activeUnderlineColor={'white'}
               value={value}
-              caption={captions(errors.first_name)}
+              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
             />
           )}
           name="first_name"
         />
+
+        {captions(errors.first_name)}
 
         <Controller
           control={control}
@@ -82,22 +86,23 @@ export default function RegistrationPage({ navigation }) {
             required: { value: true, message: "Missing last name." },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Input
+            <TextInput
               style={styles.input}
               onBlur={onBlur}
               onChangeText={onChange}
               autoCapitalize={"words"}
-              placeholder={"Last Name"}
-              placeholderTextColor="grey"
-              status={errors.last_name ? "danger" : "basic"}
+              error={errors.last_name}
               label={"Last Name"}
-              size={"large"}
+              color={'white'}
+              underlineColor={'#BEC2C2'}
+              activeUnderlineColor={'white'}
               value={value}
-              caption={captions(errors.last_name)}
+              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
             />
           )}
           name="last_name"
         />
+        {captions(errors.last_name)}
 
         <Controller
           control={control}
@@ -148,30 +153,19 @@ export default function RegistrationPage({ navigation }) {
                   color={"black"}
                   name={"calendar-today"}
                 />
-            }
+              }
             />
           )}
           name="birthdate"
         />
 
-        <Stack direction={"row"} style={{ width: "100%"}}>
-          <Button disabled style={{ width: "30%", marginRight: '40%'  }}>
-            Back
-          </Button>
-          <Button style={{ width: "30%"}} onPress={() => {
-            setStatus(status + 1);
-            setProgress(1);
-          }}>
-            Next
-          </Button>
-        </Stack>
-      </View>
+      </VStack>
     );
   }
 
   function secondModule(visibility) {
     return (
-      <View style={{opacity: visibility}}>
+      <View style={{ opacity: visibility }}>
 
         <Controller
           control={control}
@@ -184,102 +178,103 @@ export default function RegistrationPage({ navigation }) {
             },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Input
+            <TextInput
               style={styles.input}
               onBlur={onBlur}
               onChangeText={onChange}
               autoCapitalize={"none"}
-              placeholder={"E-mail"}
-              placeholderTextColor="grey"
-              value={value}
-              status={errors.email ? "danger" : "basic"}
-              size={"large"}
+              error={errors.email}
               label={"E-mail"}
-              caption={captions(errors.email)}
+              color={'white'}
+              underlineColor={'#BEC2C2'}
+              activeUnderlineColor={'white'}
+              value={value}
+              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
             />
           )}
           name="email"
         />
+        {captions(errors.email)}
+
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Missing password." },
+            required: { value: true, message: "Missing password" },
             minLength: { value: 6, message: "Password too short, min 6 characters" },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Input
+            <TextInput
               onBlur={onBlur}
-              accessoryRight={
-                <Icon
-                  style={{ paddingRight: 10 }}
+              right={
+                <TextInput.Icon
+                  style={{ marginRight: 10, marginTop: 50 }}
                   size={25}
-                  color={"black"}
+                  color={"white"}
                   name={show ? "eye-off-outline" : "eye-outline"}
                   onPress={handleHideShowPassword}
                 />
               }
               placeholder={"Password"}
-              placeholderTextColor="grey"
               onChangeText={onChange}
               autoCapitalize={"none"}
               value={value}
               secureTextEntry={!show}
-              status={errors.password ? "danger" : "basic"}
-              size={"large"}
+              error={errors.password}
               label={"Password"}
-              caption={captions(errors.password)}
+              color={'white'}
+              style={styles.input}
+              underlineColor={'#BEC2C2'}
+              activeUnderlineColor={'white'}
+              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
             />
           )}
           name="password"
         />
+        {captions(errors.password)}
+
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Missing password." },
+            required: { value: true, message: "Missing password" },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Input
+            <TextInput
+              style={styles.input}
               onBlur={onBlur}
-              accessoryRight={
-                <Icon
-                  style={{ paddingRight: 10 }}
+              right={
+                <TextInput.Icon
+                  style={{ marginRight: 10, marginTop: 50  }}
                   size={25}
-                  color={"black"}
+                  color={"white"}
                   name={show ? "eye-off-outline" : "eye-outline"}
                   onPress={handleHideShowPassword}
                 />
               }
               placeholder={"Repeat your password"}
-              placeholderTextColor="grey"
               onChangeText={onChange}
               autoCapitalize={"none"}
               value={value}
               type={"password"}
               secureTextEntry={!show}
-              status={errors.repeat_password ? "danger" : "basic"}
-              size={"large"}
+              error={errors.repeat_password}
               label={"Repeat password"}
-              caption={captions(errors.repeat_password)}
+              color={'white'}
+              underlineColor={'#BEC2C2'}
+              activeUnderlineColor={'white'}
+              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
             />
           )}
           name="repeat_password"
         />
+        {captions(errors.repeat_password)}
 
         <CheckBox onChange={setCheckCheckbox} checked={checked}
                   style={styles.checkbox}>I agree with the treep policy</CheckBox>
 
-
-        <Stack direction={"row"} style={{ width: "100%"}}>
-          <Button style={{ width: "30%", marginRight: '30%' }} onPress={() => {
-            setStatus(status - 1);
-            setProgress(0.5);
-          }}>
-            Back
-          </Button>
-          <Button disabled={!checked} status={'success'} style={{ width: "40%"}} onPress={handleSubmit((form) => emailRegistration(form, navigation))}>
-            Create profile
-          </Button>
-        </Stack>
+          <Button disabled={!checked} style={styles.button}
+                  label={'Create profile'}
+                  labelStyle={styles.labelButton}
+                  onPress={handleSubmit((form) => emailRegistration(form, navigation))} />
 
 
       </View>
@@ -300,42 +295,63 @@ export default function RegistrationPage({ navigation }) {
 
 
   return (
-    <ScrollView keyboardShouldPersistTaps={'handled'}>
-      <View style={
-        {
-          width: "80%",
-          alignSelf: "center",
-        }
-      }>
+    <ScrollView style={styles.mainContainer} keyboardShouldPersistTaps={"handled"}>
 
-        {status === 0 ? firstModule(1) : firstModule(0)}
-        {status === 1 ? secondModule(1) : secondModule(0)}
-
-      </View>
+      {firstModule()}
+      {secondModule()}
 
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column", // row
-    alignItems: "center",
-    backgroundColor: "grey",
+  mainContainer: {
+    paddingLeft: 30,
+    paddingRight: 30,
+    backgroundColor: "black",
+    width: "100%",
   },
+  container: {},
   boxButton: {
     paddingTop: 20,
-    width: "40%",
+    width: "100%",
     alignSelf: "center",
   },
   checkbox: {},
   input: {
-    color: "black",
+    paddingTop: 20,
+    backgroundColor: 'black',
+    color: "white",
+    width: "100%",
+    fontFamily: 'Barlow',
+    fontSize: 20,
     alignSelf: "center",
   },
   text: {
     color: "black",
     textAlign: "center",
   },
+  title: {
+    color: "white",
+    fontFamily: "Barlow",
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+  subtitle: {
+    fontFamily: "Barlow",
+    color: "rgba(255, 255, 255, 0.7)",
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: "#3F799D",
+    borderRadius: 10,
+    borderColor: 'rgba(0, 0, 0, 0)',
+    marginTop: 20,
+    marginBottom: 20,
+    height: 50
+  },
+  labelButton: {
+    fontFamily: 'Barlow',
+    fontWeight: '700'
+  }
 });
