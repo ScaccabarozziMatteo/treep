@@ -54,7 +54,6 @@ export default function RegistrationPage({ navigation }) {
   function firstModule(visibility) {
     return (
       <VStack style={styles.container}>
-          <Text style={styles.subtitle}>Sign up now for free and start travelling, explore with Treep.</Text>
         <Controller
           control={control}
           rules={{
@@ -295,12 +294,15 @@ export default function RegistrationPage({ navigation }) {
 
 
   return (
-    <ScrollView style={styles.mainContainer} keyboardShouldPersistTaps={"handled"}>
+    <View>
+    <Text style={styles.subtitle}>Sign up now for free and start travelling, explore with Treep.</Text>
+  <ScrollView style={styles.mainContainer} keyboardShouldPersistTaps={"handled"}>
 
       {firstModule()}
       {secondModule()}
 
     </ScrollView>
+    </View>
   );
 }
 
@@ -339,8 +341,11 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontFamily: "Barlow",
+    backgroundColor: 'black',
     color: "rgba(255, 255, 255, 0.7)",
     fontSize: 16,
+    paddingLeft: 30,
+    paddingRight: 30,
   },
   button: {
     backgroundColor: "#3F799D",
