@@ -1,31 +1,26 @@
 import { ScrollView, VStack, HStack, View } from "native-base";
 import React, { useState } from "react";
-import { Input, CheckBox, Datepicker } from "@ui-kitten/components";
-import { Button } from "react-native-ui-lib";
+import { Button, Picker, DateTimePicker } from "react-native-ui-lib";
 import { Controller, useForm } from "react-hook-form";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { StyleSheet } from "react-native";
 import { emailRegistration } from "../api/UserApi";
-import { Select, SelectItem } from "@ui-kitten/components";
 import { Text } from "react-native";
-import { TextInput } from "react-native-paper";
+import { Checkbox, TextInput } from "react-native-paper";
 
 
 export default function RegistrationPage({ navigation }) {
 
   const [show, setShow] = useState(false);
   const [checked, setCheck] = useState(false);
-  const [status, setStatus] = useState(0);
-  const [progress, setProgress] = useState(0.5);
-  const [selectedIndex, setSelectedIndex] = useState();
 
-  const maxDate = new Date(2010, 12, 31);
-  const minDate = new Date(1900, 1, 1);
+  const maxDate = new Date(2009, 11, 31)
+  const minDate = new Date(1900, 0, 1);
 
   const {
     control,
     handleSubmit,
     setValue,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -37,23 +32,13 @@ export default function RegistrationPage({ navigation }) {
     },
   });
 
-  const data = [
-    "Male",
-    "Female",
-    "Other",
-  ];
-
-  const renderOption = (title) => (
-    <SelectItem title={title} />
-  );
-
   function setCheckCheckbox() {
     setCheck(!checked);
   }
 
-  function firstModule(visibility) {
+  function firstModule() {
     return (
-      <VStack style={styles.container}>
+      <VStack>
         <Controller
           control={control}
           rules={{
@@ -67,11 +52,11 @@ export default function RegistrationPage({ navigation }) {
               autoCapitalize={"words"}
               error={errors.first_name}
               label={"First Name"}
-              color={'white'}
-              underlineColor={'#BEC2C2'}
-              activeUnderlineColor={'white'}
+              color={"white"}
+              underlineColor={"#BEC2C2"}
+              activeUnderlineColor={"white"}
               value={value}
-              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
             />
           )}
           name="first_name"
@@ -82,7 +67,7 @@ export default function RegistrationPage({ navigation }) {
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Missing last name." },
+            required: { value: true, message: "Missing last name" },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
@@ -92,84 +77,86 @@ export default function RegistrationPage({ navigation }) {
               autoCapitalize={"words"}
               error={errors.last_name}
               label={"Last Name"}
-              color={'white'}
-              underlineColor={'#BEC2C2'}
-              activeUnderlineColor={'white'}
+              color={"white"}
+              underlineColor={"#BEC2C2"}
+              activeUnderlineColor={"white"}
               value={value}
-              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
             />
           )}
           name="last_name"
         />
         {captions(errors.last_name)}
 
-        <Controller
-          control={control}
-          rules={{
-            required: { value: true, message: "Please, select a choice." },
-          }}
-          render={({ field: { onBlur, value } }) => (
-            <Select
-              label={"Sex"}
-              size={"large"}
-              placeholder={"Sex"}
-              value={value}
-              selectedIndex={selectedIndex}
-              onBlur={onBlur}
-              caption={captions(errors.sex)}
-              status={errors.sex ? "danger" : "basic"}
-              onSelect={index => {
-                setSelectedIndex(index);
-                setValue("sex", data[index.row]);
-              }}>
-              {data.map(renderOption)}
-            </Select>
-          )}
-          name="sex"
-        />
+        <View paddingTop={4} marginBottom={-7} >
+          <Controller
+            control={control}
+            rules={{
+              required: { value: true, message: "Please, select your sex" },
+            }}
+            render={({ field: { onBlur, value } }) => (
 
+              <Picker
+                placeholder={"Sex"}
+                style={styles.pickerText}
+                value={value}
+                error={errors.sex !== undefined}
+                onBlur={onBlur}
+                floatingPlaceholder
+                onChange={item => {
+                  setValue("sex", item);
+                  setError("sex", false);
+                }}>
+                <Picker.Item labelStyle={{fontFamily: 'Barlow'}} value={"Male"} label={"Male"} />
+                <Picker.Item value={"Female"} label={"Female"} />
+                <Picker.Item value={"Other"} label={"Other"} />
+              </Picker>
+            )}
+            name="sex"
+          />
+
+          {captions(errors.sex)}
+
+        </View>
+
+        <View marginTop={2}>
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Please, select a date." },
+            required: { value: true, message: "Please, select your birthdate" },
           }}
           render={({ field: { onBlur, value } }) => (
-            <Datepicker
-              min={minDate}
-              max={maxDate}
-              label="Birth date"
-              caption={captions(errors.birthdate)}
-              placeholder="Birth date"
-              status={errors.birthdate ? "danger" : "basic"}
-              date={value}
+            <DateTimePicker
+              minimumDate={minDate}
+              maximumDate={maxDate}
+              floatingPlaceholder
+              error={errors.birthdate !== undefined}
+              style={styles.pickerText}
+              placeholder="Birthdate"
               onBlur={onBlur}
-              size={"large"}
-              onSelect={date => setValue("birthdate", date)}
-              accessoryRight={
-                <Icon
-                  style={{ paddingRight: 10 }}
-                  size={22}
-                  color={"black"}
-                  name={"calendar-today"}
-                />
-              }
+              required
+              onChange={date => setValue("birthdate", date)}
             />
           )}
           name="birthdate"
         />
 
+          {captions(errors.birthdate)}
+
+        </View>
+
       </VStack>
     );
   }
 
-  function secondModule(visibility) {
+  function secondModule() {
     return (
-      <View style={{ opacity: visibility }}>
+      <VStack style={{ marginTop: 0, paddingBottom: 100 }}>
 
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Missing e-mail." },
+            required: { value: true, message: "Missing e-mail" },
             // Check email using RegEx
             pattern: {
               value: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
@@ -184,11 +171,11 @@ export default function RegistrationPage({ navigation }) {
               autoCapitalize={"none"}
               error={errors.email}
               label={"E-mail"}
-              color={'white'}
-              underlineColor={'#BEC2C2'}
-              activeUnderlineColor={'white'}
+              color={"white"}
+              underlineColor={"#BEC2C2"}
+              activeUnderlineColor={"white"}
               value={value}
-              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
             />
           )}
           name="email"
@@ -206,25 +193,23 @@ export default function RegistrationPage({ navigation }) {
               onBlur={onBlur}
               right={
                 <TextInput.Icon
-                  style={{ marginRight: 10, marginTop: 50 }}
                   size={25}
                   color={"white"}
                   name={show ? "eye-off-outline" : "eye-outline"}
                   onPress={handleHideShowPassword}
                 />
               }
-              placeholder={"Password"}
               onChangeText={onChange}
               autoCapitalize={"none"}
               value={value}
               secureTextEntry={!show}
               error={errors.password}
               label={"Password"}
-              color={'white'}
+              color={"white"}
               style={styles.input}
-              underlineColor={'#BEC2C2'}
-              activeUnderlineColor={'white'}
-              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
+              underlineColor={"#BEC2C2"}
+              activeUnderlineColor={"white"}
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
             />
           )}
           name="password"
@@ -242,14 +227,12 @@ export default function RegistrationPage({ navigation }) {
               onBlur={onBlur}
               right={
                 <TextInput.Icon
-                  style={{ marginRight: 10, marginTop: 50  }}
                   size={25}
                   color={"white"}
                   name={show ? "eye-off-outline" : "eye-outline"}
                   onPress={handleHideShowPassword}
                 />
               }
-              placeholder={"Repeat your password"}
               onChangeText={onChange}
               autoCapitalize={"none"}
               value={value}
@@ -257,33 +240,39 @@ export default function RegistrationPage({ navigation }) {
               secureTextEntry={!show}
               error={errors.repeat_password}
               label={"Repeat password"}
-              color={'white'}
-              underlineColor={'#BEC2C2'}
-              activeUnderlineColor={'white'}
-              theme={{ colors: {placeholder: '#BEC2C2', text: 'white'} }}
+              color={"white"}
+              underlineColor={"#BEC2C2"}
+              activeUnderlineColor={"white"}
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
             />
           )}
           name="repeat_password"
         />
         {captions(errors.repeat_password)}
 
-        <CheckBox onChange={setCheckCheckbox} checked={checked}
-                  style={styles.checkbox}>I agree with the treep policy</CheckBox>
+        <HStack alignSelf={"stretch"} paddingTop={6} marginLeft={-5}>
+          <Checkbox.Item onPress={setCheckCheckbox} status={checked ? "checked" : "unchecked"}
+                         uncheckedColor={"white"}
+                         position={"leading"}
+                         color={"#32c8cb"}
+                         labelStyle={styles.labelCheckbox}
+                         label={"I agree with the treep policy"}
+                         style={styles.checkbox} />
+        </HStack>
 
-          <Button disabled={!checked} style={styles.button}
-                  label={'Create profile'}
-                  labelStyle={styles.labelButton}
-                  onPress={handleSubmit((form) => emailRegistration(form, navigation))} />
+        <Button disabled={!checked} style={checked ? styles.buttonEnabled : styles.buttonDisabled}
+                label={"Create profile"}
+                labelStyle={styles.labelButton}
+                onPress={handleSubmit((form) => emailRegistration(form, navigation))} />
 
-
-      </View>
+      </VStack>
     );
   }
 
   const captions = (errors) => {
     return (
       (errors) ? (
-        <Text style={{ color: "red", alignSelf: "center" }}>
+        <Text style={styles.errorText}>
           {errors.message}
         </Text>
       ) : null
@@ -295,13 +284,13 @@ export default function RegistrationPage({ navigation }) {
 
   return (
     <View>
-    <Text style={styles.subtitle}>Sign up now for free and start travelling, explore with Treep.</Text>
-  <ScrollView style={styles.mainContainer} keyboardShouldPersistTaps={"handled"}>
+      <Text style={styles.subtitle}>Sign up now for free and start travelling, explore with Treep.</Text>
+      <ScrollView style={styles.mainContainer} keyboardShouldPersistTaps={"handled"}>
 
-      {firstModule()}
-      {secondModule()}
+        {firstModule()}
+        {secondModule()}
 
-    </ScrollView>
+      </ScrollView>
     </View>
   );
 }
@@ -313,19 +302,25 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     width: "100%",
   },
-  container: {},
   boxButton: {
     paddingTop: 20,
     width: "100%",
     alignSelf: "center",
   },
-  checkbox: {},
+  checkbox: {
+    color: "white",
+  },
+  pickerText: {
+    color: "white",
+    fontFamily: "Barlow",
+    fontSize: 20
+  },
   input: {
-    paddingTop: 20,
-    backgroundColor: 'black',
+    paddingTop: 0,
+    backgroundColor: "black",
     color: "white",
     width: "100%",
-    fontFamily: 'Barlow',
+    fontFamily: "Barlow",
     fontSize: 20,
     alignSelf: "center",
   },
@@ -341,22 +336,38 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontFamily: "Barlow",
-    backgroundColor: 'black',
+    backgroundColor: "black",
     color: "rgba(255, 255, 255, 0.7)",
     fontSize: 16,
     paddingLeft: 30,
     paddingRight: 30,
   },
-  button: {
+  buttonEnabled: {
     backgroundColor: "#3F799D",
     borderRadius: 10,
-    borderColor: 'rgba(0, 0, 0, 0)',
-    marginTop: 20,
+    borderColor: "rgba(0, 0, 0, 0)",
+    marginTop: 5,
     marginBottom: 20,
-    height: 50
+    height: 50,
+  },
+  buttonDisabled: {
+    backgroundColor: "#999999",
+    borderRadius: 10,
+    borderColor: "rgba(0, 0, 0, 0)",
+    marginTop: 5,
+    marginBottom: 20,
+    height: 50,
   },
   labelButton: {
-    fontFamily: 'Barlow',
-    fontWeight: '700'
+    fontFamily: "Barlow",
+    fontWeight: "700",
+  },
+  labelCheckbox: {
+    color: "white",
+  },
+  errorText: {
+    color: "red",
+    alignSelf: "center",
+    fontFamily: 'Barlow'
   }
 });

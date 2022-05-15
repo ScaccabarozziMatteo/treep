@@ -107,7 +107,9 @@ export default function MainContainer() {
         <Stack.Screen name="CompleteRegistrationPage" options={({ navigation }) => ({
           title: "Complete Registration",
           animationEnabled: true,
-          headerLeft: () => <Icon size={28} name={"arrow-back"} color={"white"} onPress={() => {
+          headerStyle: { backgroundColor: "black", shadowColor: 'black', height: 100 },
+          headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
+          headerLeft: () => <Icon size={28} name={"arrow-back"} style={{paddingLeft: 10}} color={"white"} onPress={() => {
             logout();
             navigation.navigate("Profile");
           }} />,

@@ -39,8 +39,10 @@ export async function signInWithGoogle() {
   const userData = await getUserData();
 
   // If it is the first login and the DB has not the document with the user data, return 0 and the LoginPage redirect to the CompleteRegistrationPage
-  if(userData === '' || userData.first_name === undefined || userData.last_name === undefined || userData.birthdate === undefined || userData.sex === undefined)
+  if(userData === '' || userData.first_name === undefined || userData.last_name === undefined || userData.birthdate === undefined || userData.sex === undefined) {
+    logout()
     return 0
+  }
   else
     return user
 }
