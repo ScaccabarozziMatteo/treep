@@ -74,6 +74,7 @@ export default function HomePage({navigation}) {
                     location={item.location}
                     postID={item.postID}
                     userID ={item.userID}
+                    navigation={navigation}
               />
             )}
             refreshControl = {<RefreshControl

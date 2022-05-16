@@ -6,12 +6,11 @@ import center from "native-base/src/theme/components/center";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import Svg, { Circle, Path } from "react-native-svg";
 import {NavigationContainer} from "@react-navigation/native";
-import { white } from "react-native-paper/lib/typescript/styles/colors";
 
 
-const Post = (props, navigation) => {
+
+const Post = (props) => {
 
   const [postInfo, setPostInfo] = useState([
     {
@@ -24,6 +23,7 @@ const Post = (props, navigation) => {
       isLiked: props.isLiked,
       location: props.location,
       isWished: props.isWished,
+      navigation: props.navigation,
     }
   ]);
 
@@ -107,11 +107,10 @@ const Post = (props, navigation) => {
                  marginTop: 265,
                  backgroundColor: 'white',
                  borderColor: 'gray',
-                 zIndex: 2,
                }}>
 
                  <TouchableOpacity style={{flex: 1, paddingHorizontal: 10}}
-                                   onPress={() => navigation.navigate("UserProfile", data.userID)}>
+                                   onPress={() => data.navigation.navigate("UserProfile", data.userID)}>
                    <Image source={{uri: data.postUserImage}} style={{ width: 40, height: 40, borderRadius: 100 }}/>
                  </TouchableOpacity>
 
