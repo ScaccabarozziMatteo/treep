@@ -55,8 +55,8 @@ export default function CompleteRegistrationPage({ navigation }) {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps={"handled"} style={{ backgroundColor: "black" }}>
-      <StatusBar backgroundColor={"black"} barStyle={"light-content"} />
+    <ScrollView keyboardShouldPersistTaps={"handled"} style={{ backgroundColor: "#3F799D" }}>
+      <StatusBar backgroundColor={"#3F799D"} barStyle={"light-content"} />
       <VStack style={styles.container}>
         <Text style={styles.subtitle}>Sign in now to access and share your trips and destinations.</Text>
         <Controller
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingTop: 0,
-    backgroundColor: "black",
+    backgroundColor: "#3F799D",
     color: "white",
     width: "100%",
     fontFamily: "Barlow",

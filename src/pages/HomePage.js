@@ -19,30 +19,31 @@ import { getAll } from "../api/TripApi";
 export default function HomePage() {
 
   const [trips, setTrips] = useState(
-    {description: "" ,
-              coverPhoto: "",
-              userPhoto: "",
-              userID: "",
-              location: "",
-              photoURL: "",
-              username: "",
-              title: "",
-              status: false,
-              postID: "",
-    }
-  )
+    {
+      description: "",
+      coverPhoto: "",
+      userPhoto: "",
+      userID: "",
+      location: "",
+      photoURL: "",
+      username: "",
+      title: "",
+      status: false,
+      postID: "",
+    },
+  );
 
-  useEffect( () => {
-    getAll().then(
-      response => {
-        setTrips(response);
+  useEffect(() => {
+      getAll().then(
+        response => {
+          setTrips(response);
 
-      });
-    }, []
+        });
+    }, [],
   );
 
 
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -50,53 +51,52 @@ export default function HomePage() {
     getAll().then(
       response => {
         setTrips(response);
-      }
+      },
     );
 
     setRefreshing(false);
-  }
+  };
 
   return (
-    <View>
-      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
-      <SafeAreaView>
-          <FlatList
-            keyExtractor={(item, index)=>index.toString()}
-            data={trips}
-            renderItem={({ item }) => (
-              <Post title={item.title}
-                    userImage={item.photoURL}
-                    postImage={item.coverPhoto}
-                    isLiked={item.isLiked}
-                    username={item.username}
-                    location={item.location}
-                    likes={item.likes.length}
-                    description={item.description}
-                    status={item.status}
-                    postID={item.postID}
-              />
-            )}
-            refreshControl = {<RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#ff00ff']}
-            />}
+  <View>
+    <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
+    <SafeAreaView>
+      <FlatList
+        keyExtractor={(item, index) => index.toString()}
+        data={trips}
+        renderItem={({ item }) => (
+          <Post title={item.title}
+                userImage={item.photoURL}
+                postImage={item.coverPhoto}
+                isLiked={item.isLiked}
+                username={item.username}
+                location={item.location}
+                likes={item.likes.length}
+                description={item.description}
+                status={item.status}
+                postID={item.postID}
           />
+        )}
+        refreshControl={<RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={["#ff00ff"]}
+        />}
+      />
 
-      </SafeAreaView>
-    </View>
-  );
+    </SafeAreaView>
+  </View>
+)
+  ;
 }
 
 const styles = StyleSheet.create({
-  image: {
-
-  },
+  image: {},
 
   text: {
     fontSize: 20,
     fontWeight: "bold",
     alignContent: "center",
-    color: 'black',
-  }
+    color: "black",
+  },
 });

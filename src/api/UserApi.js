@@ -154,6 +154,14 @@ export async function getUserData() {
     return "";
 }
 
+export async function getUserDataWithID(UID) {
+  const doc = await firestore().collection("users/" + UID + "/public_info").doc("personal_data").get();
+  if (doc.data() !== undefined)
+    return doc.data();
+  else
+    return "";
+}
+
 export function currentUser() {
   return auth().currentUser;
 }

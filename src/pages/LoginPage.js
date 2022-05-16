@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar, StyleSheet, View } from "react-native";
-import { Pressable, VStack, HStack, ScrollView } from "native-base";
+import { StatusBar, StyleSheet, ScrollView, View } from "react-native";
+import { Pressable, VStack, HStack } from "native-base";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { emailLogin, signInWithGoogle, onAuthStateChange } from "../api/UserApi";
@@ -83,8 +83,8 @@ export default function LoginPage({ navigation, route }) {
 
   if (!user) {
     return (
-      <ScrollView keyboardShouldPersistTaps={'handled'} style={{backgroundColor: "black"}}>
-        <StatusBar backgroundColor={"black"} barStyle={"light-content"} />
+      <ScrollView keyboardShouldPersistTaps={'handled'} style={{backgroundColor: "#3F799D"}}>
+        <StatusBar backgroundColor={'#3F799D'} barStyle={'light-content'}/>
         <VStack style={styles.container}>
           <Text style={styles.title}>Sign In</Text>
           <Text style={styles.subtitle}>Sign in now to access and share your trips and destinations.</Text>
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     padding: 30
   },
   button: {
-    backgroundColor: "#3F799D",
+    backgroundColor: "#E05D5B",
     borderRadius: 10,
     borderColor: 'rgba(0, 0, 0, 0)',
     marginTop: 20,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingTop: 20,
-    backgroundColor: 'black',
+    backgroundColor: '#3F799D',
     color: "white",
     width: "100%",
     fontFamily: 'Barlow',

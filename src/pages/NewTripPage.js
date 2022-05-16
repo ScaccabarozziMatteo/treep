@@ -1,7 +1,7 @@
-import {View, StyleSheet, Text} from 'react-native';
+import { View, StyleSheet, Text, StatusBar } from "react-native";
 import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {Button, Datepicker, Input, Select} from '@ui-kitten/components';
+import {Button, Input } from '@ui-kitten/components';
 import { VStack } from "native-base";
 import { newTrip } from "../api/TripApi";
 
@@ -23,6 +23,7 @@ export default function NewTripPage() {
 
   return (
     <View style={{width: '80%', alignSelf: 'center'}}>
+      <StatusBar backgroundColor={'white'} barStyle={'dark-content'}/>
       <Controller
         control={control}
         rules={{

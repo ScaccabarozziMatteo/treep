@@ -17,6 +17,7 @@ import CompleteRegistrationPage from "../pages/CompleteRegistrationPage";
 import { logout } from "../api/UserApi";
 import UserProfile from "../pages/UserProfile";
 import ChatPage from "../pages/ChatPage";
+import { StatusBar } from "react-native";
 
 // Pages names
 const homeName = "Home";
@@ -49,9 +50,6 @@ function TabContainer({ navigation }) {
             case newTripName:
               iconName = focused ? "add" : "add";
               break;
-            case aroundMeName:
-              iconName = focused ? "people" : "people";
-              break;
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -59,7 +57,7 @@ function TabContainer({ navigation }) {
         headerTintColor: "black",
         tabBarShowLabel: false,
         headerStyle: { backgroundColor: "white", shadowColor: "rgba(0,0,0, 0.7)" },
-        tabBarActiveTintColor: "#6540F5",
+        tabBarActiveTintColor: "#E05D5B",
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { fontFamily: "Barlow", paddingBottom: 5, fontSize: 13 },
         tabBarStyle: { height: 60 },
@@ -80,10 +78,11 @@ function TabContainer({ navigation }) {
 export default function MainContainer() {
   return (
     <NavigationContainer>
+      <StatusBar/>
       <Stack.Navigator screenOptions={() => ({
         presentation: 'modal',
-        headerTintColor: "white",
-        headerStyle: { backgroundColor: "#191d3a" },
+        headerTintColor: "black",
+        headerStyle: { backgroundColor: "white" },
         tabBarActiveTintColor: "#191d3a",
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { paddingBottom: 5, fontSize: 13 },
@@ -99,7 +98,7 @@ export default function MainContainer() {
         <Stack.Screen name="Registration" options={{
           title: "Sign Up",
           headerTintColor: 'white',
-          headerStyle: { backgroundColor: "black", shadowColor: 'black', height: 100 },
+          headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
           headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
         }} component={RegistrationPage} />
         <Stack.Screen name="AroundMe" options={{ title: "Around Me" }} component={AroundMePage} />
@@ -109,7 +108,7 @@ export default function MainContainer() {
         <Stack.Screen name="CompleteRegistrationPage" options={({ navigation }) => ({
           title: "Complete Registration",
           animationEnabled: true,
-          headerStyle: { backgroundColor: "black", shadowColor: 'black', height: 100 },
+          headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
           headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
           headerLeft: () => <Icon size={28} name={"arrow-back"} style={{paddingLeft: 10}} color={"white"} onPress={() => {
             logout();
