@@ -97,13 +97,12 @@ export default function ProfilePage(props) {
       }
     };
     updateUserData();
-  }, [dummyUser, props.update]);
+  }, [dummyUser, props.update, user]);
 
   // Initial action when the page is created
   useEffect(() => {
     const updateUserData = async () => {
       const user = await currentUser();
-      console.log(user)
       if (user !== null) {
         setUser(user)
         const userData = await getUserData();
