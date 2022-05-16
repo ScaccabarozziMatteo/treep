@@ -1,12 +1,11 @@
 import * as React from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { HStack, VStack } from "native-base";
-import { ScrollView, TextField } from "native-base";
-import { TextInput } from "react-native-paper";
+import { Avatar, TextInput } from "react-native-paper";
 import { useEffect } from "react";
 import { retrieveSpecificChat, sendMessageDB, setChatsFirestore } from "../api/ChatAPI";
 import { firebase } from "@react-native-firebase/database";
-import { currentUser } from "../api/UserApi";
+import { currentUser, getUserDataWithID } from "../api/UserApi";
 import { Divider, List, ListItem } from "@ui-kitten/components";
 
 
@@ -16,6 +15,17 @@ export default function ChatPage({ route }) {
   const [chatID, setChatID] = React.useState("0");
   const [friendID, setFriendID] = React.useState(route.params.friendID);
   const [chat, setChat] = React.useState("");
+  const [friendData, setFriendData] = React.useState();
+  const [lastDate, setLastDate] = React.useState(0);
+
+
+  useEffect(() => {
+    const updateData = async () => {
+      const data = await getUserDataWithID(friendID);
+      setFriendData(data);
+    };
+    updateData();
+  }, []);
 
   const DB = firebase.app().database("https://treep-mdp-default-rtdb.europe-west1.firebasedatabase.app/");
 
@@ -40,13 +50,13 @@ export default function ChatPage({ route }) {
       .ref(`/chats/${chatID}`)
       .on("value", snapshot => {
         if (snapshot.exists()) {
-          let arr = Object.values(snapshot.val())
-          arr.sort(function(a,b){
+          let arr = Object.values(snapshot.val());
+          arr.sort(function(a, b) {
             // Turn your strings into dates, and then subtract them
             // to get a value that is either negative, positive, or zero.
             return new Date(b.timestamp) - new Date(a.timestamp);
           });
-          setChat(arr)
+          setChat(arr);
         }
       });
 
@@ -70,13 +80,62 @@ export default function ChatPage({ route }) {
   const renderItem = ({ item }) => (
     <ListItem
       style={{ height: 80 }}
-      title={() => <Text style={styles.title}>{new Date(item.timestamp).toLocaleString()}</Text>}
-      description={() => <Text
-        style={item.userID === currentUser().uid ? styles.messageCurrentUser : styles.messageFriendUser}>{item.body}</Text>}
-      accessoryLeft={null}
+      title={() => renderTitle(item)}
+      description={() => bodyMessage(item)}
+      // accessoryLeft={renderAvatar(item)}
       ItemSeparatorComponent={Divider}
     />
   );
+
+  function renderTitle(item) {
+
+    console.log(lastDate)
+    if (lastDate === 0) {
+      // Set last message timestamp
+      setLastDate(item.timestamp);
+      return (
+        <Text style={styles.title}>eee</Text>
+      )
+    }
+
+    else {
+      // Set last message timestamp
+      setLastDate(item.timestamp);
+      return (
+        <Text style={styles.title}>{new Date(item.timestamp).toLocaleDateString()}</Text>
+      )    }
+
+
+
+
+  }
+
+  function renderAvatar(item) {
+    return (
+      <View>
+        {item.userID !== currentUser().uid && friendData !== undefined ?
+          <View style={{ margin: 1.8, backgroundColor: "white", borderRadius: 13 }}>
+            <Avatar animate imageStyle={{ borderRadius: 10, width: "84%", height: "84%", left: "8%", top: "8%" }}
+                    label={friendData.first_name.charAt(0) + friendData.last_name.charAt(0)}
+                    backgroundColor={"transparent"}
+                    source={friendData.photoURL !== undefined ? { uri: friendData.photoURL } : null} size={60} />
+          </View> : null}
+      </View>);
+  }
+
+  function bodyMessage(item) {
+
+    return (
+      <View style={item.userID === currentUser().uid ? styles.messageCurrentUser : styles.messageFriendUser}>
+        <Text style={styles.bodyMessage}>{item.body}</Text>
+        <Text style={styles.timeMessage}>{new Date(item.timestamp).toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+
+        })}</Text>
+      </View>
+    );
+  }
 
 
   return (
@@ -87,11 +146,10 @@ export default function ChatPage({ route }) {
             <List
               style={styles.container}
               data={chat}
-              keyExtractor={(item, index)=>index}
+              keyExtractor={(item, index) => index}
               renderItem={renderItem}
               inverted
             />
-
           </HStack>
         </VStack>
       </View>
@@ -158,6 +216,26 @@ const styles = StyleSheet.create({
     color: "#2D4379",
     fontWeight: "500",
     marginBottom: 5,
+    fontSize: 14,
+    lineHeight: 17,
+    letterSpacing: -0.24,
+  },
+  timeMessage: {
+    fontFamily: "Barlow",
+    marginLeft: 40,
+    color: "grey",
+    fontWeight: "500",
+    marginBottom: 0,
+    fontSize: 10,
+    lineHeight: 17,
+    letterSpacing: -0.24,
+  },
+  bodyMessage: {
+    fontFamily: "Barlow",
+    alignSelf: "flex-start",
+    color: "#0D253C",
+    maxWidth: "80%",
+    fontWeight: "500",
     fontSize: 14,
     lineHeight: 17,
     letterSpacing: -0.24,
