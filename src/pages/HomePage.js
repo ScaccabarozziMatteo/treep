@@ -2,7 +2,16 @@ import React, { useEffect, useState } from "react";
 
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
-import { FlatList, Text, StyleSheet, RefreshControl, Image, ScrollView, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  Text,
+  StyleSheet,
+  RefreshControl,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import Post from "../components/Post";
 import { getAll } from "../api/TripApi";
 
@@ -19,6 +28,7 @@ export default function HomePage() {
               username: "",
               title: "",
               status: false,
+              postID: "",
     }
   )
 
@@ -48,6 +58,7 @@ export default function HomePage() {
 
   return (
     <View>
+      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <SafeAreaView>
           <FlatList
             keyExtractor={(item, index)=>index.toString()}
@@ -56,12 +67,13 @@ export default function HomePage() {
               <Post title={item.title}
                     userImage={item.photoURL}
                     postImage={item.coverPhoto}
-                    isLiked={false}
+                    isLiked={item.isLiked}
                     username={item.username}
                     location={item.location}
-                    likes={item.likes}
+                    likes={item.likes.length}
                     description={item.description}
                     status={item.status}
+                    postID={item.postID}
               />
             )}
             refreshControl = {<RefreshControl

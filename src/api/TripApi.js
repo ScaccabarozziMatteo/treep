@@ -1,13 +1,11 @@
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
-import auth from '@react-native-firebase/auth';
-import {showToast} from '../utils/Utils';
+import firestore from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
 
 // Retrieves ALL the trips on the server
 export async function getAll() {
   let trips = [];
   //First call in order to retrieve all the info needed about the trips
-  const tripsData = (await firestore().collection('Trip').get()).docs;
+  const tripsData = (await firestore().collection("Trip").get()).docs;
 
   //For each trip, we also need to get the relative info about its user
   for (const t of tripsData) {
@@ -42,6 +40,16 @@ export async function getCoverPhoto(tripId) {
   const imagePath = tripId.coverPhoto;
   const reference = storage().ref(imagePath);
   return await reference.getDownloadURL();
+}
+
+export async function setLike(tripID) {
+  await firestore().collection('Trip').doc(tripID).set({likes: FieldValue.arrayUnion(currentUser().uid)}, {merge: true})
+
+}
+
+export async function removeLike(tripID) {
+  await firestore().collection('Trip').doc(tripID).update({likes: FieldValue.arrayRemove(currentUser().uid)})
+
 }
 
 //Changes the profile image of the current user

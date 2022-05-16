@@ -8,6 +8,8 @@ import storage from "@react-native-firebase/storage";
 import { showToast } from "../utils/Utils";
 import React from "react";
 
+const FieldValue = firebase.firestore.FieldValue;
+
 export async function onAuthStateChange(onAuthStateChanged) {
   return auth().onAuthStateChanged(onAuthStateChanged);
 }
@@ -37,8 +39,10 @@ export async function signInWithGoogle() {
   const userData = await getUserData();
 
   // If it is the first login and the DB has not the document with the user data, return 0 and the LoginPage redirect to the CompleteRegistrationPage
-  if(userData === '' || userData.first_name === undefined || userData.last_name === undefined || userData.birthdate === undefined || userData.sex === undefined)
+  if(userData === '' || userData.first_name === undefined || userData.last_name === undefined || userData.birthdate === undefined || userData.sex === undefined) {
+    await auth().signOut();
     return 0
+  }
   else
     return user
 }
@@ -92,6 +96,15 @@ async function setUserInfo(data) {
 }
 
 export async function completeProfile(data) {
+  // Get the users ID token
+  const { idToken } = await GoogleSignin.signIn();
+
+  // Create a Google credential with the token
+  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+  // Sign-in the user with the credential
+  await auth().signInWithCredential(googleCredential);
+
   const doc = {
     first_name: data.first_name,
     last_name: data.last_name,
@@ -99,7 +112,7 @@ export async function completeProfile(data) {
     sex: data.sex,
     badges: [true, false, true, false, false],
     username: "",
-    bio: ""
+    bio: "",
   }
   await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(doc)
 }
@@ -129,7 +142,6 @@ export async function setBioFirebase(user) {
   const data = {
     bio: user,
   };
-
 // Add a new document in collection "users" with UID
   await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data);
 }
@@ -146,10 +158,47 @@ export function currentUser() {
   return auth().currentUser;
 }
 
+export function googleUser() {
+    return GoogleSignin.getCurrentUser()
+}
+
 export async function searchUsers(username) {
   const doc = await firestore().collectionGroup("public_info").where("username", "==", username.toLowerCase()).get();
   if (doc.empty)
     return "";
-  else
+  else {
     return doc._docs;
+  }
+}
+
+export async function getFollowers(user) {
+  const doc = await firestore().collection('users/' + user + '/vanity_metrics').doc('followers').get()
+  if (doc.empty || doc.data() === undefined)
+    return "";
+  else {
+    return doc.data().followers;
+  }
+}
+
+export async function getFollowings(user) {
+  const doc = await firestore().collection('users/' + user + '/vanity_metrics').doc('followings').get()
+  if (doc.empty || doc.data() === undefined)
+    return "";
+  else {
+    return doc.data().followings;
+  }
+}
+
+export async function addFollow(userFollower, userFollowing) {
+  await firestore().collection('users/' + userFollower + '/vanity_metrics').doc('followings').set({followings: FieldValue.arrayUnion(userFollowing)}, {merge: true})
+  await firestore().collection('users/' + userFollowing + '/vanity_metrics').doc('followers').set({followers: FieldValue.arrayUnion(userFollower)}, {merge: true})
+
+  return Math.random()
+}
+
+export async function removeFollow(userFollower, userFollowing) {
+  await firestore().collection('users/' + userFollower + '/vanity_metrics').doc('followings').update({followings: FieldValue.arrayRemove(userFollowing)})
+  await firestore().collection('users/' + userFollowing + '/vanity_metrics').doc('followers').update({followers: FieldValue.arrayRemove(userFollower)})
+
+  return Math.random()
 }
