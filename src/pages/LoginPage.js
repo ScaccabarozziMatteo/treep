@@ -122,9 +122,9 @@ export default function LoginPage({ navigation, route }) {
               <TextInput
                 right={
                   <TextInput.Icon
-                    style={{ paddingRight: 10 }}
+                    style={{ marginTop: 50 }}
                     size={25}
-                    color={"black"}
+                    color={"white"}
                     name={show ? "eye-off-outline" : "eye-outline"}
                     onPress={handleHideShowPassword}
                   />

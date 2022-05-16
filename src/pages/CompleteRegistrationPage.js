@@ -2,8 +2,6 @@ import { BackHandler, ScrollView, StatusBar, StyleSheet, Text } from "react-nati
 import React, { useEffect, useState } from "react";
 import { HStack, Stack, View, VStack } from "native-base";
 import { Controller, useForm } from "react-hook-form";
-import { Datepicker, Input } from "@ui-kitten/components";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { completeProfile, googleUser, logout } from "../api/UserApi";
 import { Picker, Button, DateTimePicker } from "react-native-ui-lib";
 import { TextInput } from "react-native-paper";
@@ -21,7 +19,7 @@ export default function CompleteRegistrationPage({ navigation }) {
     control,
     handleSubmit,
     setValue,
-    setError,
+    clearErrors,
     formState: { errors },
   } = useForm();
 
@@ -36,14 +34,14 @@ export default function CompleteRegistrationPage({ navigation }) {
 
   useEffect(() => {
     const updateDefaultValue = async () => {
-      const google = await googleUser()
-      setFirstName(google.user.givenName)
-      setValue("first_name", firstName);
-      setLastName(google.user.familyName)
-      setValue("last_name", lastName);
-    }
+      const google = await googleUser();
+      setFirstName(google.user.givenName);
+      setValue("first_name", google.user.givenName);
+      setLastName(google.user.familyName);
+      setValue("last_name", google.user.familyName);
+    };
 
-    updateDefaultValue()
+    updateDefaultValue();
   }, []);
 
   const captions = (errors) => {
@@ -57,7 +55,7 @@ export default function CompleteRegistrationPage({ navigation }) {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps={"handled"} style={{backgroundColor: 'black'}}>
+    <ScrollView keyboardShouldPersistTaps={"handled"} style={{ backgroundColor: "black" }}>
       <StatusBar backgroundColor={"black"} barStyle={"light-content"} />
       <VStack style={styles.container}>
         <Text style={styles.subtitle}>Sign in now to access and share your trips and destinations.</Text>
@@ -116,51 +114,71 @@ export default function CompleteRegistrationPage({ navigation }) {
           }}
           render={({ field: { onBlur, value } }) => (
             <Picker
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
               placeholder={"Sex"}
               style={styles.pickerText}
               value={value}
-              error={errors.sex !== undefined}
+              floatingPlaceholderStyle={{fontFamily: 'Barlow', fontSize: 20}}
+              floatingPlaceholderColor={'#BEC2C2'}
+              placeholderTextColor={errors.sex ? "red" : "#BEC2C2"}
               onBlur={onBlur}
+              underlineColor={errors.sex ? "red" : "#BEC2C2"}
               floatingPlaceholder
               onChange={item => {
                 setValue("sex", item);
-                setError("sex", false);
+                clearErrors("sex");
               }}>
-              <Picker.Item labelStyle={{fontFamily: 'Barlow'}} value={"Male"} label={"Male"} />
+              <Picker.Item labelStyle={{ fontFamily: "Barlow" }} value={"Male"} label={"Male"} />
               <Picker.Item value={"Female"} label={"Female"} />
               <Picker.Item value={"Other"} label={"Other"} />
             </Picker>
           )}
           name="sex"
         />
-        {captions(errors.sex)}
-
+        <View style={{ marginTop: -25 }}>
+          {captions(errors.sex)}
+        </View>
 
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Please, select a date." },
+            required: { value: true, message: "Please, select your birthdate" },
           }}
           render={({ field: { onBlur, value } }) => (
             <DateTimePicker
               minimumDate={minDate}
               maximumDate={maxDate}
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
               floatingPlaceholder
+              migrate
+              migrateTextField
+              floatingPlaceholderColor={'#BEC2C2'}
+              floatingPlaceholderStyle={{fontFamily: 'Barlow', fontSize: 20}}
+              value={value}
+              underlineColor={errors.birthdate ? "red" : "#BEC2C2"}
+              placeholderStyle={{ fontFamily: "Barlow", fontSize: 20 }}
+              placeholderTextColor={errors.birthdate ? "red" : "#BEC2C2"}
               error={errors.birthdate !== undefined}
               style={styles.pickerText}
               placeholder="Birthdate"
               onBlur={onBlur}
               required
-              onChange={date => setValue("birthdate", date)}
+              onChange={date => {
+                setValue("birthdate", date);
+                clearErrors('birthdate')
+              }}
             />
           )}
           name="birthdate"
         />
+        <View style={{ marginTop: -25 }}>
+          {captions(errors.birthdate)}
+        </View>
 
-          <Button labelStyle={styles.labelButton} label={'Complete Registration'} onPress={handleSubmit(async (form) => {
-            await completeProfile(form);
-            await navigation.navigate("Profile", { update: Math.random() });
-          })} style={styles.button} />
+        <Button labelStyle={styles.labelButton} label={"Complete Registration"} onPress={handleSubmit(async (form) => {
+          await completeProfile(form);
+          await navigation.navigate("Profile", { update: Math.random() });
+        })} style={styles.button} />
 
       </VStack>
     </ScrollView>
@@ -169,7 +187,7 @@ export default function CompleteRegistrationPage({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '80%',
+    width: "80%",
     alignSelf: "center",
   },
   boxButton: {
@@ -182,15 +200,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   subtitle: {
-    fontFamily: 'Barlow',
-    color: 'rgba(255, 255, 255, 0.7)',
+    fontFamily: "Barlow",
+    color: "rgba(255, 255, 255, 0.7)",
     fontSize: 16,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   errorText: {
     color: "red",
     alignSelf: "center",
-    fontFamily: 'Barlow'
+    fontFamily: "Barlow",
   },
   labelButton: {
     fontFamily: "Barlow",
@@ -207,6 +225,14 @@ const styles = StyleSheet.create({
   input: {
     paddingTop: 0,
     backgroundColor: "black",
+    color: "white",
+    width: "100%",
+    fontFamily: "Barlow",
+    fontSize: 20,
+    alignSelf: "center",
+  },
+  pickerText: {
+    paddingTop: 0,
     color: "white",
     width: "100%",
     fontFamily: "Barlow",

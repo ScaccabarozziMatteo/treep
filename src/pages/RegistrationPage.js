@@ -20,7 +20,7 @@ export default function RegistrationPage({ navigation }) {
     control,
     handleSubmit,
     setValue,
-    setError,
+    clearErrors,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -88,7 +88,7 @@ export default function RegistrationPage({ navigation }) {
         />
         {captions(errors.last_name)}
 
-        <View paddingTop={4} marginBottom={-7} >
+        <View paddingTop={0} marginBottom={-2} >
           <Controller
             control={control}
             rules={{
@@ -99,13 +99,16 @@ export default function RegistrationPage({ navigation }) {
               <Picker
                 placeholder={"Sex"}
                 style={styles.pickerText}
+                floatingPlaceholderStyle={{fontFamily: 'Barlow', fontSize: 20}}
+                floatingPlaceholderColor={'#BEC2C2'}
+                placeholderTextColor={errors.sex ? "red" : "#BEC2C2"}
                 value={value}
-                error={errors.sex !== undefined}
                 onBlur={onBlur}
+                underlineColor={errors.sex ? "red" : "#BEC2C2"}
                 floatingPlaceholder
                 onChange={item => {
                   setValue("sex", item);
-                  setError("sex", false);
+                  clearErrors('sex')
                 }}>
                 <Picker.Item labelStyle={{fontFamily: 'Barlow'}} value={"Male"} label={"Male"} />
                 <Picker.Item value={"Female"} label={"Female"} />
@@ -114,8 +117,9 @@ export default function RegistrationPage({ navigation }) {
             )}
             name="sex"
           />
-
-          {captions(errors.sex)}
+          <View style={{ marginTop: -25 }}>
+            {captions(errors.sex)}
+          </View>
 
         </View>
 
@@ -127,6 +131,12 @@ export default function RegistrationPage({ navigation }) {
           }}
           render={({ field: { onBlur, value } }) => (
             <DateTimePicker
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
+              placeholderTextColor={errors.birthdate ? "red" : "#BEC2C2"}
+              floatingPlaceholderColor={'#BEC2C2'}
+              floatingPlaceholderStyle={{fontFamily: 'Barlow', fontSize: 20}}
+              value={value}
+              underlineColor={errors.birthdate ? "red" : "#BEC2C2"}
               minimumDate={minDate}
               maximumDate={maxDate}
               floatingPlaceholder
@@ -135,14 +145,17 @@ export default function RegistrationPage({ navigation }) {
               placeholder="Birthdate"
               onBlur={onBlur}
               required
-              onChange={date => setValue("birthdate", date)}
+              onChange={date => {
+                setValue("birthdate", date)
+                clearErrors('birthdate')
+              }}
             />
           )}
           name="birthdate"
         />
-
-          {captions(errors.birthdate)}
-
+          <View style={{ marginTop: -25 }}>
+            {captions(errors.birthdate)}
+          </View>
         </View>
 
       </VStack>
@@ -311,9 +324,12 @@ const styles = StyleSheet.create({
     color: "white",
   },
   pickerText: {
+    paddingTop: 0,
     color: "white",
+    width: "100%",
     fontFamily: "Barlow",
-    fontSize: 20
+    fontSize: 20,
+    alignSelf: "center",
   },
   input: {
     paddingTop: 0,

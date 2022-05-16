@@ -40,7 +40,7 @@ export async function signInWithGoogle() {
 
   // If it is the first login and the DB has not the document with the user data, return 0 and the LoginPage redirect to the CompleteRegistrationPage
   if(userData === '' || userData.first_name === undefined || userData.last_name === undefined || userData.birthdate === undefined || userData.sex === undefined) {
-    logout()
+    await auth().signOut();
     return 0
   }
   else
@@ -96,6 +96,15 @@ async function setUserInfo(data) {
 }
 
 export async function completeProfile(data) {
+  // Get the users ID token
+  const { idToken } = await GoogleSignin.signIn();
+
+  // Create a Google credential with the token
+  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+  // Sign-in the user with the credential
+  await auth().signInWithCredential(googleCredential);
+
   const doc = {
     first_name: data.first_name,
     last_name: data.last_name,
