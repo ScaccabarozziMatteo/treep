@@ -16,7 +16,9 @@ export async function onAuthStateChange(onAuthStateChanged) {
 
 //Login with email and password
 export async function emailLogin(userData) {
-  await auth().signInWithEmailAndPassword(userData.email, userData.password);
+  const user = await auth().signInWithEmailAndPassword(userData.email, userData.password).catch(error1 => showToast("error", "Error", error1.message));
+  if (user !== undefined)
+    return 0
 }
 
 //Logout

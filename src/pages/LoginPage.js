@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar, StyleSheet, ScrollView, View } from "react-native";
+import { StatusBar, StyleSheet, ScrollView, View, BackHandler } from "react-native";
 import { Pressable, VStack, HStack } from "native-base";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { emailLogin, signInWithGoogle, onAuthStateChange } from "../api/UserApi";
+import { emailLogin, signInWithGoogle, onAuthStateChange, logout } from "../api/UserApi";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import ProfilePage from "./ProfilePage";
 import { showToast } from "../utils/Utils";
 import CompleteRegistrationPage from "./CompleteRegistrationPage";
 import { Text } from "@rneui/base";
@@ -21,7 +20,6 @@ GoogleSignin.configure({
 export default function LoginPage({ navigation, route }) {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
   const [show, setShow] = useState(false);
   const {
     control,
@@ -34,6 +32,13 @@ export default function LoginPage({ navigation, route }) {
       password: "",
     },
   });
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      navigation.navigate("Explore");
+    });
+    return () => backHandler.remove();
+  }, []);
 
   const captions = (errors) => {
     return (
@@ -48,8 +53,10 @@ export default function LoginPage({ navigation, route }) {
   const handleHideShowPassword = () => setShow(!show);
 
   // Login using email and password
-  function EmailLogin(userData) {
-    emailLogin(userData).catch(error1 => showToast("error", "Error", error1.message));
+  async function EmailLogin(userData) {
+    const value = await emailLogin(userData).catch(error1 => showToast("error", "Error", error1.message));
+    if(value === 0)
+      navigation.goBack()
   }
 
 
@@ -57,14 +64,14 @@ export default function LoginPage({ navigation, route }) {
     const user = await signInWithGoogle();
     if (await user !== 0) {
       showToast("success", "Great!", "Welcome back " + user.additionalUserInfo.profile.given_name + " :D");
+      navigation.goBack()
     }
     else
       navigation.navigate(CompleteRegistrationPage)
   }
 
   // Handle user state changes
-  function onAuthStateChanged(user) {
-    setUser(user);
+  function onAuthStateChanged() {
     if (initializing) {
       setInitializing(false);
     }
@@ -81,12 +88,10 @@ export default function LoginPage({ navigation, route }) {
     return null;
   }
 
-  if (!user) {
     return (
       <ScrollView keyboardShouldPersistTaps={'handled'} style={{backgroundColor: "#3F799D"}}>
         <StatusBar backgroundColor={'#3F799D'} barStyle={'light-content'}/>
         <VStack style={styles.container}>
-          <Text style={styles.title}>Sign In</Text>
           <Text style={styles.subtitle}>Sign in now to access and share your trips and destinations.</Text>
           <Controller
             control={control}
@@ -167,18 +172,14 @@ export default function LoginPage({ navigation, route }) {
         </VStack>
       </ScrollView>
     );
-  }
-  // Else if the user is logged, show they're profile page
-  return (
-    <ProfilePage navigation={navigation} showHeader={true} update={route.params} />
-  );
+
 }
 
 const styles = StyleSheet.create({
   container: {
     alignSelf: "center",
     width: '100%',
-    paddingTop: 90,
+    paddingTop: 0,
     padding: 30
   },
   button: {
@@ -203,12 +204,6 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontSize: 16,
-  },
-  title: {
-    color: "white",
-    fontFamily: 'Barlow',
-    fontSize: 30,
-    fontWeight: "bold"
   },
   subtitle: {
     fontFamily: 'Barlow',

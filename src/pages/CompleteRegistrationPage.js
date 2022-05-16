@@ -9,9 +9,6 @@ import { TextInput } from "react-native-paper";
 
 export default function CompleteRegistrationPage({ navigation }) {
 
-  const [firstName, setFirstName] = useState();
-  const [lastName, setLastName] = useState();
-
   const maxDate = new Date(2010, 12, 31);
   const minDate = new Date(1900, 1, 1);
 
@@ -35,9 +32,7 @@ export default function CompleteRegistrationPage({ navigation }) {
   useEffect(() => {
     const updateDefaultValue = async () => {
       const google = await googleUser();
-      setFirstName(google.user.givenName);
       setValue("first_name", google.user.givenName);
-      setLastName(google.user.familyName);
       setValue("last_name", google.user.familyName);
     };
 
