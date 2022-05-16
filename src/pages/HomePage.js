@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
   image: {},
 
   text: {
+    fontFamily: "Barlow",
     fontSize: 20,
     fontWeight: "bold",
     alignContent: "center",
