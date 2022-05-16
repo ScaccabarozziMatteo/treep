@@ -8,6 +8,7 @@ import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import Svg, { Circle, Path } from "react-native-svg";
 import {NavigationContainer} from "@react-navigation/native";
+import { white } from "react-native-paper/lib/typescript/styles/colors";
 
 
 const Post = (props, navigation) => {
@@ -73,25 +74,26 @@ const Post = (props, navigation) => {
                }}>
                  <Image
                    source={{uri:data.postImage}}
-                   style={{ width: "100%", height: 300, borderTopRightRadius: 35, borderTopLeftRadius: 35, borderBottomRightRadius: 35}}/>
+                   style={{ width: "100%",
+                     height: 300,
+                     borderTopRightRadius: 35,
+                     borderTopLeftRadius: 35,
+                     borderBottomRightRadius: 35,
+
+                   }}/>
 
                </View>
 
-               <Svg style={{
-                 position: 'absolute',
-                 left: '83%',
-                 marginTop: 220,
-                 height: 50,
-                 width: '20%',
+               <Image style={{
+                 position: "absolute",
+                 marginTop: 225,
+                 height: 40,
+                 width: '100%',
+                 flexDirection: "row",
+                 borderBottomRightRadius: 50,
+                 overlayColor: 'white',
                }}>
-
-                   <Path
-                     d="M 0 50 L 80 50 M 80 50 L 80 0 C 80 0 70 55 0 50 Z"
-                     fill="white"
-                     stroke-width="3"
-                   />
-
-               </Svg>
+               </Image>
 
                <View style={{
                  position: "absolute",
@@ -105,6 +107,7 @@ const Post = (props, navigation) => {
                  marginTop: 265,
                  backgroundColor: 'white',
                  borderColor: 'gray',
+                 zIndex: 2,
                }}>
 
                  <TouchableOpacity style={{flex: 1, paddingHorizontal: 10}}
