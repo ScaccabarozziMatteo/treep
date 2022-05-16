@@ -80,7 +80,6 @@ function TabContainer({ navigation }) {
 export default function MainContainer() {
   return (
     <NavigationContainer>
-      <StatusBar backgroundColor={"#191d3a"} />
       <Stack.Navigator screenOptions={() => ({
         presentation: 'modal',
         headerTintColor: "white",
