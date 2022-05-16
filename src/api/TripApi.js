@@ -1,5 +1,9 @@
 import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
+import firebase from "@react-native-firebase/app";
+import { currentUser } from "./UserApi";
+
+const FieldValue = firebase.firestore.FieldValue;
 
 // Retrieves ALL the trips on the server
 export async function getAll() {
