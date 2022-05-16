@@ -86,7 +86,7 @@ const Post = (props, navigation) => {
                }}>
 
                    <Path
-                     d="M 0 50 L 70 50 M 70 50 L 70 0 C 70 0 70 55 0 50 Z"
+                     d="M 0 50 L 80 50 M 80 50 L 80 0 C 80 0 70 55 0 50 Z"
                      fill="white"
                      stroke-width="3"
                    />
