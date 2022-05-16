@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
-import { Icon, Avatar } from "react-native-elements";
-import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import center from "native-base/src/theme/components/center";
-import Fontisto from "react-native-vector-icons/Fontisto";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { white } from "react-native-paper/lib/typescript/styles/colors";
 import Svg, { Circle, Path } from "react-native-svg";
+import {NavigationContainer} from "@react-navigation/native";
+
 
 const Post = (props, navigation) => {
 
@@ -20,6 +18,7 @@ const Post = (props, navigation) => {
       title: props.title,
       postUserImage: props.userImage,
       username: props.username,
+      userID: props.userID,
       postImage: props.postImage,
       isLiked: props.isLiked,
       location: props.location,
@@ -80,8 +79,8 @@ const Post = (props, navigation) => {
 
                <Svg style={{
                  position: 'absolute',
-                 left: '80%',
-                 marginTop: 215,
+                 left: '83%',
+                 marginTop: 220,
                  height: 50,
                  width: '20%',
                }}>
@@ -89,7 +88,6 @@ const Post = (props, navigation) => {
                    <Path
                      d="M 0 50 L 70 50 M 70 50 L 70 0 C 70 0 70 55 0 50 Z"
                      fill="white"
-
                      stroke-width="3"
                    />
 
@@ -109,9 +107,10 @@ const Post = (props, navigation) => {
                  borderColor: 'gray',
                }}>
 
-                 <View style={{flex: 1, paddingHorizontal: 10}}>
+                 <TouchableOpacity style={{flex: 1, paddingHorizontal: 10}}
+                                   onPress={() => navigation.navigate("UserProfile", data.userID)}>
                    <Image source={{uri: data.postUserImage}} style={{ width: 40, height: 40, borderRadius: 100 }}/>
-                 </View>
+                 </TouchableOpacity>
 
 
                  <View style={{flex: 3}}>
