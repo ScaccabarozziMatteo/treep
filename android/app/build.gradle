@@ -207,6 +207,8 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
+    implementation 'com.android.support:multidex:2.0.1' //enter the latest multidex version
+
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
     implementation platform('com.google.firebase:firebase-bom:29.2.1')
     implementation 'com.google.firebase:firebase-auth'

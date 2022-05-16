@@ -1,14 +1,16 @@
-import { BackHandler, ScrollView, StyleSheet, Text } from "react-native";
+import { BackHandler, ScrollView, StatusBar, StyleSheet, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { HStack, Stack, View, VStack } from "native-base";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Datepicker, Input, Select, SelectItem } from "@ui-kitten/components";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { completeProfile, logout } from "../api/UserApi";
+import { completeProfile, googleUser, logout } from "../api/UserApi";
+import { Picker, Button, DateTimePicker } from "react-native-ui-lib";
+import { TextInput } from "react-native-paper";
+
 
 export default function CompleteRegistrationPage({ navigation }) {
 
-  const [selectedIndex, setSelectedIndex] = useState();
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
 
   const maxDate = new Date(2010, 12, 31);
   const minDate = new Date(1900, 1, 1);
@@ -17,14 +19,10 @@ export default function CompleteRegistrationPage({ navigation }) {
     control,
     handleSubmit,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useForm();
 
-  const data = [
-    "Male",
-    "Female",
-    "Other",
-  ];
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -34,15 +32,22 @@ export default function CompleteRegistrationPage({ navigation }) {
     return () => backHandler.remove();
   }, []);
 
+  useEffect(() => {
+    const updateDefaultValue = async () => {
+      const google = await googleUser();
+      setFirstName(google.user.givenName);
+      setValue("first_name", google.user.givenName);
+      setLastName(google.user.familyName);
+      setValue("last_name", google.user.familyName);
+    };
 
-  const renderOption = (title) => (
-    <SelectItem title={title} />
-  );
+    updateDefaultValue();
+  }, []);
 
   const captions = (errors) => {
     return (
       (errors) ? (
-        <Text style={{ color: "red", alignSelf: "center" }}>
+        <Text style={styles.errorText}>
           {errors.message}
         </Text>
       ) : null
@@ -50,142 +55,188 @@ export default function CompleteRegistrationPage({ navigation }) {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps={"handled"}>
-
-      <View style={{ width: "80%", alignSelf: "center" }}>
+    <ScrollView keyboardShouldPersistTaps={"handled"} style={{ backgroundColor: "black" }}>
+      <StatusBar backgroundColor={"black"} barStyle={"light-content"} />
+      <VStack style={styles.container}>
+        <Text style={styles.subtitle}>Sign in now to access and share your trips and destinations.</Text>
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Missing first name." },
+            required: { value: true, message: "Missing first name" },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Input
+            <TextInput
               style={styles.input}
               onBlur={onBlur}
               onChangeText={onChange}
               autoCapitalize={"words"}
-              placeholder={"First Name"}
-              placeholderTextColor="grey"
-              status={errors.first_name ? "danger" : "basic"}
+              error={errors.first_name}
               label={"First Name"}
-              size={"large"}
+              color={"white"}
+              underlineColor={"#BEC2C2"}
+              activeUnderlineColor={"white"}
               value={value}
-              caption={captions(errors.first_name)}
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
             />
           )}
           name="first_name"
         />
+        {captions(errors.first_name)}
 
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Missing last name." },
+            required: { value: true, message: "Missing last name" },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Input
+            <TextInput
               style={styles.input}
               onBlur={onBlur}
               onChangeText={onChange}
               autoCapitalize={"words"}
-              placeholder={"Last Name"}
-              placeholderTextColor="grey"
-              status={errors.last_name ? "danger" : "basic"}
+              error={errors.first_name}
               label={"Last Name"}
-              size={"large"}
+              color={"white"}
+              underlineColor={"#BEC2C2"}
+              activeUnderlineColor={"white"}
               value={value}
-              caption={captions(errors.last_name)}
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
             />
           )}
           name="last_name"
         />
+        {captions(errors.last_name)}
 
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Please, select a choice." },
+            required: { value: true, message: "Please, select your sex" },
           }}
           render={({ field: { onBlur, value } }) => (
-            <Select
-              label={"Sex"}
-              size={"large"}
+            <Picker
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
               placeholder={"Sex"}
+              style={styles.pickerText}
               value={value}
-              selectedIndex={selectedIndex}
+              floatingPlaceholderStyle={{fontFamily: 'Barlow', fontSize: 20}}
+              floatingPlaceholderColor={'#BEC2C2'}
+              placeholderTextColor={errors.sex ? "red" : "#BEC2C2"}
               onBlur={onBlur}
-              caption={captions(errors.sex)}
-              status={errors.sex ? "danger" : "basic"}
-              onSelect={index => {
-                setSelectedIndex(index);
-                setValue("sex", data[index.row]);
+              underlineColor={errors.sex ? "red" : "#BEC2C2"}
+              floatingPlaceholder
+              onChange={item => {
+                setValue("sex", item);
+                clearErrors("sex");
               }}>
-              {data.map(renderOption)}
-            </Select>
+              <Picker.Item labelStyle={{ fontFamily: "Barlow" }} value={"Male"} label={"Male"} />
+              <Picker.Item value={"Female"} label={"Female"} />
+              <Picker.Item value={"Other"} label={"Other"} />
+            </Picker>
           )}
           name="sex"
         />
+        <View style={{ marginTop: -25 }}>
+          {captions(errors.sex)}
+        </View>
 
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Please, select a date." },
+            required: { value: true, message: "Please, select your birthdate" },
           }}
           render={({ field: { onBlur, value } }) => (
-            <Datepicker
-              min={minDate}
-              max={maxDate}
-              label="Birth date"
-              caption={captions(errors.birthdate)}
-              placeholder="Birth date"
-              status={errors.birthdate ? "danger" : "basic"}
-              date={value}
+            <DateTimePicker
+              minimumDate={minDate}
+              maximumDate={maxDate}
+              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
+              floatingPlaceholder
+              migrate
+              migrateTextField
+              floatingPlaceholderColor={'#BEC2C2'}
+              floatingPlaceholderStyle={{fontFamily: 'Barlow', fontSize: 20}}
+              value={value}
+              underlineColor={errors.birthdate ? "red" : "#BEC2C2"}
+              placeholderStyle={{ fontFamily: "Barlow", fontSize: 20 }}
+              placeholderTextColor={errors.birthdate ? "red" : "#BEC2C2"}
+              error={errors.birthdate !== undefined}
+              style={styles.pickerText}
+              placeholder="Birthdate"
               onBlur={onBlur}
-              size={"large"}
-              onSelect={date => setValue("birthdate", date)}
-              accessoryRight={
-                <Icon
-                  style={{ paddingRight: 10 }}
-                  size={22}
-                  color={"black"}
-                  name={"calendar-today"}
-                />
-              }
+              required
+              onChange={date => {
+                setValue("birthdate", date);
+                clearErrors('birthdate')
+              }}
             />
           )}
           name="birthdate"
         />
+        <View style={{ marginTop: -25 }}>
+          {captions(errors.birthdate)}
+        </View>
 
-        <VStack alignItems={"center"} style={{ width: "100%" }}>
-          <Button onPress={handleSubmit(async (form) => {
-            await completeProfile(form);
-            await navigation.navigate("Profile", { update: Math.random() });
-          })} status={"success"} style={{ width: "60%" }}>
-            Complete Registration
-          </Button>
-        </VStack>
-      </View>
+        <Button labelStyle={styles.labelButton} label={"Complete Registration"} onPress={handleSubmit(async (form) => {
+          await completeProfile(form);
+          await navigation.navigate("Profile", { update: Math.random() });
+        })} style={styles.button} />
+
+      </VStack>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: "column", // row
-    alignItems: "center",
-    backgroundColor: "grey",
+    width: "80%",
+    alignSelf: "center",
   },
   boxButton: {
     paddingTop: 20,
     width: "40%",
     alignSelf: "center",
   },
-  checkbox: {},
-  input: {
-    color: "black",
-    alignSelf: "center",
-  },
   text: {
     color: "black",
     textAlign: "center",
+  },
+  subtitle: {
+    fontFamily: "Barlow",
+    color: "rgba(255, 255, 255, 0.7)",
+    fontSize: 16,
+    paddingBottom: 40,
+  },
+  errorText: {
+    color: "red",
+    alignSelf: "center",
+    fontFamily: "Barlow",
+  },
+  labelButton: {
+    fontFamily: "Barlow",
+    fontWeight: "700",
+  },
+  button: {
+    backgroundColor: "#3F799D",
+    borderRadius: 10,
+    borderColor: "rgba(0, 0, 0, 0)",
+    marginTop: 50,
+    marginBottom: 20,
+    height: 50,
+  },
+  input: {
+    paddingTop: 0,
+    backgroundColor: "black",
+    color: "white",
+    width: "100%",
+    fontFamily: "Barlow",
+    fontSize: 20,
+    alignSelf: "center",
+  },
+  pickerText: {
+    paddingTop: 0,
+    color: "white",
+    width: "100%",
+    fontFamily: "Barlow",
+    fontSize: 20,
+    alignSelf: "center",
   },
 });
