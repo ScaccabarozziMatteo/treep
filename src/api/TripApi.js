@@ -49,11 +49,17 @@ export async function getCoverPhoto(tripId) {
 
 export async function setLike(tripID) {
   await firestore().collection('Trip').doc(tripID).set({likes: FieldValue.arrayUnion(currentUser().uid)}, {merge: true})
-
 }
 
 export async function removeLike(tripID) {
   await firestore().collection('Trip').doc(tripID).update({likes: FieldValue.arrayRemove(currentUser().uid)})
+}
 
+export async function  setWish(tripID) {
+  await firestore().collection('Trip').doc(tripID).set({wishes: FieldValue.arrayUnion(currentUser().uid)}, {merge: true})
+}
+
+export async function removeWish(tripID) {
+  await firestore().collection('Trip').doc(tripID).update({wishes: FieldValue.arrayRemove(currentUser().uid)})
 }
 

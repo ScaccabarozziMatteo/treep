@@ -7,7 +7,7 @@ import center from "native-base/src/theme/components/center";
 import Fontisto from "react-native-vector-icons/Fontisto";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { removeLike, setLike } from "../api/TripApi";
+import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { white } from "react-native-paper/lib/typescript/styles/colors";
 import Svg, { Circle, Path } from "react-native-svg";
@@ -23,20 +23,27 @@ const Post = (props, navigation) => {
       postImage: props.postImage,
       isLiked: props.isLiked,
       location: props.location,
-      likes: props.likes,
-      description: props.description,
-      status: props.status,
+      isWished: props.isWished,
     }
   ]);
 
   const [like, _setLike] = useState(postInfo.isLiked);
+  const [wish, _setWish] = useState(postInfo.isWished);
 
   function likePost(postID) {
-    setLike(postID).then(_setLike(!like))
+    setLike(postID).then(_setLike(!like));
   }
 
   function dislikePost(postID) {
-    removeLike(postID).then(_setLike(!like))
+    removeLike(postID).then(_setLike(!like));
+  }
+
+  function addToWishList(postID){
+    setWish(postID).then(_setWish(!wish));
+  }
+
+  function removeFromWishList(postID) {
+    removeWish(postID).then(_setWish(!wish));
   }
 
   return(
@@ -108,11 +115,7 @@ const Post = (props, navigation) => {
 
 
                  <View style={{flex: 3}}>
-                   <Text style={{
-                     fontSize: 15,
-                     textAlignVertical: "center",
-                     color: 'black',
-                   }}>
+                   <Text style={styles.text}>
                      {data.title}
                    </Text>
                    <Text style={{
@@ -132,8 +135,10 @@ const Post = (props, navigation) => {
                                style={{fontSize: 25, color: like ? 'red' : 'black'}}/>
                    </TouchableOpacity>
 
-                   <TouchableOpacity style={{paddingHorizontal: 5}}>
-                    <Feather name="bookmark" style={{fontSize: 25, color: 'black'}}/>
+                   <TouchableOpacity style={{paddingHorizontal: 5}}
+                                     onPress={wish ? () => removeFromWishList(data.postID) : () => addToWishList(data.postID)}>
+                    <FontAwesome name={wish ? "bookmark-o" : "bookmark"}
+                                 style={{fontSize: 25, color: wish ? 'black' : "#386BED"}}/>
                    </TouchableOpacity>
 
                    <SimpleLineIcons name="options-vertical" style={{fontSize: 22, color: 'black', paddingHorizontal: 5}}/>
@@ -167,8 +172,8 @@ const styles = StyleSheet.create({
 
   },
   text: {
+    fontFamily: "Barlow",
     fontSize: 15,
-    textAlign: "center",
     textAlignVertical: "center",
     color: 'black',
   }

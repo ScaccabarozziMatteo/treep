@@ -69,11 +69,9 @@ export default function HomePage() {
                     userImage={item.photoURL}
                     postImage={item.coverPhoto}
                     isLiked={item.isLiked}
+                    isWished = {item.isWished}
                     username={item.username}
                     location={item.location}
-                    likes={item.likes.length}
-                    description={item.description}
-                    status={item.status}
                     postID={item.postID}
               />
             )}
@@ -95,6 +93,7 @@ const styles = StyleSheet.create({
   },
 
   text: {
+    fontFamily: "Barlow",
     fontSize: 20,
     fontWeight: "bold",
     alignContent: "center",

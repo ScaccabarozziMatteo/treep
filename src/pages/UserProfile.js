@@ -41,7 +41,7 @@ export default function UserProfile({ navigation, route }) {
           <Icon name={"airplane-takeoff"} color={isActiveBadge(1)} size={40} />
           <Icon name={"comment-text-outline"} color={isActiveBadge(2)} size={40} />
           <Icon name={"hand-heart"} color={isActiveBadge(3)} size={40} />
-          <Icon name={"professional-hexagon"} color={isActiveBadge(4)} size={40} />
+          <Icon name={"professional-hexagon"} color={isActiveBadge(4)} size={40}/>
         </HStack>
       </VStack>
     );
