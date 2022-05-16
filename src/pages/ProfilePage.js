@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import {
   Keyboard,
   RefreshControl,
-  ScrollView, StatusBar,
+  ScrollView,
+  StatusBar,
   StyleSheet,
   TextInput,
   TouchableWithoutFeedback,
@@ -12,16 +13,20 @@ import {
 import { HStack, Text, VStack } from "native-base";
 import { Avatar, Button } from "react-native-ui-lib";
 import {
-  currentUser, getFollowers, getFollowings,
+  currentUser,
+  getFollowers,
+  getFollowings,
   getUserData,
-  logout, onAuthStateChange, setBioFirebase,
+  logout,
+  onAuthStateChange,
+  setBioFirebase,
   setUsernameFirebase,
   updateUserInfo,
 } from "../api/UserApi";
 import { showToast } from "../utils/Utils";
 import ModalPhoto from "../utils/ModalPhoto";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import LinearGradient from "react-native-linear-gradient";
 
 export default function ProfilePage(props) {
@@ -46,6 +51,23 @@ export default function ProfilePage(props) {
 
   const navigation = useNavigation();
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const updateUser = async () => {
+        const user1 = await currentUser()
+        if (user1 === null)
+          navigation.push('Login')
+        else
+          setUser(user1)
+      }
+      updateUser()
+      return () => {
+        // Useful for cleanup functions
+
+      };
+    }, [])
+  )
+
   const onRefresh = () => {
     setRefreshing(true);
     setDummyUser(Math.random);
@@ -63,14 +85,16 @@ export default function ProfilePage(props) {
   // useEffect triggers when a user info is changed and the dummyUser is used to triggering the useEffect
   useEffect(() => {
     const updateUserData = async () => {
-      const user = await currentUser();
-      const userData = await getUserData();
-      setUserData(userData);
-      setUser(user);
-      const followers = await getFollowers(user.uid);
-      const followings = await getFollowings(user.uid);
-      setFollowers(followers);
-      setFollowings(followings);
+      if (user !== null) {
+        const user = await currentUser();
+        const userData = await getUserData();
+        setUserData(userData);
+        setUser(user);
+        const followers = await getFollowers(user.uid);
+        const followings = await getFollowings(user.uid);
+        setFollowers(followers);
+        setFollowings(followings);
+      }
     };
     updateUserData();
   }, [dummyUser, props.update]);
@@ -78,17 +102,19 @@ export default function ProfilePage(props) {
   // Initial action when the page is created
   useEffect(() => {
     const updateUserData = async () => {
-      const uid = currentUser().uid;
-      const userData = await getUserData();
-      const followers = await getFollowers(uid);
-      const followings = await getFollowings(uid);
-      setUserData(userData);
-      setFollowers(followers);
-      setFollowings(followings);
+      const user = await currentUser();
+      console.log(user)
+      if (user !== null) {
+        setUser(user)
+        const userData = await getUserData();
+        const followers = await getFollowers(user.uid);
+        const followings = await getFollowings(user.uid);
+        setUserData(userData);
+        setFollowers(followers);
+        setFollowings(followings);
+      }
       return onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
     };
-    setFollowers(followers);
-    setFollowings(followings);
     updateUserData();
   }, []);
 
@@ -166,7 +192,7 @@ export default function ProfilePage(props) {
 
   // Logout function
   function Logout() {
-    navigation.setOptions({headerShown: false})
+    setUser(null)
     logout()
       .then(() => showToast("success", "Logout completed!", "See you soon!"))
       .catch(error1 => showToast("error", "Error", error1.message));
@@ -198,9 +224,7 @@ export default function ProfilePage(props) {
     return null;
   }
 
-  if (user != null) {
-
-    navigation.setOptions({ headerShown: true })
+  if (user !== null) {
 
     return (
       <ScrollView style={styles.scrollView} keyboardShouldPersistTaps={"handled"}
@@ -340,6 +364,13 @@ export default function ProfilePage(props) {
       </ScrollView>
     );
   }
+
+  else
+    return (
+      <View>
+        {navigation.navigate('Login')}
+      </View>
+    )
 }
 
 const styles = StyleSheet.create({

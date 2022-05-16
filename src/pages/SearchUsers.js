@@ -29,7 +29,7 @@ export default function SearchUsers({ navigation, route }) {
   function renderButton(user, userID) {
     if (loggedUser.username !== user.username)
       return (
-        <Button style={styles.button} size={'medium'} label={'Show Profile'} onPress={() => navigation.navigate("UserProfile", { user, userID })}/>
+        <Button style={styles.button} size={'medium'} label={'Show Profile'} onPress={() => navigation.navigate("UserProfile", { userID })}/>
       );
     else
       return (

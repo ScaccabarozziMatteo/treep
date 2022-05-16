@@ -18,9 +18,10 @@ import { logout } from "../api/UserApi";
 import UserProfile from "../pages/UserProfile";
 import ChatPage from "../pages/ChatPage";
 import { StatusBar } from "react-native";
+import ProfilePage from "../pages/ProfilePage";
 
 // Pages names
-const homeName = "Home";
+const homeName = "Homepage";
 const profileName = "Profile";
 const exploreName = "Explore";
 const newTripName = "New Trip";
@@ -64,13 +65,13 @@ function TabContainer({ navigation }) {
         headerTitleStyle: { fontFamily: "Barlow", fontWeight: "700" },
         headerTitleAlign: "left",
       })}>
-      <Tab.Screen name={homeName} component={HomePage} />
+      <Tab.Screen name={homeName} options={{title: 'Home'}} component={HomePage} />
       <Tab.Screen options={{
         headerRight: () => <Icon onPress={() => navigation.navigate(SearchUsers)} color={"black"} size={30}
                                  name={"person-search"} />,
       }} name={exploreName} component={ExplorePage} />
       <Tab.Screen name={newTripName} component={NewTripPage} />
-      <Tab.Screen options={{ headerShown: false }} name={profileName} component={LoginPage} />
+      <Tab.Screen name={profileName} component={ProfilePage} />
     </Tab.Navigator>
   );
 }
@@ -95,6 +96,15 @@ export default function MainContainer() {
           component={TabContainer}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Login" options={({ navigation }) => ({
+          title: "Sign In",
+          headerTintColor: 'white',
+          headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
+          headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
+          headerLeft: () => <Icon size={28} name={"arrow-back"} style={{padding: 10}} color={"white"} onPress={() => {
+            navigation.navigate("Homepage");
+          }} />,
+        })} component={LoginPage} />
         <Stack.Screen name="Registration" options={{
           title: "Sign Up",
           headerTintColor: 'white',
