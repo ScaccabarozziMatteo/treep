@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import center from "native-base/src/theme/components/center";
@@ -7,6 +7,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import {NavigationContainer} from "@react-navigation/native";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -27,9 +28,15 @@ const Post = (props) => {
     }
   ]);
 
-  const [like, _setLike] = useState(postInfo.isLiked);
-  const [wish, _setWish] = useState(postInfo.isWished);
+  const [like, _setLike] = useState(false);
+  const [wish, _setWish] = useState(false);
 
+  useEffect(() => {
+    const mappedData = postInfo.map((data, index) => {
+      _setLike(data.isLiked);
+      _setWish(data.isWished);
+    });
+  })
   function likePost(postID) {
     setLike(postID).then(_setLike(!like));
   }
@@ -140,14 +147,14 @@ const Post = (props) => {
                  <View style={{flex: 2, flexDirection: "row", justifyContent: "space-around"}}>
                    <TouchableOpacity style={{paddingHorizontal: 5}}
                      onPress={like ? () => dislikePost(data.postID) : () => likePost(data.postID)}>
-                     <Ionicons name={like ? "heart": "heart-outline"}
+                     <Ionicons name={like ? "heart" : "heart-outline"}
                                style={{fontSize: 25, color: like ? 'red' : 'black'}}/>
                    </TouchableOpacity>
 
                    <TouchableOpacity style={{paddingHorizontal: 5}}
                                      onPress={wish ? () => removeFromWishList(data.postID) : () => addToWishList(data.postID)}>
-                    <FontAwesome name={wish ? "bookmark-o" : "bookmark"}
-                                 style={{fontSize: 25, color: wish ? 'black' : "#386BED"}}/>
+                    <FontAwesome name={wish ? "bookmark" : "bookmark-o"}
+                                 style={{fontSize: 25, color: wish ? '#386BED' : "black"}}/>
                    </TouchableOpacity>
 
                    <SimpleLineIcons name="options-vertical" style={{fontSize: 22, color: 'black', paddingHorizontal: 5}}/>

@@ -19,13 +19,15 @@ export async function getAll () {
     //Calls firebase to get the user data
     const postID = t._ref._documentPath._parts[1];
     const isLiked = (t.data().likes).includes(currentUser().uid)
+    const isWished = (t.data().wishes).includes(currentUser().uid)
     const userData = await firestore().collection("users/" + t.data().userID + "/public_info").doc("personal_data").get();
     //Merges together the info about the trip and the info about the user
     let mergedObj = {...t.data(), ...userData.data()};
     //Add postID
     mergedObj = {...mergedObj, postID}
-    //Add isLiked
+    //Add isLiked and Wishes
     mergedObj = {...mergedObj, isLiked}
+    mergedObj = {...mergedObj, isWished}
     //Pushes the retrieved info into an array
     trips.push(mergedObj);
   }
@@ -69,5 +71,14 @@ export async function removeWish(tripID) {
 }
 
 export async function getTripById (id) {
-  await firestore().collection('Trip').doc(id);
+  const tripData = await firestore().collection('Trip').doc(id).get();
+
+  const isLiked = (tripData.data().likes).includes(currentUser().uid)
+  const isWished = (tripData.data().wishes).includes(currentUser().uid)
+
+  let mergedObj = {...tripData.data(), isLiked};
+  mergedObj = {...mergedObj, isWished};
+
+  return mergedObj;
 }
+

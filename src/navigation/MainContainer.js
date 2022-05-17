@@ -126,7 +126,7 @@ export default function MainContainer() {
           component={NewTripPage}
         />
         <Stack.Screen name="TripDetailsPage"
-                      options={{title: 'TripDetails', animationEnabled: false}}
+                      options={{title: '', animationEnabled: false, headerShown: false}}
                       component={TripDetailsPage}
         >
 
