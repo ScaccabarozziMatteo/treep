@@ -1,21 +1,17 @@
-import { View, StyleSheet, Text, StatusBar, ScrollView, Image, Alert } from "react-native";
-import React, { useRef, useState, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import React, {useRef, useState} from "react";
+import { ScrollView, StatusBar, StyleSheet, View } from "react-native";
+import { Text } from "@rneui/base";
 import { VStack } from "native-base";
-import { Button, DateTimePicker, TouchableOpacity, Chip } from "react-native-ui-lib";
-import { newTrip } from "../api/TripApi";
-import { TextInput } from "react-native-paper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import ModalPhoto from "../utils/ModalPhoto";
+import { Controller, useForm } from "react-hook-form";
+import { TextInput } from "react-native-paper";
+import { Button, Chip, DateTimePicker } from "react-native-ui-lib";
+import { newTrip } from "../api/TripApi";
 
-export default function NewTripPage({ navigation }) {
+export default function AddActivityPage(props) {
 
-  const [places, setPlaces] = useState([]);
-  const [activities, setActivities] = useState([]);
-  const [coverPhoto, setCoverPhoto] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
+  const [places, setPlaces] = useState(null);
 
   const {
     control,
@@ -33,41 +29,11 @@ export default function NewTripPage({ navigation }) {
     ) : null;
   };
 
-  function chip() {
-    return (
-      <View style={{ flex: 10 }}>
-        {
-          places.map((item, index) => {
-            return (
-              <View style={{
-                margin: 5,
-                alignItems: "flex-start",
-                flexWrap: "wrap",
-              }}>
-                <Chip
-                  key={index}
-                  mode="flat" //changing display mode, default is flat.
-                  onDismiss={() => setPlaces([...places.slice(0, index), ...places.slice(index + 1)])}
-                  backgroundColor={"white"}
-                  labelStyle={{ color: "black" }}
-                  useSizeAsMinimum
-                  label={item.description}
-                />
-              </View>
-            );
-          })}
-      </View>
-    );
-  }
-
   const ref = useRef();
 
   function clearData() {
-    setPlaces([]);
-    setCoverPhoto(null);
     reset();
   }
-
 
   return (
     <ScrollView horizontal={false} keyboardShouldPersistTaps={"handled"} style={{ backgroundColor: "white" }}>
@@ -104,15 +70,14 @@ export default function NewTripPage({ navigation }) {
                 },
                 row: {},
               }}
-              placeholder="Where will your trip take place?"
+              placeholder="Where will your activity take place?"
               textInputProps={{
                 placeholderTextColor: "#938E8E",
                 returnKeyType: "search",
               }} nearbyPlacesAPI={"GoogleReverseGeocoding"}
               onPress={(data, details = null) => {
                 // Check if an element is already added
-                if (!places.includes(data))
-                  setPlaces(places => [...places, data]);
+                  setPlaces(data)
               }}
               query={{
                 key: "AIzaSyBmBppizINlbWovLovBSm3KT4lElW5lt5g",
@@ -122,19 +87,58 @@ export default function NewTripPage({ navigation }) {
           </View>
         </ScrollView>
 
-        {chip()}
+        {places !== null ?
+        <Chip
+          mode="flat" //changing display mode, default is flat.
+          onDismiss={() => setPlaces(null)}
+          backgroundColor={"white"}
+          labelStyle={{ color: "black" }}
+          useSizeAsMinimum
+          label={places.description}
+        /> : null}
+
+        <VStack marginTop={0}>
+          <Controller
+            control={control}
+            rules={{
+              required: { value: true, message: "Missing activity date" },
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <DateTimePicker
+                theme={{ colors: { placeholder: "#938E8E", text: "black" } }}
+                placeholderTextColor={"#938E8E"}
+                floatingPlaceholderColor={"#938E8E"}
+                floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18 }}
+                value={value}
+                underlineColor={"transparent"}
+                floatingPlaceholder
+                style={styles.pickerText}
+                placeholder="Date"
+                onBlur={onBlur}
+                required
+                onChange={date => {
+                  setValue("date", date);
+                  clearErrors("date");
+                }}
+              />
+            )}
+            name="date"
+          />
+          {captions(errors.date)}
+        </VStack>
+
 
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Missing trip title" },
+            required: { value: true, message: "Missing activity name" },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               style={styles.input}
               onBlur={onBlur}
               onChangeText={onChange}
-              label={"Title"}
+              label={"Name of the activity"}
               underlineColor={"transparent"}
               activeUnderlineColor={"#3F799D"}
               value={value}
@@ -149,7 +153,7 @@ export default function NewTripPage({ navigation }) {
         <Controller
           control={control}
           rules={{
-            required: { value: true, message: "Missing trip description" },
+            required: { value: true, message: "Missing activity description" },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
@@ -168,94 +172,31 @@ export default function NewTripPage({ navigation }) {
         />
         {captions(errors.description)}
 
-        <VStack alignItems={"center"} style={{ marginBottom: -25 }}>
-          <TouchableOpacity
-            onPress={() => {
-              setShowModal(true);
-            }}
-            style={styles.coverPhotoButton}>
-            <Image resizeMode={"center"} style={{ height: "100%" }}
-                   source={coverPhoto !== null ? { uri: coverPhoto.assets[0].uri } : null} />
-            <Text style={styles.coverPhotoText}>Choose cover photo</Text>
-          </TouchableOpacity>
-        </VStack>
-
-        <VStack marginTop={45}>
-          <Controller
-            control={control}
-            rules={{
-              required: { value: true, message: "Missing trip start date" },
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <DateTimePicker
-                theme={{ colors: { placeholder: "#938E8E", text: "black" } }}
-                placeholderTextColor={"#938E8E"}
-                floatingPlaceholderColor={"#938E8E"}
-                floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18 }}
-                value={value}
-                maximumDate={getValues("endDate")}
-                underlineColor={"transparent"}
-                floatingPlaceholder
-                style={styles.pickerText}
-                placeholder="Start-date"
-                onBlur={onBlur}
-                required
-                onChange={date => {
-                  setValue("startDate", date);
-                  clearErrors("startDate");
-                }}
-              />
-            )}
-            name="startDate"
-          />
-          {captions(errors.startDate)}
-        </VStack>
 
         <Controller
           control={control}
-          rules={{
-            required: { value: true, message: "Missing trip end date" },
-          }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <DateTimePicker
-              theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
-              placeholderTextColor={"#938E8E"}
-              floatingPlaceholderColor={"#938E8E"}
-              floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18 }}
-              value={value}
-              minimumDate={getValues("startDate")}
-              underlineColor={"transparent"}
-              floatingPlaceholder
-              style={styles.pickerText}
-              placeholder="End-date"
+            <TextInput
+              style={styles.input}
               onBlur={onBlur}
-              required
-              onChange={date => {
-                setValue("endDate", date);
-                clearErrors("endDate");
-              }}
+              onChangeText={onChange}
+              label={"Link for booking activity"}
+              underlineColor={"transparent"}
+              activeUnderlineColor={"#3F799D"}
+              value={value}
+              theme={{ colors: { placeholder: "#938E8E", text: "black" } }}
             />
           )}
-          name="endDate"
+          name="link"
         />
-        {captions(errors.endDate)}
+        {captions(errors.link)}
 
         <VStack alignItems={"center"}>
 
-          <Button label={"Add activity"}
-                  iconSource={() => <Icon style={styles.labelActivityButton} size={20} name={'plus'}/>}
-                  iconOnRight={false}
-                  labelStyle={styles.labelActivityButton}
-                  onPress={() => navigation.push('AddActivity', {
-                    updateActivity: (response) => {if (!activities.includes(response))
-                      setActivities(activities => [...activities, response])}
-                  })}
-                  style={styles.addActivityButton} />
-
-          <Button label={"Create New Trip"}
+          <Button label={"Add Activity"}
                   labelStyle={styles.labelButton}
-                  onPress={handleSubmit(async form => {
-                    await newTrip(form);
+                  onPress={handleSubmit(form => {
+                    props.updateActivity(form);
                   })}
                   style={styles.createButton} />
 
@@ -266,15 +207,13 @@ export default function NewTripPage({ navigation }) {
                   onPress={clearData}
                   style={styles.wipeButton} />
         </VStack>
-        <ModalPhoto typeOfUpload="newTrip_cover" show={showModal} updateImage={(response) => setCoverPhoto(response)}
-                    updateShow={(response) => setShowModal(response)} modalResponse />
       </VStack>
     </ScrollView>
 
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   text2: {
     fontSize: 18,
     fontWeight: "bold",
@@ -307,7 +246,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
   createButton: {
-    backgroundColor: "#3F799D",
+    backgroundColor: "#2B5B54",
     borderRadius: 10,
     borderColor: "rgba(0, 0, 0, 0)",
     marginTop: 18,
@@ -325,7 +264,7 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   addActivityButton: {
-    backgroundColor: "#938E8E",
+    backgroundColor: "#F1F2F5",
     borderRadius: 10,
     borderColor: "rgba(0, 0, 0, 0)",
     marginTop: 18,
@@ -337,7 +276,7 @@ export const styles = StyleSheet.create({
     fontFamily: "Barlow",
     fontWeight: "700",
     fontSize: 18,
-    color: '#F1F2F5'
+    color: '#938E8E'
   },
   labelButton: {
     fontFamily: "Barlow",
@@ -385,3 +324,4 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+

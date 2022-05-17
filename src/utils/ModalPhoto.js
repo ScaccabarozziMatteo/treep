@@ -49,6 +49,9 @@ export default function ModalPhoto(props) {
           case ("profile_photo"):
             changeProfilePhoto(response);
             break;
+          case ("newTrip_cover"):
+            addNewTripPhoto(response);
+            break;
         }
       }
     });
@@ -79,7 +82,9 @@ export default function ModalPhoto(props) {
                 case ("profile_photo"):
                   changeProfilePhoto(response);
                   break;
-
+                case ("newTrip_cover"):
+                  addNewTripPhoto(response);
+                  break;
               }
             }
 
@@ -94,6 +99,14 @@ export default function ModalPhoto(props) {
 
   async function changeProfilePhoto(response) {
     await changeProfileImage(response, props);
+  }
+
+  async function addNewTripPhoto(response) {
+    try {
+      props.updateImage(response);
+    } catch (e) {
+      showToast('error', 'Error', 'Unable to save image')
+    }
   }
 
   return (

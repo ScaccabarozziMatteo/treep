@@ -20,6 +20,7 @@ import ChatPage from "../pages/ChatPage";
 import { StatusBar } from "react-native";
 import ProfilePage from "../pages/ProfilePage";
 import MyTrips from "../pages/MyTrips";
+import AddActivityPage from "../pages/AddActivityPage";
 
 // Pages names
 const homeName = "Homepage";
@@ -82,9 +83,9 @@ export default function MainContainer() {
     <NavigationContainer>
       <StatusBar/>
       <Stack.Navigator screenOptions={() => ({
-        presentation: 'modal',
+        presentation: 'card',
         headerTintColor: "black",
-        headerStyle: { backgroundColor: "white" },
+        headerStyle: { backgroundColor: "white", shadowColor: "rgba(0,0,0, 0.7)" },
         tabBarActiveTintColor: "#191d3a",
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { paddingBottom: 5, fontSize: 13 },
@@ -113,7 +114,7 @@ export default function MainContainer() {
           headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
         }} component={RegistrationPage} />
         <Stack.Screen name="AroundMe" options={{ title: "Around Me" }} component={AroundMePage} />
-        <Stack.Screen name="NewTrips" options={{ title: "New Trip" }} component={NewTripPage} />
+        <Stack.Screen name="NewTrips" options={{ title: "New Trip", headerTitleAlign: 'left' }} component={NewTripPage} />
         <Stack.Screen name="ChatPage" component={ChatPage}
                       options={({ route }) => ({ headerTitle: route.params.titlePage })}
         />
@@ -131,6 +132,8 @@ export default function MainContainer() {
                       component={SearchUsers} />
         <Stack.Screen name="UserProfile" options={{ title: "Searched User", animationEnabled: true }}
                       component={UserProfile} />
+        <Stack.Screen name="AddActivity" options={{ title: "Activity", animationEnabled: true }}
+                      component={AddActivityPage} />
         <Stack.Screen
           name="NewTripPage"
           options={{title: 'New Trip', animationEnabled: false}}

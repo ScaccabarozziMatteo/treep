@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import { HStack, Pressable, ScrollView, View } from "native-base";
-import {SafeAreaView, StyleSheet} from 'react-native';
-import {Button, Text} from '@rneui/base';
-import NewTripPage from './NewTripPage';
-import AroundMePage from './AroundMePage';
-import * as TripCollection from '../api/TripApi';
+import { SafeAreaView, StyleSheet } from "react-native";
+import { Text } from "@rneui/base";
+import { Button } from "react-native-ui-lib";
+import NewTripPage from "./NewTripPage";
+import AroundMePage from "./AroundMePage";
+import * as TripCollection from "../api/TripApi";
 
-export default function HomePage({navigation}) {
-  const [trips, setTrips] = useState({description: '', coverPhoto: ''});
+export default function HomePage({ navigation }) {
+  const [trips, setTrips] = useState({ description: "", coverPhoto: "" });
 
   useEffect(() => {
     TripCollection.getAll().then(response => {
@@ -79,24 +80,24 @@ export default function HomePage({navigation}) {
 
 const styles = StyleSheet.create({
   body: {
-    width: '95%',
+    width: "95%",
     height: 150,
-    alignSelf: 'center',
-    justifyContent: 'center',
+    alignSelf: "center",
+    justifyContent: "center",
     marginBottom: 10,
   },
   text: {
     flex: 1,
     fontSize: 20,
     margin: 3,
-    fontWeight: 'bold',
-    color: 'black',
+    fontWeight: "bold",
+    color: "black",
   },
   button: {
     flex: 1,
-    width: '99%',
+    width: "99%",
     height: 38,
-    alignSelf: 'center',
+    alignSelf: "center",
     margin: 3,
   },
   container: {
