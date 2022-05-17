@@ -71,9 +71,10 @@ export default function ChatPage({ route }) {
             inverted
             data={chat}
             renderItem={({ item }) => <Text style={item.userID === currentUser().uid ? styles.messageCurrentUser : styles.messageFriendUser}>{item.body}</Text>}
-            keyExtractor={(item) => item.timestamp}
+            keyExtractor={(item, index) => index.toString()}
           />
           </HStack>
+          {console.log(chat)}
         </VStack>
       </View>
       <TextInput label={"Type a message ..."} activeUnderlineColor={"#0D253C"} multiline style={styles.textInput}
