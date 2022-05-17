@@ -18,6 +18,7 @@ import { logout } from "../api/UserApi";
 import UserProfile from "../pages/UserProfile";
 import ChatPage from "../pages/ChatPage";
 import { StatusBar } from "react-native";
+import TripDetailsPage from "../pages/TripDetailsPage";
 
 // Pages names
 const homeName = "Home";
@@ -124,6 +125,12 @@ export default function MainContainer() {
           options={{title: 'New Trip', animationEnabled: false}}
           component={NewTripPage}
         />
+        <Stack.Screen name="TripDetailsPage"
+                      options={{title: 'TripDetails', animationEnabled: false}}
+                      component={TripDetailsPage}
+        >
+
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

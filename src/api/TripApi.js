@@ -68,3 +68,6 @@ export async function removeWish(tripID) {
   await firestore().collection('Trip').doc(tripID).update({wishes: FieldValue.arrayRemove(currentUser().uid)})
 }
 
+export async function getTripById (id) {
+  await firestore().collection('Trip').doc(id);
+}

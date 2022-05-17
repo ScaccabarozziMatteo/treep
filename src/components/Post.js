@@ -46,6 +46,14 @@ const Post = (props) => {
     removeWish(postID).then(_setWish(!wish));
   }
 
+  function moveToTripDetailsPage (nav, tripId) {
+    nav.navigate("TripDetailsPage", {tripId});
+  }
+
+  function moveToUserProfilePage (nav, userID) {
+    nav.navigate("UserProfile", {userID});
+  }
+
   return(
    <View>
      {
@@ -110,13 +118,13 @@ const Post = (props) => {
                }}>
 
                  <TouchableOpacity style={{flex: 1, paddingHorizontal: 10}}
-                                   onPress={() => data.navigation.navigate("UserProfile", data.userID)}>
+                                   onPress={() => moveToUserProfilePage(data.navigation, data.userID)}>
                    <Image source={{uri: data.postUserImage}} style={{ width: 40, height: 40, borderRadius: 100 }}/>
                  </TouchableOpacity>
 
 
                  <View style={{flex: 3}}>
-                   <Text style={styles.text}>
+                   <Text style={styles.text} onPress={() => moveToTripDetailsPage(data.navigation, data.postID)}>
                      {data.title}
                    </Text>
                    <Text style={{
