@@ -67,6 +67,7 @@ export async function removeWish(tripID) {
   await firestore().collection('Trip').doc(tripID).update({wishes: FieldValue.arrayRemove(currentUser().uid)})
 }
 
+
 // Add new Trip
 export async function newTrip(form) {
   const tripData = {

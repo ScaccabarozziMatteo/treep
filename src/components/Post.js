@@ -6,9 +6,6 @@ import center from "native-base/src/theme/components/center";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import {NavigationContainer} from "@react-navigation/native";
-import { fas } from "@fortawesome/free-solid-svg-icons";
-
 
 
 const Post = (props) => {

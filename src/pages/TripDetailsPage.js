@@ -1,12 +1,9 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { getAll, getTripById, removeLike, removeWish, setLike, setWish } from "../api/TripApi";
+import { getTripById, removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import {
-  FlatList,
   Image,
   ImageBackground,
-  RefreshControl,
-  StatusBar,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -16,6 +13,12 @@ import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAre
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
+import TripInfoComponent from "../components/TripInfoComponent";
+import TripPhotosComponent from "../components/TripPhotosComponent";
+import TripsComponent from "../components/TripsComponent";
+
+const Tab = createMaterialTopTabNavigator();
 
 export default function UserProfile({ navigation, route }) {
 
@@ -23,6 +26,9 @@ export default function UserProfile({ navigation, route }) {
   const [tripData, setTripData] = useState("");
   const [like, _setLike] = useState(false);
   const [wish, _setWish] = useState(false);
+  const [l, setL] = useState(0);
+  const [w, setW] = useState(0);
+
 
   useEffect(  () => {
     const getTripData = async () => {
@@ -30,6 +36,8 @@ export default function UserProfile({ navigation, route }) {
         setTripData(tripData);
         _setLike(tripData.isLiked);
         _setWish(tripData.isWished);
+        setL(tripData.likes.length);
+        setW(tripData.wishes.length);
     };
     getTripData();
     }, []);
@@ -57,9 +65,9 @@ export default function UserProfile({ navigation, route }) {
             <View style={{
               flexDirection: "row",
               width: '100%',
-              top: -70,
+              marginTop: 20,
             }}>
-              <TouchableOpacity style={{flex: 8, paddingHorizontal: 15}} onPress={() => {navigation.navigate("Home")}}>
+              <TouchableOpacity style={{flex: 8, paddingHorizontal: 15}} onPress={() => {navigation.navigate("Homepage")}}>
                 <View style={{backgroundColor: 'white', height: 40, width: 40, justifyContent: "center", borderRadius: 10}}>
                   <AntDesign name="arrowleft" color="red" style={{ alignSelf: "center", fontSize: 30 }}/>
                 </View>
@@ -96,11 +104,30 @@ export default function UserProfile({ navigation, route }) {
               }}>Follow</Text>
             </TouchableOpacity>
 
+            <View style={styles.metrics}>
+              <View style={{justifyContent: "center"}}>
+                <Text style={styles.numbersAtTheTop}>{l}</Text>
+                <Text style={{color: 'white'}}>Likes</Text>
+              </View>
+              <View style={{justifyContent: "center"}}>
+                <Text style={styles.numbersAtTheTop}>0</Text>
+                <Text style={{color: 'white'}}>Followers</Text>
+              </View>
+              <View style={{justifyContent: "center"}}>
+                <Text style={styles.numbersAtTheTop}>{w}</Text>
+                <Text style={{color: 'white'}}>Saves</Text>
+              </View>
+            </View>
+
           </ImageBackground>
         </View>
 
         <View style={styles.bottomPart}>
-
+          <Tab.Navigator>
+            <Tab.Screen name="info" component={TripInfoComponent}/>
+            <Tab.Screen name="photos" component={TripPhotosComponent}/>
+            <Tab.Screen name="trips" component={TripsComponent}/>
+          </Tab.Navigator>
         </View>
     </SafeAreaView>
   );
@@ -110,8 +137,6 @@ export default function UserProfile({ navigation, route }) {
 const styles = StyleSheet.create({
   coverImage: {
     flex: 1,
-    justifyContent: "center",
-
   },
   topPart: {
     height: '40%',
@@ -120,7 +145,7 @@ const styles = StyleSheet.create({
     height: '60%',
   },
   title: {
-
+    marginTop: '17%',
     textAlign: "center",
     fontFamily: "Barlow",
     color: 'white',
@@ -141,5 +166,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#ee594f',
     alignSelf: "center",
     justifyContent: "center",
+  },
+  metrics: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: '7%',
+    color: 'white',
+    height: '20%',
+  },
+  numbersAtTheTop: {
+    textAlign: "center",
+    color: 'white',
+    fontSize: 22,
+    fontWeight: "bold"
   }
 });
