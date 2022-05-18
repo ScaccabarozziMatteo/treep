@@ -31,11 +31,8 @@ export async function getAll () {
     //Pushes the retrieved info into an array
     trips.push(mergedObj);
   }
-  return (trips);
+  return trips;
 }
-
-
-
 
 //Gets all the trips of a specified user
 export async function getUserTrips (userId) {
@@ -82,3 +79,38 @@ export async function getTripById (id) {
   return mergedObj;
 }
 
+// Add new Trip
+export async function newTrip(form) {
+  const tripData = {
+    title: form.title,
+    description: form.description,
+    startDate: form.startDate,
+    endDate: form.endDate,
+    userID: currentUser().uid,
+  };
+
+  firestore()
+    .collection('Trip')
+    .add(tripData)
+    .then(() => {
+      console.log('Trip added!');
+    });
+}
+
+// this does not connect, think it should be close to the right solution
+// link to documentation https://rnfirebase.io/firestore/usage
+export async function setActivities(form) {
+  const activity = {
+    date: form.date,
+    activity_title: form.activity_title,
+    description: form.description,
+    link: form.link,
+  };
+
+  await firestore()
+    .collection('Trip/' + '/activities')
+    .add(activity)
+    .then(() => {
+      console.log('Activity added!');
+    });
+}

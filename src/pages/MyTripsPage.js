@@ -1,42 +1,47 @@
-import React, {useEffect, useState} from 'react';
-import { HStack, Pressable, ScrollView, View } from "native-base";
-import {SafeAreaView, StyleSheet} from 'react-native';
-import {Button, Text} from '@rneui/base';
-import NewTripPage from './NewTripPage';
-import AroundMePage from './AroundMePage';
-import * as TripCollection from '../api/TripApi';
+import React, { useEffect, useState } from "react";
+import { HStack, Pressable, ScrollView, View, VStack } from "native-base";
+import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
+import { Text } from "@rneui/base";
+import { Button } from "react-native-paper";
 
-export default function HomePage({navigation}) {
-  const [trips, setTrips] = useState({description: '', coverPhoto: ''});
-
-  useEffect(() => {
-    TripCollection.getAll().then(response => {
-      setTrips(response);
-    });
-  }, []);
+export default function MyTripsPage({ navigation }) {
+  const [trips, setTrips] = useState({ description: "", coverPhoto: "" });
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <View style={styles.button}>
-          <Button
-            title="Add new trip"
-            onPress={() => navigation.navigate(NewTripPage)}
-          />
-        </View>
-        <View style={styles.button}>
-          <Button
-            title="Around me"
-            onPress={() => navigation.navigate(AroundMePage)}
-          />
-        </View>
+        <VStack style={styles.container}>
+          <TouchableOpacity onPress={() => navigation.push("NewTrips")}>
+            <Button
+              color={"grey"}
+              icon={"plus"}
+              uppercase={false}
+              style={styles.topButton}
+              labelStyle={styles.labelButton}
+            >
+              Create new trip
+            </Button>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.push("AroundMe")}>
+            <Button
+              color={"grey"}
+              icon={"google-maps"}
+              uppercase={false}
+              style={styles.topButton}
+              labelStyle={styles.labelButton}
+            >
+              Around me
+            </Button>
+          </TouchableOpacity>
+        </VStack>
 
         {/* Latest trips */}
         <Text style={styles.text}>Latest Trips</Text>
         <View style={styles.body}>
           <ScrollView horizontal={true}>
             <HStack space={3} alignItems="center">
-              <Pressable onPress={() => navigation.navigate(NewTripPage)}>
+              <Pressable onPress={() => navigation.navigate("AroundMe")}>
                 <View size={120} bg="primary.400" rounded="md" />
               </Pressable>
               <View size={120} bg="secondary.400" rounded="md" />
@@ -79,30 +84,48 @@ export default function HomePage({navigation}) {
 
 const styles = StyleSheet.create({
   body: {
-    width: '95%',
+    width: "95%",
     height: 150,
-    alignSelf: 'center',
-    justifyContent: 'center',
+    alignSelf: "center",
+    justifyContent: "center",
     marginBottom: 10,
   },
   text: {
     flex: 1,
     fontSize: 20,
     margin: 3,
-    fontWeight: 'bold',
-    color: 'black',
+    fontWeight: "bold",
+    color: "black",
   },
   button: {
     flex: 1,
-    width: '99%',
+    width: "99%",
     height: 38,
-    alignSelf: 'center',
+    alignSelf: "center",
     margin: 3,
   },
   container: {
-    flex: 1,
+    alignSelf: "center",
+    width: "100%",
+    paddingTop: 0,
+    padding: 10,
   },
   scrollView: {
     marginHorizontal: 1,
+  },
+  topButton: {
+    backgroundColor: "#D2D2D2",
+    borderRadius: 10,
+    borderColor: "rgba(0, 0, 0, 0)",
+    marginTop: 20,
+    width: "100%",
+    alignItems: "flex-start",
+  },
+  labelButton: {
+    fontFamily: "Barlow",
+    fontWeight: "400",
+    color: "black",
+    fontSize: 22,
+    lineHeight: 24,
   },
 });

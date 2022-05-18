@@ -22,9 +22,8 @@ export default function CompleteRegistrationPage({ navigation }) {
 
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      logout();
-      navigation.goBack();
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", async () => {
+      await logout();
     });
     return () => backHandler.remove();
   }, []);
@@ -120,7 +119,7 @@ export default function CompleteRegistrationPage({ navigation }) {
               underlineColor={errors.sex ? "red" : "#BEC2C2"}
               floatingPlaceholder
               onChange={item => {
-                setValue("sex", item);
+                setValue("sex", item.value);
                 clearErrors("sex");
               }}>
               <Picker.Item labelStyle={{ fontFamily: "Barlow" }} value={"Male"} label={"Male"} />
@@ -210,7 +209,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   button: {
-    backgroundColor: "#3F799D",
+    backgroundColor: "#E05D5B",
     borderRadius: 10,
     borderColor: "rgba(0, 0, 0, 0)",
     marginTop: 50,
