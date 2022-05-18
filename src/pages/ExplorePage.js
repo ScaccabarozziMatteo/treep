@@ -1,7 +1,7 @@
 import * as React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, StatusBar, ScrollView } from "react-native";
 import { TextInput } from "react-native-paper";
-import { HStack, ScrollView, VStack } from "native-base";
+import { HStack, VStack } from "native-base";
 import { Button } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useState } from "react";
@@ -13,6 +13,7 @@ export default function ExplorePage({ navigation }) {
 
   return (
     <ScrollView backgroundColor={"white"}>
+      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <VStack padding={5}>
         <HStack>
           <TextInput style={styles.textInput} value={searchText} onChangeText={text => setSearchText(text)}

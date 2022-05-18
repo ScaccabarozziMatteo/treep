@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Keyboard, ScrollView, StatusBar, StyleSheet } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 import { View } from "native-base";
 import { Avatar, Button } from "react-native-ui-lib";
 import { getUserData, searchUsers } from "../api/UserApi";
@@ -29,7 +29,7 @@ export default function SearchUsers({ navigation, route }) {
   function renderButton(user, userID) {
     if (loggedUser.username !== user.username)
       return (
-        <Button style={styles.button} size={'medium'} label={'Show Profile'} onPress={() => navigation.navigate("UserProfile", { user, userID })}/>
+        <Button style={styles.button} size={'medium'} label={'Show Profile'} onPress={() => navigation.navigate("UserProfile", { userID })}/>
       );
     else
       return (

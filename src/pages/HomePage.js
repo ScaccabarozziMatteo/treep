@@ -16,19 +16,19 @@ import Post from "../components/Post";
 import { getAll } from "../api/TripApi";
 
 
-export default function HomePage() {
+export default function HomePage({navigation}) {
 
   const [trips, setTrips] = useState(
-    {description: "" ,
-              coverPhoto: "",
+    {coverPhoto: "",
               userPhoto: "",
               userID: "",
               location: "",
               photoURL: "",
               username: "",
               title: "",
-              status: false,
               postID: "",
+              isLiked: false,
+              isWished: false,
     }
   )
 
@@ -69,12 +69,12 @@ export default function HomePage() {
                     userImage={item.photoURL}
                     postImage={item.coverPhoto}
                     isLiked={item.isLiked}
+                    isWished = {item.isWished}
                     username={item.username}
                     location={item.location}
-                    likes={item.likes.length}
-                    description={item.description}
-                    status={item.status}
                     postID={item.postID}
+                    userID ={item.userID}
+                    navigation={navigation}
               />
             )}
             refreshControl = {<RefreshControl
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   },
 
   text: {
+    fontFamily: "Barlow",
     fontSize: 20,
     fontWeight: "bold",
     alignContent: "center",

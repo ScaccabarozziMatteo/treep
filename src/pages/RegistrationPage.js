@@ -2,7 +2,7 @@ import { ScrollView, VStack, HStack, View } from "native-base";
 import React, { useState } from "react";
 import { Button, Picker, DateTimePicker } from "react-native-ui-lib";
 import { Controller, useForm } from "react-hook-form";
-import { StyleSheet } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 import { emailRegistration } from "../api/UserApi";
 import { Text } from "react-native";
 import { Checkbox, TextInput } from "react-native-paper";
@@ -107,7 +107,7 @@ export default function RegistrationPage({ navigation }) {
                 underlineColor={errors.sex ? "red" : "#BEC2C2"}
                 floatingPlaceholder
                 onChange={item => {
-                  setValue("sex", item);
+                  setValue("sex", item.value);
                   clearErrors('sex')
                 }}>
                 <Picker.Item labelStyle={{fontFamily: 'Barlow'}} value={"Male"} label={"Male"} />
@@ -297,6 +297,7 @@ export default function RegistrationPage({ navigation }) {
 
   return (
     <View>
+      <StatusBar backgroundColor={'#3F799D'} barStyle={'light-content'}/>
       <Text style={styles.subtitle}>Sign up now for free and start travelling, explore with Treep.</Text>
       <ScrollView style={styles.mainContainer} keyboardShouldPersistTaps={"handled"}>
 
@@ -312,7 +313,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     paddingLeft: 30,
     paddingRight: 30,
-    backgroundColor: "black",
+    backgroundColor: "#3F799D",
     width: "100%",
   },
   boxButton: {
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingTop: 0,
-    backgroundColor: "black",
+    backgroundColor: "#3F799D",
     color: "white",
     width: "100%",
     fontFamily: "Barlow",
@@ -352,14 +353,14 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontFamily: "Barlow",
-    backgroundColor: "black",
+    backgroundColor: "#3F799D",
     color: "rgba(255, 255, 255, 0.7)",
     fontSize: 16,
     paddingLeft: 30,
     paddingRight: 30,
   },
   buttonEnabled: {
-    backgroundColor: "#3F799D",
+    backgroundColor: "#E05D5B",
     borderRadius: 10,
     borderColor: "rgba(0, 0, 0, 0)",
     marginTop: 5,

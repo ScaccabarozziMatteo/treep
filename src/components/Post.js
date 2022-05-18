@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
-import { Icon, Avatar } from "react-native-elements";
-import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import center from "native-base/src/theme/components/center";
-import Fontisto from "react-native-vector-icons/Fontisto";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { removeLike, setLike } from "../api/TripApi";
+import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { white } from "react-native-paper/lib/typescript/styles/colors";
-import Svg, { Circle, Path } from "react-native-svg";
+import {NavigationContainer} from "@react-navigation/native";
 
-const Post = (props, navigation) => {
+
+
+const Post = (props) => {
 
   const [postInfo, setPostInfo] = useState([
     {
@@ -20,23 +18,32 @@ const Post = (props, navigation) => {
       title: props.title,
       postUserImage: props.userImage,
       username: props.username,
+      userID: props.userID,
       postImage: props.postImage,
       isLiked: props.isLiked,
       location: props.location,
-      likes: props.likes,
-      description: props.description,
-      status: props.status,
+      isWished: props.isWished,
+      navigation: props.navigation,
     }
   ]);
 
   const [like, _setLike] = useState(postInfo.isLiked);
+  const [wish, _setWish] = useState(postInfo.isWished);
 
   function likePost(postID) {
-    setLike(postID).then(_setLike(!like))
+    setLike(postID).then(_setLike(!like));
   }
 
   function dislikePost(postID) {
-    removeLike(postID).then(_setLike(!like))
+    removeLike(postID).then(_setLike(!like));
+  }
+
+  function addToWishList(postID){
+    setWish(postID).then(_setWish(!wish));
+  }
+
+  function removeFromWishList(postID) {
+    removeWish(postID).then(_setWish(!wish));
   }
 
   return(
@@ -67,26 +74,26 @@ const Post = (props, navigation) => {
                }}>
                  <Image
                    source={{uri:data.postImage}}
-                   style={{ width: "100%", height: 300, borderTopRightRadius: 35, borderTopLeftRadius: 35, borderBottomRightRadius: 35}}/>
+                   style={{ width: "100%",
+                     height: 300,
+                     borderTopRightRadius: 35,
+                     borderTopLeftRadius: 35,
+                     borderBottomRightRadius: 35,
+
+                   }}/>
 
                </View>
 
-               <Svg style={{
-                 position: 'absolute',
-                 left: '80%',
-                 marginTop: 215,
-                 height: 50,
-                 width: '20%',
+               <Image style={{
+                 position: "absolute",
+                 marginTop: 225,
+                 height: 40,
+                 width: '100%',
+                 flexDirection: "row",
+                 borderBottomRightRadius: 50,
+                 overlayColor: 'white',
                }}>
-
-                   <Path
-                     d="M 0 50 L 70 50 M 70 50 L 70 0 C 70 0 70 55 0 50 Z"
-                     fill="white"
-
-                     stroke-width="3"
-                   />
-
-               </Svg>
+               </Image>
 
                <View style={{
                  position: "absolute",
@@ -102,17 +109,14 @@ const Post = (props, navigation) => {
                  borderColor: 'gray',
                }}>
 
-                 <View style={{flex: 1, paddingHorizontal: 10}}>
+                 <TouchableOpacity style={{flex: 1, paddingHorizontal: 10}}
+                                   onPress={() => data.navigation.navigate("UserProfile", data.userID)}>
                    <Image source={{uri: data.postUserImage}} style={{ width: 40, height: 40, borderRadius: 100 }}/>
-                 </View>
+                 </TouchableOpacity>
 
 
                  <View style={{flex: 3}}>
-                   <Text style={{
-                     fontSize: 15,
-                     textAlignVertical: "center",
-                     color: 'black',
-                   }}>
+                   <Text style={styles.text}>
                      {data.title}
                    </Text>
                    <Text style={{
@@ -132,8 +136,10 @@ const Post = (props, navigation) => {
                                style={{fontSize: 25, color: like ? 'red' : 'black'}}/>
                    </TouchableOpacity>
 
-                   <TouchableOpacity style={{paddingHorizontal: 5}}>
-                    <Feather name="bookmark" style={{fontSize: 25, color: 'black'}}/>
+                   <TouchableOpacity style={{paddingHorizontal: 5}}
+                                     onPress={wish ? () => removeFromWishList(data.postID) : () => addToWishList(data.postID)}>
+                    <FontAwesome name={wish ? "bookmark-o" : "bookmark"}
+                                 style={{fontSize: 25, color: wish ? 'black' : "#386BED"}}/>
                    </TouchableOpacity>
 
                    <SimpleLineIcons name="options-vertical" style={{fontSize: 22, color: 'black', paddingHorizontal: 5}}/>
@@ -167,8 +173,8 @@ const styles = StyleSheet.create({
 
   },
   text: {
+    fontFamily: "Barlow",
     fontSize: 15,
-    textAlign: "center",
     textAlignVertical: "center",
     color: 'black',
   }

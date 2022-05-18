@@ -9,9 +9,6 @@ import { TextInput } from "react-native-paper";
 
 export default function CompleteRegistrationPage({ navigation }) {
 
-  const [firstName, setFirstName] = useState();
-  const [lastName, setLastName] = useState();
-
   const maxDate = new Date(2010, 12, 31);
   const minDate = new Date(1900, 1, 1);
 
@@ -25,9 +22,8 @@ export default function CompleteRegistrationPage({ navigation }) {
 
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      logout();
-      navigation.goBack();
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", async () => {
+      await logout();
     });
     return () => backHandler.remove();
   }, []);
@@ -35,9 +31,7 @@ export default function CompleteRegistrationPage({ navigation }) {
   useEffect(() => {
     const updateDefaultValue = async () => {
       const google = await googleUser();
-      setFirstName(google.user.givenName);
       setValue("first_name", google.user.givenName);
-      setLastName(google.user.familyName);
       setValue("last_name", google.user.familyName);
     };
 
@@ -55,8 +49,8 @@ export default function CompleteRegistrationPage({ navigation }) {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps={"handled"} style={{ backgroundColor: "black" }}>
-      <StatusBar backgroundColor={"black"} barStyle={"light-content"} />
+    <ScrollView keyboardShouldPersistTaps={"handled"} style={{ backgroundColor: "#3F799D" }}>
+      <StatusBar backgroundColor={"#3F799D"} barStyle={"light-content"} />
       <VStack style={styles.container}>
         <Text style={styles.subtitle}>Sign in now to access and share your trips and destinations.</Text>
         <Controller
@@ -125,7 +119,7 @@ export default function CompleteRegistrationPage({ navigation }) {
               underlineColor={errors.sex ? "red" : "#BEC2C2"}
               floatingPlaceholder
               onChange={item => {
-                setValue("sex", item);
+                setValue("sex", item.value);
                 clearErrors("sex");
               }}>
               <Picker.Item labelStyle={{ fontFamily: "Barlow" }} value={"Male"} label={"Male"} />
@@ -215,7 +209,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   button: {
-    backgroundColor: "#3F799D",
+    backgroundColor: "#E05D5B",
     borderRadius: 10,
     borderColor: "rgba(0, 0, 0, 0)",
     marginTop: 50,
@@ -224,7 +218,7 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingTop: 0,
-    backgroundColor: "black",
+    backgroundColor: "#3F799D",
     color: "white",
     width: "100%",
     fontFamily: "Barlow",

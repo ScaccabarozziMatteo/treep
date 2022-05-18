@@ -12,21 +12,30 @@ import {
 import { HStack, VStack } from "native-base";
 import { Avatar, Button } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { addFollow, currentUser, getFollowers, getFollowings, removeFollow } from "../api/UserApi";
+import {
+  addFollow,
+  currentUser,
+  getFollowers,
+  getFollowings,
+  getUserDataWithID,
+  removeFollow,
+} from "../api/UserApi";
 import LinearGradient from "react-native-linear-gradient";
 
 export default function UserProfile({ navigation, route }) {
 
-  const userData = route.params.user;
   const userID = route.params.userID;
+  const [userData, setUserData] = useState("");
   const [followers, setFollowers] = useState("");
   const [followings, setFollowings] = useState("");
   const [dummyState, setDummyState] = useState(0.1); // Trigger that enable the followers/followings check
 
   useEffect(() => {
     const updateValue = async () => {
+      const userData = await getUserDataWithID(userID);
       const followers = await getFollowers(userID);
       const followings = await getFollowings(userID);
+      setUserData(userData);
       setFollowers(followers);
       setFollowings(followings);
     };
@@ -41,7 +50,7 @@ export default function UserProfile({ navigation, route }) {
           <Icon name={"airplane-takeoff"} color={isActiveBadge(1)} size={40} />
           <Icon name={"comment-text-outline"} color={isActiveBadge(2)} size={40} />
           <Icon name={"hand-heart"} color={isActiveBadge(3)} size={40} />
-          <Icon name={"professional-hexagon"} color={isActiveBadge(4)} size={40} />
+          <Icon name={"professional-hexagon"} color={isActiveBadge(4)} size={40}/>
         </HStack>
       </VStack>
     );
@@ -97,7 +106,7 @@ export default function UserProfile({ navigation, route }) {
                 <View style={{ margin: 1.8, backgroundColor: "white", borderRadius: 28 }}>
                   <Avatar backgroundColor={"transparent"}
                           imageStyle={{ borderRadius: 22, width: "84%", height: "84%", left: "8%", top: "8%" }}
-                          label={userData.first_name.charAt(0) + userData.last_name.charAt(0)}
+                          label={userData !== '' ? userData.first_name.charAt(0) + userData.last_name.charAt(0) : null}
                           animate size={90} source={userData.photoURL !== null ? { uri: userData.photoURL } : null} />
                 </View>
               </LinearGradient>
@@ -109,7 +118,7 @@ export default function UserProfile({ navigation, route }) {
                 </View>
                 <View>
                   {/* Show name*/}
-                  <Text style={styles.name}>{userData.first_name + " " + userData.last_name}</Text>
+                  <Text style={styles.name}>{userData !== '' ? userData.first_name + " " + userData.last_name : null}</Text>
                 </View>
                 <View>
                   {/* Show name*/}

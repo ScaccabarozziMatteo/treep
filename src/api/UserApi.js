@@ -16,7 +16,9 @@ export async function onAuthStateChange(onAuthStateChanged) {
 
 //Login with email and password
 export async function emailLogin(userData) {
-  await auth().signInWithEmailAndPassword(userData.email, userData.password);
+  const user = await auth().signInWithEmailAndPassword(userData.email, userData.password).catch(error1 => showToast("error", "Error", error1.message));
+  if (user !== undefined)
+    return 0
 }
 
 //Logout
@@ -40,7 +42,6 @@ export async function signInWithGoogle() {
 
   // If it is the first login and the DB has not the document with the user data, return 0 and the LoginPage redirect to the CompleteRegistrationPage
   if(userData === '' || userData.first_name === undefined || userData.last_name === undefined || userData.birthdate === undefined || userData.sex === undefined) {
-    await auth().signOut();
     return 0
   }
   else
@@ -148,6 +149,14 @@ export async function setBioFirebase(user) {
 
 export async function getUserData() {
   const doc = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").get();
+  if (doc.data() !== undefined)
+    return doc.data();
+  else
+    return "";
+}
+
+export async function getUserDataWithID(UID) {
+  const doc = await firestore().collection("users/" + UID + "/public_info").doc("personal_data").get();
   if (doc.data() !== undefined)
     return doc.data();
   else

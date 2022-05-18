@@ -17,9 +17,13 @@ import CompleteRegistrationPage from "../pages/CompleteRegistrationPage";
 import { logout } from "../api/UserApi";
 import UserProfile from "../pages/UserProfile";
 import ChatPage from "../pages/ChatPage";
+import { StatusBar } from "react-native";
+import ProfilePage from "../pages/ProfilePage";
+import AddActivityPage from "../pages/AddActivityPage";
+import MyTripsPage from "../pages/MyTripsPage";
 
 // Pages names
-const homeName = "Home";
+const homeName = "Homepage";
 const profileName = "Profile";
 const exploreName = "Explore";
 const newTripName = "New Trip";
@@ -41,7 +45,7 @@ function TabContainer({ navigation }) {
               iconName = focused ? "home" : "home";
               break;
             case profileName:
-              iconName = focused ? "person" : "person-outline";
+              iconName = focused ? "person" : "person";
               break;
             case exploreName:
               iconName = focused ? "explore" : "explore";
@@ -56,20 +60,20 @@ function TabContainer({ navigation }) {
         headerTintColor: "black",
         tabBarShowLabel: false,
         headerStyle: { backgroundColor: "white", shadowColor: "rgba(0,0,0, 0.7)" },
-        tabBarActiveTintColor: "#6540F5",
+        tabBarActiveTintColor: "#E05D5B",
         tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { fontFamily: "Barlow", paddingBottom: 5, fontSize: 13 },
         tabBarStyle: { height: 60 },
         headerTitleStyle: { fontFamily: "Barlow", fontWeight: "700" },
         headerTitleAlign: "left",
       })}>
-      <Tab.Screen name={homeName} component={HomePage} />
+      <Tab.Screen name={homeName} options={{title: 'Home'}} component={HomePage} />
       <Tab.Screen options={{
         headerRight: () => <Icon onPress={() => navigation.navigate(SearchUsers)} color={"black"} size={30}
                                  name={"person-search"} />,
       }} name={exploreName} component={ExplorePage} />
-      <Tab.Screen name={newTripName} component={NewTripPage} />
-      <Tab.Screen options={{ headerShown: false }} name={profileName} component={LoginPage} />
+      <Tab.Screen name={newTripName} options={{title: 'My Trips'}} component={MyTripsPage} />
+      <Tab.Screen name={profileName} component={ProfilePage} />
     </Tab.Navigator>
   );
 }
@@ -77,16 +81,16 @@ function TabContainer({ navigation }) {
 export default function MainContainer() {
   return (
     <NavigationContainer>
+      <StatusBar/>
       <Stack.Navigator screenOptions={() => ({
-        presentation: "modal",
+        presentation: 'card',
         headerTintColor: "black",
-        headerStyle: { backgroundColor: "white", shadowColor: "rgba(0,0,0,0.7)" },
+        headerStyle: { backgroundColor: "white", shadowColor: "rgba(0,0,0, 0.7)" },
         tabBarActiveTintColor: "#191d3a",
         tabBarInactiveTintColor: "grey",
-        tabBarLabelStyle: { fontFamily: "Barlow", paddingBottom: 5, fontSize: 13 },
+        tabBarLabelStyle: { paddingBottom: 5, fontSize: 13 },
         tabBarStyle: { height: 60 },
-        headerTitleStyle: { fontFamily: "Barlow", fontWeight: "700" },
-        headerTitleAlign: "left",
+        headerTitleAlign: "center",
       })
       }>
         <Stack.Screen
@@ -94,30 +98,47 @@ export default function MainContainer() {
           component={TabContainer}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Login" options={({ navigation }) => ({
+          title: "Sign In",
+          headerTintColor: 'white',
+          headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
+          headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
+          headerLeft: () => <Icon size={28} name={"arrow-back"} style={{padding: 10}} color={"white"} onPress={() => {
+            navigation.navigate("Homepage");
+          }} />,
+        })} component={LoginPage} />
         <Stack.Screen name="Registration" options={{
           title: "Sign Up",
           headerTintColor: 'white',
-          headerStyle: { backgroundColor: "black", shadowColor: 'black', height: 100 },
+          headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
           headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
         }} component={RegistrationPage} />
-        <Stack.Screen name="AroundMe" options={{ title: "Around Me" }} component={AroundMePage} />
+        <Stack.Screen name="AroundMe" options={{ title: "Around Me", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, }} component={AroundMePage} />
+        <Stack.Screen name="NewTrips" options={{ title: "New Trip", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, }} component={NewTripPage} />
         <Stack.Screen name="ChatPage" component={ChatPage}
                       options={({ route }) => ({ headerTitle: route.params.titlePage })}
         />
         <Stack.Screen name="CompleteRegistrationPage" options={({ navigation }) => ({
           title: "Complete Registration",
           animationEnabled: true,
-          headerStyle: { backgroundColor: "black", shadowColor: 'black', height: 100 },
+          headerTitleAlign: 'left',
+          headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
           headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
-          headerLeft: () => <Icon size={28} name={"arrow-back"} style={{paddingLeft: 10}} color={"white"} onPress={() => {
-            logout();
-            navigation.navigate("Profile");
+          headerLeft: () => <Icon size={28} name={"arrow-back"} style={{paddingLeft: 10}} color={"white"} onPress={async () => {
+            await logout();
           }} />,
         })} component={CompleteRegistrationPage} />
-        <Stack.Screen name="SearchUsers" options={{ title: "Search Users", animationEnabled: false }}
+        <Stack.Screen name="SearchUsers" options={{ title: "Search Users", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false }}
                       component={SearchUsers} />
-        <Stack.Screen name="UserProfile" options={{ title: "Searched User", animationEnabled: true }}
+        <Stack.Screen name="UserProfile" options={{ title: "Searched User", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true }}
                       component={UserProfile} />
+        <Stack.Screen name="AddActivity" options={{ title: "Activity", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true }}
+                      component={AddActivityPage} />
+        <Stack.Screen
+          name="NewTripPage"
+          options={{title: 'New Trip', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false}}
+          component={NewTripPage}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
