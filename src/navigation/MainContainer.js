@@ -19,8 +19,8 @@ import UserProfile from "../pages/UserProfile";
 import ChatPage from "../pages/ChatPage";
 import { StatusBar } from "react-native";
 import ProfilePage from "../pages/ProfilePage";
-import MyTrips from "../pages/MyTrips";
 import AddActivityPage from "../pages/AddActivityPage";
+import MyTripsPage from "../pages/MyTripsPage";
 
 // Pages names
 const homeName = "Homepage";
@@ -72,7 +72,7 @@ function TabContainer({ navigation }) {
         headerRight: () => <Icon onPress={() => navigation.navigate(SearchUsers)} color={"black"} size={30}
                                  name={"person-search"} />,
       }} name={exploreName} component={ExplorePage} />
-      <Tab.Screen name={newTripName} options={{title: 'My Trips'}} component={MyTrips} />
+      <Tab.Screen name={newTripName} options={{title: 'My Trips'}} component={MyTripsPage} />
       <Tab.Screen name={profileName} component={ProfilePage} />
     </Tab.Navigator>
   );
