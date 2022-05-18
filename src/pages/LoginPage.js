@@ -3,7 +3,7 @@ import { StatusBar, StyleSheet, ScrollView, View, BackHandler } from "react-nati
 import { Pressable, VStack, HStack } from "native-base";
 import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { emailLogin, signInWithGoogle, onAuthStateChange, logout } from "../api/UserApi";
+import { emailLogin, signInWithGoogle, onAuthStateChange } from "../api/UserApi";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { showToast } from "../utils/Utils";
 import CompleteRegistrationPage from "./CompleteRegistrationPage";
@@ -67,7 +67,7 @@ export default function LoginPage({ navigation, route }) {
       navigation.goBack()
     }
     else
-      navigation.navigate(CompleteRegistrationPage)
+      navigation.push('CompleteRegistrationPage')
   }
 
   // Handle user state changes
@@ -167,7 +167,7 @@ export default function LoginPage({ navigation, route }) {
 
           <View style={styles.boxButton}>
             <Button style={{backgroundColor: '#de5246', borderColor: '#de5246', borderRadius: 10, height: 50}}
-                    onPress={() => GoogleSignIn().catch(error => console.log(error.message))}><Icon name={'google'} size={30} color={'white'} /></Button>
+                    onPress={() => GoogleSignIn().catch(error => showToast('error', 'Google login error', error))}><Icon name={'google'} size={30} color={'white'} /></Button>
           </View>
         </VStack>
       </ScrollView>

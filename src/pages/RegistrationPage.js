@@ -107,7 +107,7 @@ export default function RegistrationPage({ navigation }) {
                 underlineColor={errors.sex ? "red" : "#BEC2C2"}
                 floatingPlaceholder
                 onChange={item => {
-                  setValue("sex", item);
+                  setValue("sex", item.value);
                   clearErrors('sex')
                 }}>
                 <Picker.Item labelStyle={{fontFamily: 'Barlow'}} value={"Male"} label={"Male"} />

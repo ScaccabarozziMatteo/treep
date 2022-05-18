@@ -123,9 +123,8 @@ export default function MainContainer() {
           animationEnabled: true,
           headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
           headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
-          headerLeft: () => <Icon size={28} name={"arrow-back"} style={{paddingLeft: 10}} color={"white"} onPress={() => {
-            logout();
-            navigation.navigate("Profile");
+          headerLeft: () => <Icon size={28} name={"arrow-back"} style={{paddingLeft: 10}} color={"white"} onPress={async () => {
+            await logout();
           }} />,
         })} component={CompleteRegistrationPage} />
         <Stack.Screen name="SearchUsers" options={{ title: "Search Users", animationEnabled: false }}
