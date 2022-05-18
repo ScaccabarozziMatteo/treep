@@ -1,20 +1,22 @@
-import { View, StyleSheet, Text, StatusBar, ScrollView, Image, Alert } from "react-native";
-import React, { useRef, useState, useEffect } from "react";
+import { Image, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { VStack } from "native-base";
-import { Button, DateTimePicker, TouchableOpacity, Chip } from "react-native-ui-lib";
+import { Button, Chip, DateTimePicker, TouchableOpacity } from "react-native-ui-lib";
 import { newTrip } from "../api/TripApi";
 import { TextInput } from "react-native-paper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import ModalPhoto from "../utils/ModalPhoto";
 
-export default function NewTripPage({ navigation }) {
+export default function NewTripPage({ navigation, route }) {
 
   const [places, setPlaces] = useState([]);
   const [activities, setActivities] = useState([]);
   const [coverPhoto, setCoverPhoto] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [dateError, setDateError] = useState(false);
+  const [placeError, setPlaceError] = useState(false);
 
 
   const {
@@ -33,11 +35,24 @@ export default function NewTripPage({ navigation }) {
     ) : null;
   };
 
-  function chip() {
+  function addActivityPage() {
+    if (getValues("startDate") !== undefined && getValues("endDate") !== undefined) {
+      setDateError(false);
+      navigation.push("AddActivity", { onCallBack, minDate: getValues("startDate"), maxDate: getValues("endDate") });
+    } else
+      setDateError(true);
+  }
+
+  const onCallBack = (params) => {
+    if (!activities.includes(params))
+      setActivities(activity => [...activity, params])
+  }
+
+  function chip(input, setInput) {
     return (
-      <View style={{ flex: 10 }}>
+    <View style={{ flex: 10 }}>
         {
-          places.map((item, index) => {
+          input.map((item, index) => {
             return (
               <View style={{
                 margin: 5,
@@ -45,13 +60,13 @@ export default function NewTripPage({ navigation }) {
                 flexWrap: "wrap",
               }}>
                 <Chip
-                  key={index}
+                  key={item.place_id}
                   mode="flat" //changing display mode, default is flat.
-                  onDismiss={() => setPlaces([...places.slice(0, index), ...places.slice(index + 1)])}
+                  onDismiss={() => setInput([...input.slice(0, index), ...input.slice(index + 1)])}
                   backgroundColor={"white"}
                   labelStyle={{ color: "black" }}
                   useSizeAsMinimum
-                  label={item.description}
+                  label={input === places ? item.description : item.data.title}
                 />
               </View>
             );
@@ -63,7 +78,10 @@ export default function NewTripPage({ navigation }) {
   const ref = useRef();
 
   function clearData() {
+    setDateError(false);
+    setPlaceError(false);
     setPlaces([]);
+    ref.current.clear();
     setCoverPhoto(null);
     reset();
   }
@@ -122,7 +140,11 @@ export default function NewTripPage({ navigation }) {
           </View>
         </ScrollView>
 
-        {chip()}
+        {placeError ? (
+          <Text style={styles.errorText}>Missing activity place</Text>
+        ) : null}
+
+        {chip(places, setPlaces)}
 
         <Controller
           control={control}
@@ -243,14 +265,18 @@ export default function NewTripPage({ navigation }) {
         <VStack alignItems={"center"}>
 
           <Button label={"Add activity"}
-                  iconSource={() => <Icon style={styles.labelActivityButton} size={20} name={'plus'}/>}
+                  iconSource={() => <Icon style={styles.labelActivityButton} size={20} name={"plus"} />}
                   iconOnRight={false}
+                  disabled={""}
                   labelStyle={styles.labelActivityButton}
-                  onPress={() => navigation.push('AddActivity', {
-                    updateActivity: (response) => {if (!activities.includes(response))
-                      setActivities(activities => [...activities, response])}
-                  })}
+                  onPress={addActivityPage}
                   style={styles.addActivityButton} />
+
+          {chip(activities, setActivities)}
+
+          {dateError ? (
+            <Text style={styles.errorText}>Please, select dates before add activities</Text>
+          ) : null}
 
           <Button label={"Create New Trip"}
                   labelStyle={styles.labelButton}
@@ -305,6 +331,7 @@ export const styles = StyleSheet.create({
   text: {
     color: "black",
     textAlign: "center",
+    fontFamily: "Barlow",
   },
   createButton: {
     backgroundColor: "#3F799D",
@@ -337,7 +364,7 @@ export const styles = StyleSheet.create({
     fontFamily: "Barlow",
     fontWeight: "700",
     fontSize: 18,
-    color: '#F1F2F5'
+    color: "#F1F2F5",
   },
   labelButton: {
     fontFamily: "Barlow",

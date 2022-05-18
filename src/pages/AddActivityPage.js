@@ -7,11 +7,11 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Controller, useForm } from "react-hook-form";
 import { TextInput } from "react-native-paper";
 import { Button, Chip, DateTimePicker } from "react-native-ui-lib";
-import { newTrip } from "../api/TripApi";
 
-export default function AddActivityPage(props) {
+export default function AddActivityPage({ navigation, route }) {
 
   const [places, setPlaces] = useState(null);
+  const [placeError, setPlaceError] = useState(false);
 
   const {
     control,
@@ -32,8 +32,23 @@ export default function AddActivityPage(props) {
   const ref = useRef();
 
   function clearData() {
+    setPlaceError(false)
+    setPlaces(null)
+    ref.current.clear();
     reset();
   }
+
+    function submit(data) {
+    if(places === null)
+      setPlaceError(true)
+    else {
+      let info = {...places, data}
+      route.params.onCallBack(info)
+      clearData()
+      navigation.goBack()
+    }
+  }
+
 
   return (
     <ScrollView horizontal={false} keyboardShouldPersistTaps={"handled"} style={{ backgroundColor: "white" }}>
@@ -75,9 +90,8 @@ export default function AddActivityPage(props) {
                 placeholderTextColor: "#938E8E",
                 returnKeyType: "search",
               }} nearbyPlacesAPI={"GoogleReverseGeocoding"}
-              onPress={(data, details = null) => {
-                // Check if an element is already added
-                  setPlaces(data)
+              onPress={(data) => {
+                setPlaces(data)
               }}
               query={{
                 key: "AIzaSyBmBppizINlbWovLovBSm3KT4lElW5lt5g",
@@ -86,6 +100,10 @@ export default function AddActivityPage(props) {
             />
           </View>
         </ScrollView>
+
+        {placeError ? (
+        <Text style={styles.errorText}>Missing activity place</Text>
+        ) : null}
 
         {places !== null ?
         <Chip
@@ -107,6 +125,8 @@ export default function AddActivityPage(props) {
               <DateTimePicker
                 theme={{ colors: { placeholder: "#938E8E", text: "black" } }}
                 placeholderTextColor={"#938E8E"}
+                minimumDate={route.params.minDate}
+                maximumDate={route.params.maxDate}
                 floatingPlaceholderColor={"#938E8E"}
                 floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18 }}
                 value={value}
@@ -195,9 +215,7 @@ export default function AddActivityPage(props) {
 
           <Button label={"Add Activity"}
                   labelStyle={styles.labelButton}
-                  onPress={handleSubmit(form => {
-                    props.updateActivity(form);
-                  })}
+                  onPress={handleSubmit(submit)}
                   style={styles.createButton} />
 
         </VStack>
