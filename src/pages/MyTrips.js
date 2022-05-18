@@ -1,5 +1,4 @@
 import {
-  Pressable,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -7,8 +6,6 @@ import {
 import {HStack, View, VStack} from 'native-base';
 import {Button} from 'react-native-paper';
 import React from 'react';
-import {Text} from '@rneui/base';
-import NewTripPage from './NewTripPage';
 
 export default function MyTrips({navigation}) {
   return (
@@ -37,49 +34,6 @@ export default function MyTrips({navigation}) {
             Around me
           </Button>
         </TouchableOpacity>
-      </VStack>
-
-      <VStack style={styles.big_container}>
-        {/* Latest trips */}
-        <Text style={styles.text}>Latest Trips</Text>
-        <VStack style={styles.small_container}>
-          <ScrollView horizontal={true}>
-            <HStack space={3} alignItems="center">
-              <Pressable onPress={() => navigation.navigate(NewTripPage)}>
-                <View size={120} bg="primary.400" rounded="md" />
-              </Pressable>
-              <View size={120} bg="secondary.400" rounded="md" />
-              <View size={120} bg="emerald.400" rounded="md" />
-              <View size={120} bg="primary.400" rounded="md" />
-            </HStack>
-          </ScrollView>
-        </VStack>
-
-        {/* Countries */}
-        <Text style={styles.text}>Countries</Text>
-        <VStack style={styles.small_container}>
-          <ScrollView horizontal={true}>
-            <HStack space={3} alignItems="center">
-              <View size={120} bg="primary.400" rounded="md" />
-              <View size={120} bg="secondary.400" rounded="md" />
-              <View size={120} bg="emerald.400" rounded="md" />
-              <View size={120} bg="primary.400" rounded="md" />
-            </HStack>
-          </ScrollView>
-        </VStack>
-
-        {/* All trips */}
-        <Text style={styles.text}>All Trips</Text>
-        <VStack style={styles.small_container}>
-          <ScrollView horizontal={true}>
-            <VStack space={3}>
-              <View size={300} bg="primary.400" rounded="md" alignSelf="center"/>
-              <View size={300} bg="secondary.400" rounded="md" />
-              <View size={300} bg="emerald.400" rounded="md" />
-              <View size={300} bg="primary.400" rounded="md" />
-            </VStack>
-          </ScrollView>
-        </VStack>
       </VStack>
     </ScrollView>
   );

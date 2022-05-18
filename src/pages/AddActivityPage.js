@@ -145,9 +145,9 @@ export default function AddActivityPage(props) {
               theme={{ colors: { placeholder: "#938E8E", text: "black" } }}
             />
           )}
-          name="title"
+          name="activity_title"
         />
-        {captions(errors.title)}
+        {captions(errors.activity_title)}
 
 
         <Controller

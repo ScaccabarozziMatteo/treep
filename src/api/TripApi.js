@@ -98,3 +98,21 @@ export async function newTrip(form) {
       console.log('Trip added!');
     });
 }
+
+// this does not connect, think it should be close to the right solution
+// link to documentation https://rnfirebase.io/firestore/usage
+export async function setActivities(form) {
+  const activity = {
+    date: form.date,
+    activity_title: form.activity_title,
+    description: form.description,
+    link: form.link,
+  };
+
+  await firestore()
+    .collection('Trip/' + '/activities')
+    .add(activity)
+    .then(() => {
+      console.log('Activity added!');
+    });
+}
