@@ -58,7 +58,7 @@ export default function HomePage({navigation}) {
   }
 
   return (
-    <View>
+    <View backgroundColor={'white'}>
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <SafeAreaView>
           <FlatList
