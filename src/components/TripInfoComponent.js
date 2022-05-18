@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {StyleSheet, Text, View } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { requestLocationPermission } from "../pages/AroundMePage";
 
 const TripInfoComponent = (props) => {
 
@@ -12,6 +14,10 @@ const TripInfoComponent = (props) => {
     }
   ]);
 
+  const latitude = 45.4642;
+  const longitude = 9.1900;
+  const nearbyRadius = 4;
+
   return(
     <View>
       {
@@ -19,7 +25,7 @@ const TripInfoComponent = (props) => {
           return(
             <View>
               {/* STATUS BOX*/}
-              <View style={[styles.box, {height: 35}]}>
+              <View style={[styles.box, {height: '10%'}]}>
                 <View style={{flex: 1, justifyContent: "center", paddingHorizontal: 20,}}>
                   <Text style={styles.title}>STATUS</Text>
                 </View>
@@ -29,7 +35,7 @@ const TripInfoComponent = (props) => {
               </View>
 
               {/* LOCATION BOX*/}
-              <View style={[styles.box, {height: 35}]}>
+              <View style={[styles.box, {height: '10%'}]}>
                 <View style={{flex: 1, justifyContent: "center", paddingHorizontal: 20,}}>
                   <Text style={styles.title}>LOCATION</Text>
                 </View>
@@ -38,7 +44,7 @@ const TripInfoComponent = (props) => {
                 </View>
               </View>
               {/* DURATION BOX*/}
-              <View style={[styles.box, {height: 35}]}>
+              <View style={[styles.box, {height: '10%'}]}>
                 <View style={{flex: 1, justifyContent: "center", paddingHorizontal: 20,}}>
                   <Text style={styles.title}>DURATION</Text>
                 </View>
@@ -47,8 +53,25 @@ const TripInfoComponent = (props) => {
                 </View>
               </View>
               {/* ITINERARY BOX*/}
-              <View style={styles.box}>
-
+              <View style={[styles.box, {height: '53%'}]}>
+                <MapView
+                    provider={PROVIDER_GOOGLE}
+                    style={{flex: 1}}
+                    region={{
+                      latitude: latitude,
+                      longitude: longitude,
+                      latitudeDelta: nearbyRadius*0.0922,
+                      longitudeDelta: nearbyRadius*0.0421
+                    }}
+                    showsUserLocation>
+                  <Marker
+                    onPress={requestLocationPermission}
+                    coordinate={{latitude: latitude, longitude: longitude}}
+                    title={'Example'}
+                    description={'This is a sample marker'}
+                    style={{backgroundColor: 'blue'}}
+                  />
+                </MapView>
               </View>
 
             </View>
