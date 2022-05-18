@@ -4,9 +4,16 @@ import { currentUser } from "./UserApi";
 
 
 export async function retrieveAllChats() {
-  const doc = await firestore().collection("users/" + currentUser().uid + "/chats").get();
-  if (doc[0].data() !== undefined)
-    return doc;
+  const chats = (await firestore().collection("users/" + currentUser().uid + "/chats").get()).docs;
+  if (chats[0].data() !== undefined){
+    let chatArray = []
+    for (const chat of chats) {
+      const userData = await firestore().collection("users/" + chat.data().userID + "/public_info").doc("personal_data").get();
+      let mergedObj = {...chat.data(), ...userData.data()};
+      chatArray.push(mergedObj)
+    }
+    return chatArray;
+  }
   else
     return 0;
 }
@@ -18,6 +25,8 @@ export async function retrieveSpecificChat(friendID) {
   else
     return 0;
 }
+
+
 
 export async function setChatsFirestore(friendID, chatID) {
   const data = {
