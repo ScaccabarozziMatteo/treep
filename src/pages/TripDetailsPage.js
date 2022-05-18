@@ -67,7 +67,7 @@ export default function UserProfile({ navigation, route }) {
               width: '100%',
               marginTop: 20,
             }}>
-              <TouchableOpacity style={{flex: 8, paddingHorizontal: 15}} onPress={() => {navigation.navigate("Home")}}>
+              <TouchableOpacity style={{flex: 8, paddingHorizontal: 15}} onPress={() => {navigation.navigate("Homepage")}}>
                 <View style={{backgroundColor: 'white', height: 40, width: 40, justifyContent: "center", borderRadius: 10}}>
                   <AntDesign name="arrowleft" color="red" style={{ alignSelf: "center", fontSize: 30 }}/>
                 </View>
