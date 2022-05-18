@@ -21,6 +21,7 @@ import { StatusBar } from "react-native";
 import ProfilePage from "../pages/ProfilePage";
 import AddActivityPage from "../pages/AddActivityPage";
 import MyTripsPage from "../pages/MyTripsPage";
+import TripDetailsPage from "../pages/TripDetailsPage";
 
 // Pages names
 const homeName = "Homepage";
@@ -139,6 +140,12 @@ export default function MainContainer() {
           options={{title: 'New Trip', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false}}
           component={NewTripPage}
         />
+        <Stack.Screen name="TripDetailsPage"
+                      options={{title: '', animationEnabled: false, headerShown: false}}
+                      component={TripDetailsPage}
+        >
+
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
