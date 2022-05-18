@@ -16,8 +16,6 @@ export default function ChatPage({ route }) {
   const [friendID, setFriendID] = React.useState(route.params.friendID);
   const [chat, setChat] = React.useState("");
   const [friendData, setFriendData] = React.useState();
-  const [lastDate, setLastDate] = React.useState(0);
-
 
   useEffect(() => {
     const updateData = async () => {
@@ -89,25 +87,9 @@ export default function ChatPage({ route }) {
 
   function renderTitle(item) {
 
-    console.log(lastDate)
-    if (lastDate === 0) {
-      // Set last message timestamp
-      setLastDate(item.timestamp);
-      return (
-        <Text style={styles.title}>eee</Text>
-      )
-    }
-
-    else {
-      // Set last message timestamp
-      setLastDate(item.timestamp);
       return (
         <Text style={styles.title}>{new Date(item.timestamp).toLocaleDateString()}</Text>
-      )    }
-
-
-
-
+      )
   }
 
   function renderAvatar(item) {
@@ -131,7 +113,6 @@ export default function ChatPage({ route }) {
         <Text style={styles.timeMessage}>{new Date(item.timestamp).toLocaleTimeString("it-IT", {
           hour: "2-digit",
           minute: "2-digit",
-
         })}</Text>
       </View>
     );
