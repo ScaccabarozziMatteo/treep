@@ -52,7 +52,7 @@ export async function signInWithGoogle() {
 export async function changeProfileImage(image, props) {
   let user = currentUser();
   let url;
-  const imagePath = user.uid + "/profile_image";
+  const imagePath = 'users' + user.uid + "/profile_image";
   const reference = storage().ref(imagePath);
   await reference.putFile(image.assets[0].uri)
     .then().done(async () => {

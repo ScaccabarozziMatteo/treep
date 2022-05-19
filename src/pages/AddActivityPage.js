@@ -112,7 +112,7 @@ export default function AddActivityPage({ navigation, route }) {
           backgroundColor={"white"}
           labelStyle={{ color: "black" }}
           useSizeAsMinimum
-          label={places.description}
+          label={places.activity_title}
         /> : null}
 
         <VStack marginTop={0}>

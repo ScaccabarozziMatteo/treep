@@ -2,6 +2,8 @@ import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
 import { currentUser } from "./UserApi";
 import firebase from "@react-native-firebase/app";
+import auth from "@react-native-firebase/auth";
+import { showToast } from "../utils/Utils";
 
 const FieldValue = firebase.firestore.FieldValue;
 
@@ -69,20 +71,40 @@ export async function removeWish(tripID) {
 
 
 // Add new Trip
-export async function newTrip(form) {
+export async function newTrip(form, places, activities, coverPhoto) {
+
   const tripData = {
     title: form.title,
     description: form.description,
     startDate: form.startDate,
     endDate: form.endDate,
     userID: currentUser().uid,
-  };
+    addedDate: new Date(),
+    status: false,
+    wishes: [],
+    location: places,
+    activities: activities
+  }
+
 
   firestore()
-    .collection('Trip')
+    .collection('trip')
     .add(tripData)
-    .then(() => {
-      console.log('Trip added!');
+    .then(async function(ref) {
+      const imagePath = 'trips/' + ref.id + "/cover_photo";
+      const reference = storage().ref(imagePath);
+      await reference.putFile(coverPhoto.assets[0].uri)
+      const url = await reference.getDownloadURL();
+
+      const data = {
+        coverPhoto: url
+      }
+      console.log(ref.id)
+
+      await firestore().collection('trip').doc(ref.id).set(data, {merge: true})
+
+      showToast('success', 'Success', 'Trip added! :)')
+
     });
 }
 

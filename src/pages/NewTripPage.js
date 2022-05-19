@@ -11,7 +11,7 @@ import ModalPhoto from "../utils/ModalPhoto";
 
 export default function NewTripPage({ navigation }) {
 
-  const [places, setPlaces] = useState([]);
+  const [places, setPlaces] = useState(null);
   const [activities, setActivities] = useState([]);
   const [coverPhoto, setCoverPhoto] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -48,11 +48,11 @@ export default function NewTripPage({ navigation }) {
       setActivities(activity => [...activity, params])
   }
 
-  function chip(input, setInput) {
+  function chip() {
     return (
     <View style={{ flex: 10 }}>
         {
-          input.map((item, index) => {
+          activities.map((item, index) => {
             return (
               <View style={{
                 margin: 5,
@@ -62,11 +62,11 @@ export default function NewTripPage({ navigation }) {
                 <Chip
                   key={item.place_id}
                   mode="flat" //changing display mode, default is flat.
-                  onDismiss={() => setInput([...input.slice(0, index), ...input.slice(index + 1)])}
+                  onDismiss={() => setActivities([...activities.slice(0, index), ...activities.slice(index + 1)])}
                   backgroundColor={"white"}
                   labelStyle={{ color: "black" }}
                   useSizeAsMinimum
-                  label={input === places ? item.description : item.data.title}
+                  label={item.data.activity_title}
                 />
               </View>
             );
@@ -78,7 +78,8 @@ export default function NewTripPage({ navigation }) {
   const ref = useRef();
 
   function clearData() {
-    setPlaces([]);
+    setPlaces(null);
+    setActivities([])
     setCoverPhoto(null);
     reset();
   }
@@ -126,8 +127,7 @@ export default function NewTripPage({ navigation }) {
               }} nearbyPlacesAPI={"GoogleReverseGeocoding"}
               onPress={(data, details = null) => {
                 // Check if an element is already added
-                if (!places.includes(data))
-                  setPlaces(places => [...places, data]);
+                  setPlaces(data);
               }}
               query={{
                 key: "AIzaSyBmBppizINlbWovLovBSm3KT4lElW5lt5g",
@@ -141,8 +141,15 @@ export default function NewTripPage({ navigation }) {
           <Text style={styles.errorText}>Missing activity place</Text>
         ) : null}
 
-        {chip(places, setPlaces)}
-
+        {places !== null ?
+          <Chip
+            mode="flat" //changing display mode, default is flat.
+            onDismiss={() => setPlaces(null)}
+            backgroundColor={"white"}
+            labelStyle={{ color: "black" }}
+            useSizeAsMinimum
+            label={places.description}
+          /> : null}
         <Controller
           control={control}
           rules={{
@@ -278,7 +285,7 @@ export default function NewTripPage({ navigation }) {
           <Button label={"Create New Trip"}
                   labelStyle={styles.labelButton}
                   onPress={handleSubmit(async form => {
-                    await newTrip(form);
+                    await newTrip(form, places, activities, coverPhoto);
                   })}
                   style={styles.createButton} />
 
