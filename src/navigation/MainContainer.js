@@ -79,7 +79,7 @@ function TabContainer({ navigation }) {
       })}>
       <Tab.Screen name={homeName} options={{title: 'Home', headerRight: () => homepageRightButton(navigation)}} component={HomePage} />
       <Tab.Screen options={{
-        headerRight: () => <Icon onPress={() => navigation.navigate(SearchUsers)} style={{marginRight: 10}} color={"black"} size={30}
+        headerRight: () => <Icon onPress={() => navigation.navigate({name: 'SearchUsers', params: { title: "Search users", typeSearch: "searchUsers" }})} style={{marginRight: 10}} color={"black"} size={30}
                                  name={"account-search"} />,
       }} name={exploreName} component={ExplorePage} />
       <Tab.Screen name={newTripName} options={{title: 'My Trips'}} component={MyTripsPage} />
@@ -141,10 +141,10 @@ export default function MainContainer() {
             await logout();
           }} />,
         })} component={CompleteRegistrationPage} />
-        <Stack.Screen name="SearchUsers" options={{ title: "Search Users", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false }}
-                      component={SearchUsers} />
-        <Stack.Screen name="UserProfile" options={{ title: "Searched User", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true }}
+        <Stack.Screen name="UserProfile" options={{ title: "User Profile", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false }}
                       component={UserProfile} />
+        <Stack.Screen name="SearchUsers" options={({ route }) => ({ title: route.params.title, presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true })}
+                      component={SearchUsers} />
         <Stack.Screen name="AddActivity" options={{ title: "Activity", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true }}
                       component={AddActivityPage} />
         <Stack.Screen
