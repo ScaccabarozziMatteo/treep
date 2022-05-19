@@ -22,7 +22,7 @@ export default function ChatPage({ route }) {
       const data = await getUserDataWithID(friendID);
       setFriendData(data);
     };
-    updateData();
+    return () => { updateData(); }
   }, []);
 
   const DB = firebase.app().database("https://treep-mdp-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -36,11 +36,13 @@ export default function ChatPage({ route }) {
   }, []);
 
   useEffect(() => {
-    if (chatID === 0)
-      newChat();
-    else
+    if (chatID !== 0)
       existingChat();
   }, [chatID]);
+
+  function newChat() {
+    setChatsFirestore(friendID)
+  }
 
   function existingChat() {
 
@@ -77,7 +79,7 @@ export default function ChatPage({ route }) {
 
   const renderItem = ({ item }) => (
     <ListItem
-      style={{ height: 80 }}
+      style={{ minHeight: 80 }}
       title={() => renderTitle(item)}
       description={() => bodyMessage(item)}
       // accessoryLeft={renderAvatar(item)}
@@ -125,7 +127,6 @@ export default function ChatPage({ route }) {
         <VStack height={"100%"} marginBottom={-20} justifyContent={"flex-end"}>
           <HStack>
             <List
-              style={styles.container}
               data={chat}
               keyExtractor={(item, index) => index}
               renderItem={renderItem}

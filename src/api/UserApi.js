@@ -84,7 +84,8 @@ async function setUserInfo(data) {
     username: "",
     bio: "",
     birthdate: data.birthdate,
-    badges: [false, false, false, false, false]
+    badges: [false, false, false, false, false],
+    registrationDate: new Date()
   };
 
   await auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name })
@@ -114,6 +115,7 @@ export async function completeProfile(data) {
     badges: [true, false, true, false, false],
     username: "",
     bio: "",
+    registrationDate: new Date()
   }
   await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(doc)
 }

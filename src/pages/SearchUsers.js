@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar, StyleSheet } from "react-native";
+import { FlatList, StatusBar, StyleSheet } from "react-native";
 import { View } from "native-base";
 import { Avatar, Button } from "react-native-ui-lib";
 import { getUserData, searchUsers } from "../api/UserApi";
-import { Divider, List, ListItem } from "@ui-kitten/components";
+import { Divider, ListItem } from "@ui-kitten/components";
 import { SearchBar } from "react-native-elements";
 import UserProfile from "./UserProfile";
 import LinearGradient from "react-native-linear-gradient";
@@ -73,9 +73,9 @@ export default function SearchUsers({ navigation, route }) {
                  }} value={searchedUsers} />
 
       {users ? (
-        <List
-          style={styles.container}
+        <FlatList
           data={users}
+          keyExtractor={(item) => item.data().registrationDate}
           renderItem={renderItem}
         />) : null}
     </View>
