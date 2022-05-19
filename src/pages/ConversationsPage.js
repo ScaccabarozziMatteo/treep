@@ -5,6 +5,7 @@ import { ListItem } from "@ui-kitten/components";
 import { retrieveAllChats } from "../api/ChatAPI";
 import LinearGradient from "react-native-linear-gradient";
 import { Avatar } from "react-native-ui-lib";
+import { Button } from "react-native-paper";
 
 export default function ConversationsPage({ navigation }) {
 
@@ -17,6 +18,9 @@ export default function ConversationsPage({ navigation }) {
       setChats(data);
     };
     loadChats();
+    return () => {
+      // Useful for cleanup functions
+    };
   }, []);
 
   const timestampRight = (item) => (
@@ -30,6 +34,10 @@ export default function ConversationsPage({ navigation }) {
       </Text>
     </View>
   );
+
+  function pressButton() {
+    navigation.navigate({ name: "SearchUsers", params: { title: "New chat", typeSearch: "newChat" } });
+  }
 
   const renderAvatar = (user) => (
     <View>
@@ -70,6 +78,9 @@ export default function ConversationsPage({ navigation }) {
           data={chats}
           renderItem={renderItem}
         />) : noChats()}
+      <Button style={styles.button} uppercase={false} labelStyle={styles.labelButton} icon={"plus"}
+              onPress={pressButton}>New message</Button>
+
     </View>
   );
 }
@@ -102,6 +113,27 @@ const styles = StyleSheet.create({
     width: 150,
     left: -100,
     top: -20
-  }
+  },
+    button: {
+      position: "absolute",
+      backgroundColor: "#E05D5B",
+      borderRadius: 20,
+      elevation: 8,
+      borderColor: "rgba(0, 0, 0, 0)",
+      marginTop: 20,
+      width: 210,
+      alignSelf: "flex-end",
+      padding: 5,
+      alignItems: "center",
+      right: 20,
+      bottom: 20,
+    },
+    labelButton: {
+      fontFamily: "Barlow",
+      fontWeight: "400",
+      color: "white",
+      fontSize: 18,
+      lineHeight: 24,
+    },
   },
 );

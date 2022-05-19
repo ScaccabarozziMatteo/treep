@@ -31,7 +31,7 @@ export default function MyTripsPage({ navigation }) {
               style={styles.topButton}
               labelStyle={styles.labelButton}
             >
-              Around me
+              Users around me
             </Button>
           </TouchableOpacity>
         </VStack>
@@ -107,11 +107,13 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: "center",
     width: "100%",
+    backgroundColor: 'white',
     paddingTop: 0,
     padding: 10,
   },
   scrollView: {
     marginHorizontal: 1,
+    backgroundColor: 'white'
   },
   topButton: {
     backgroundColor: "#D2D2D2",
