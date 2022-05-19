@@ -71,7 +71,7 @@ export async function removeWish(tripID) {
 
 
 // Add new Trip
-export async function newTrip(form, places, activities, coverPhoto) {
+export async function newTrip(form, places, activities, coverPhoto, navigation) {
 
   const tripData = {
     title: form.title,
@@ -103,6 +103,8 @@ export async function newTrip(form, places, activities, coverPhoto) {
 
       await firestore().collection('trip').doc(ref.id).set(data, {merge: true})
 
+      navigation.goBack()
+      navigation.navigate("TripDetailsPage", ref.id)
       showToast('success', 'Success', 'Trip added! :)')
 
     });

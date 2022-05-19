@@ -8,6 +8,8 @@ import { TextInput } from "react-native-paper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import ModalPhoto from "../utils/ModalPhoto";
+import CountryPicker  from 'react-native-country-picker-modal'
+
 
 export default function NewTripPage({ navigation }) {
 
@@ -90,55 +92,10 @@ export default function NewTripPage({ navigation }) {
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <VStack style={styles.mainContainer}>
 
-        <ScrollView horizontal={true} keyboardShouldPersistTaps={"handled"}>
-          <View style={{ minWidth: 350, maxWidth: 350 }}>
-            <GooglePlacesAutocomplete
-              ref={ref}
-              enableHighAccuracyLocation
-              enablePoweredByContainer={false}
-              renderRightButton={() => <Icon name={"close"} onPress={() => {
-                ref.current.clear();
-                ref.current.blur();
-              }} style={{ marginTop: 15 }} size={30} color={"black"} />}
-              styles={{
-                listView: {
-                  backgroundColor: "grey",
-                },
-                predefinedPlacesDescription: {
-                  color: "red",
-                },
-                textInput: {
-                  color: "black",
-                  fontSize: 18,
-                  height: 60,
-                  fontFamily: "Barlow",
-                  backgroundColor: "#F1F2F5",
-                  borderRadius: 4,
-                },
-                description: {
-                  color: "black",
-                },
-                row: {},
-              }}
-              placeholder="Where will your trip take place?"
-              textInputProps={{
-                placeholderTextColor: "#938E8E",
-                returnKeyType: "search",
-              }} nearbyPlacesAPI={"GoogleReverseGeocoding"}
-              onPress={(data, details = null) => {
-                // Check if an element is already added
-                  setPlaces(data);
-              }}
-              query={{
-                key: "AIzaSyBmBppizINlbWovLovBSm3KT4lElW5lt5g",
-                language: "en",
-              }}
-            />
-          </View>
-        </ScrollView>
+        <CountryPicker withAlphaFilter withCallingCodeButton style={{marginBottom: 30}} onSelect={(country => setPlaces(country))} withFilter/>
 
         {placeError ? (
-          <Text style={styles.errorText}>Missing activity place</Text>
+          <Text style={styles.errorText}>Missing trip country</Text>
         ) : null}
 
         {places !== null ?
@@ -148,7 +105,7 @@ export default function NewTripPage({ navigation }) {
             backgroundColor={"white"}
             labelStyle={{ color: "black" }}
             useSizeAsMinimum
-            label={places.description}
+            label={places.name}
           /> : null}
         <Controller
           control={control}
@@ -217,7 +174,7 @@ export default function NewTripPage({ navigation }) {
                 theme={{ colors: { placeholder: "#938E8E", text: "black" } }}
                 placeholderTextColor={"#938E8E"}
                 floatingPlaceholderColor={"#938E8E"}
-                floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18 }}
+                floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18, top: 35, left: 12 }}
                 value={value}
                 maximumDate={getValues("endDate")}
                 underlineColor={"transparent"}
@@ -247,7 +204,7 @@ export default function NewTripPage({ navigation }) {
               theme={{ colors: { placeholder: "#BEC2C2", text: "white" } }}
               placeholderTextColor={"#938E8E"}
               floatingPlaceholderColor={"#938E8E"}
-              floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18 }}
+              floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18, top: 35, left: 12 }}
               value={value}
               minimumDate={getValues("startDate")}
               underlineColor={"transparent"}
@@ -266,7 +223,7 @@ export default function NewTripPage({ navigation }) {
         />
         {captions(errors.endDate)}
 
-        <VStack alignItems={"center"}>
+        <VStack marginTop={10} alignItems={"center"}>
 
           <Button label={"Add activity"}
                   iconSource={() => <Icon style={styles.labelActivityButton} size={20} name={"plus"} />}
@@ -285,7 +242,7 @@ export default function NewTripPage({ navigation }) {
           <Button label={"Create New Trip"}
                   labelStyle={styles.labelButton}
                   onPress={handleSubmit(async form => {
-                    await newTrip(form, places, activities, coverPhoto);
+                    await newTrip(form, places, activities, coverPhoto, navigation);
                   })}
                   style={styles.createButton} />
 
@@ -325,12 +282,19 @@ export const styles = StyleSheet.create({
   checkbox: {},
   input: {
     marginTop: 15,
-    backgroundColor: "#F1F2F5",
+    backgroundColor: "white",
     color: "white",
     width: "100%",
     fontFamily: "Barlow",
     fontSize: 18,
     alignSelf: "center",
+    borderWidth: 1,
+    borderColor: '#F1F2F5',
+    shadowColor: 'rgba(82, 130, 255, 0.5)',
+    elevation: 8,
+    borderRadius: 15,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 1
   },
   text: {
     color: "black",
@@ -381,28 +345,42 @@ export const styles = StyleSheet.create({
     fontFamily: "Barlow",
   },
   pickerText: {
-    padding: 15,
-    color: "black",
-    marginBottom: -35,
+    padding: 17,
+    marginBottom: -50,
     zIndex: -1,
-    borderRadius: 4,
-    backgroundColor: "#F1F2F5",
     width: "100%",
     fontFamily: "Barlow",
     fontSize: 18,
     alignSelf: "center",
+    marginTop: 15,
+    backgroundColor: "white",
+    color: "black",
+    borderWidth: 1,
+    borderColor: '#F1F2F5',
+    shadowColor: 'rgba(82, 130, 255, 0.5)',
+    elevation: 8,
+    borderRadius: 15,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 1
   },
   coverPhotoButton: {
-    backgroundColor: "#F1F2F5",
+    backgroundColor: "white",
     width: "100%",
     height: 180,
-    borderRadius: 4,
     marginTop: 20,
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#F1F2F5',
+    shadowColor: 'rgba(82, 130, 255, 0.5)',
+    elevation: 8,
+    borderRadius: 15,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 1
   },
   coverPhotoText: {
     fontSize: 18,
     fontWeight: "bold",
+    backgroundColor: 'white',
     color: "#0D253C",
     marginTop: 0,
     marginLeft: "0%",
