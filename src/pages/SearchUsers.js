@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, StatusBar, StyleSheet } from "react-native";
 import { View } from "native-base";
 import { Avatar, Button } from "react-native-ui-lib";
-import { getUserData, searchUsers } from "../api/UserApi";
+import { currentUser, getUserData, searchUsers } from "../api/UserApi";
 import { Divider, ListItem } from "@ui-kitten/components";
 import { SearchBar } from "react-native-elements";
 import UserProfile from "./UserProfile";
@@ -26,17 +26,20 @@ export default function SearchUsers({ navigation, route }) {
   }, []);
 
   // If user search his/her profile, app show the own profile page
-  function renderButton(user, userID) {
+  function renderButton(user) {
 
-    if (loggedUser.username !== user.username && route.params.typeSearch === "searchUsers")
+    if (currentUser().uid !== user.userID && route.params.typeSearch === "searchUsers")
       return (
         <Button style={styles.button} size={"medium"} label={"Show Profile"}
-                onPress={() => navigation.navigate("UserProfile", { userID })} />
+                onPress={() => navigation.navigate("UserProfile", { userID: user.userID })} />
       );
-    else if (loggedUser.username !== user.username && route.params.typeSearch === "newChat") {
+    else if (currentUser().uid !== user.userID && route.params.typeSearch === "newChat") {
       return (
         <Button style={styles.buttonChat} size={"medium"} label={"Start chat"}
-                onPress={() => navigation.navigate({ name: 'ChatPage', params: {titlePage: 'Chat with ' + user.first_name, friendID: userID}})} />
+                onPress={() => navigation.navigate({
+                  name: "ChatPage",
+                  params: { titlePage: "Chat with " + user.first_name, friendID: user.userID },
+                })} />
       );
     } else if (loggedUser.username === user.username)
       return (
@@ -53,29 +56,32 @@ export default function SearchUsers({ navigation, route }) {
                       colors={["#376AED", "#49B0E2", "#9CECFB"]}>
         <View style={{ margin: 1.8, backgroundColor: "white", borderRadius: 13 }}>
           <Avatar animate imageStyle={{ borderRadius: 10, width: "84%", height: "84%", left: "8%", top: "8%" }}
-                  label={user.data().first_name.charAt(0) + user.data().last_name.charAt(0)}
+                  label={user.first_name.charAt(0) + user.last_name.charAt(0)}
                   backgroundColor={"transparent"}
-                  source={user.data().photoURL !== undefined ? { uri: user.data().photoURL } : null} size={60} />
+                  source={user.photoURL !== undefined ? { uri: user.photoURL } : null} size={60} />
         </View>
       </LinearGradient>
     </View>);
 
 
-  const renderItem = ({ item }) => (
-    <ListItem
-      style={{ height: 80 }}
-      title={() => <Text style={styles.title}>{item.data().first_name} {item.data().last_name}</Text>}
-      description={() => <Text style={styles.description}>@{item.data().username}</Text>}
-      accessoryLeft={renderAvatar(item)}
-      ItemSeparatorComponent={Divider}
-      accessoryRight={() => renderButton(item._data, item._ref._documentPath._parts[1])}
-    />
-  );
+  function renderItem({ item }) {
+    //console.log(item)
+    return (
+      <ListItem
+        style={{ height: 80 }}
+        title={() => <Text style={styles.title}>{item.first_name} {item.last_name}</Text>}
+        description={() => <Text style={styles.description}>@{item.username}</Text>}
+        accessoryLeft={renderAvatar(item)}
+        ItemSeparatorComponent={Divider}
+        accessoryRight={() => renderButton(item)}
+      />
+    );
+  }
 
   return (
     <View style={{ backgroundColor: "white", height: "100%" }}>
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
-      <SearchBar lightTheme placeholder={"Username"} showLoading={showLoading}
+      <SearchBar lightTheme placeholder={"Search a user..."} showLoading={showLoading}
                  onChangeText={async (text) => {
                    setShowLoading(true);
                    setSearchedUsers(text);
@@ -86,7 +92,7 @@ export default function SearchUsers({ navigation, route }) {
       {users ? (
         <FlatList
           data={users}
-          keyExtractor={(item) => item.data().registrationDate}
+          keyExtractor={(item) => item.userID}
           renderItem={renderItem}
         />) : null}
     </View>

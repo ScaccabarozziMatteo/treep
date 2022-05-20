@@ -7,6 +7,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import storage from "@react-native-firebase/storage";
 import { showToast } from "../utils/Utils";
 import React from "react";
+import { retrieveLastMessageChat } from "./ChatAPI";
 
 const FieldValue = firebase.firestore.FieldValue;
 
@@ -18,7 +19,7 @@ export async function onAuthStateChange(onAuthStateChanged) {
 export async function emailLogin(userData) {
   const user = await auth().signInWithEmailAndPassword(userData.email, userData.password).catch(error1 => showToast("error", "Error", error1.message));
   if (user !== undefined)
-    return 0
+    return 0;
 }
 
 //Logout
@@ -41,18 +42,17 @@ export async function signInWithGoogle() {
   const userData = await getUserData();
 
   // If it is the first login and the DB has not the document with the user data, return 0 and the LoginPage redirect to the CompleteRegistrationPage
-  if(userData === '' || userData.first_name === undefined || userData.last_name === undefined || userData.birthdate === undefined || userData.sex === undefined) {
-    return 0
-  }
-  else
-    return user
+  if (userData === "" || userData.first_name === undefined || userData.last_name === undefined || userData.birthdate === undefined || userData.sex === undefined) {
+    return 0;
+  } else
+    return user;
 }
 
 //Changes the profile image of the current user
 export async function changeProfileImage(image, props) {
   let user = currentUser();
   let url;
-  const imagePath = 'users/' + user.uid + "/profile_image";
+  const imagePath = "users/" + user.uid + "/profile_image";
   const reference = storage().ref(imagePath);
   await reference.putFile(image.assets[0].uri)
     .then().done(async () => {
@@ -85,7 +85,7 @@ async function setUserInfo(data) {
     bio: "",
     birthdate: data.birthdate,
     badges: [false, false, false, false, false],
-    registrationDate: new Date()
+    registrationDate: new Date(),
   };
 
   await auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name })
@@ -115,9 +115,9 @@ export async function completeProfile(data) {
     badges: [true, false, true, false, false],
     username: "",
     bio: "",
-    registrationDate: new Date()
-  }
-  await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(doc)
+    registrationDate: new Date(),
+  };
+  await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(doc);
 }
 
 export async function updateUserInfo(first_name, last_name, username, bio) {
@@ -125,11 +125,11 @@ export async function updateUserInfo(first_name, last_name, username, bio) {
     first_name: first_name,
     last_name: last_name,
     username: username,
-    bio: bio
-  }
-  await auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name }).then(  async () =>
-    await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data))
-  return Math.random()
+    bio: bio,
+  };
+  await auth().currentUser.updateProfile({ displayName: data.first_name + " " + data.last_name }).then(async () =>
+    await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update(data));
+  return Math.random();
 }
 
 export async function setUsernameFirebase(user) {
@@ -170,20 +170,61 @@ export function currentUser() {
 }
 
 export function googleUser() {
-    return GoogleSignin.getCurrentUser()
+  return GoogleSignin.getCurrentUser();
 }
 
 export async function searchUsers(username) {
-  const doc = await firestore().collectionGroup("public_info").where("username", "==", username.toLowerCase()).get();
-  if (doc.empty)
+  const doc1 = await firestore().collectionGroup("public_info").where("username", "==", username.toLowerCase()).get();
+  const doc2 = await firestore().collectionGroup("public_info").where("first_name", "==", username).get();
+  const doc3 = await firestore().collectionGroup("public_info").where("last_name", "==", username).get();
+
+  if (doc1.empty && doc2.empty && doc3.empty)
     return "";
   else {
-    return doc._docs;
+    let array = [];
+    let userArray = [];
+    if (!doc1.empty)
+      for (const a of doc1._docs) {
+        if (currentUser().uid !== a.ref._documentPath._parts[1]) {
+          const mergeObj = { ...a.data(), userID: a.ref._documentPath._parts[1] };
+          userArray.push(a.ref._documentPath._parts[1]);
+          array.push(mergeObj);
+        }
+      }
+    if (!doc2.empty)
+      for (const b of doc2._docs) {
+        const mergeObj = { ...b.data(), userID: b.ref._documentPath._parts[1] };
+        if (!userArray.includes(b.ref._documentPath._parts[1]) && currentUser().uid !== b.ref._documentPath._parts[1]) {
+          userArray.push(b.ref._documentPath._parts[1]);
+          array.push(mergeObj);
+        }
+      }
+    if (!doc3.empty)
+      for (const c of doc3._docs) {
+        const mergeObj = { ...c.data(), userID: c.ref._documentPath._parts[1] };
+        if (!userArray.includes(c.ref._documentPath._parts[1]) &&  currentUser().uid !== c.ref._documentPath._parts[1]) {
+          userArray.push(c.ref._documentPath._parts[1]);
+          array.push(mergeObj);
+        }
+      }
+    return array;
   }
 }
 
+export async function sharePosition(position) {
+  const doc = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(position, { merge: true });
+
+  showToast("success", "Position shared!", "You have shared your position with all users!");
+}
+
+export async function deletePosition() {
+  const doc = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update({ coords: FieldValue.delete() });
+
+  showToast("success", "Position deleted!", "You have deleted your position shared with all users!");
+}
+
 export async function getFollowers(user) {
-  const doc = await firestore().collection('users/' + user + '/vanity_metrics').doc('followers').get()
+  const doc = await firestore().collection("users/" + user + "/vanity_metrics").doc("followers").get();
   if (doc.empty || doc.data() === undefined)
     return "";
   else {
@@ -191,8 +232,26 @@ export async function getFollowers(user) {
   }
 }
 
+export async function getFollowComplete(user, type) {
+  const doc = await firestore().collection("users/" + user + "/vanity_metrics").doc(type).get();
+  if (doc.empty || doc.data() === undefined)
+    return 0;
+  else {
+
+    let followArray = [];
+    for (const follow of doc.data()[type]) {
+      const userData = await firestore().collection("users/" + follow + "/public_info").doc("personal_data").get();
+      const user = { userId: follow };
+      let mergedObj = { ...user, ...userData.data() };
+      followArray.push(mergedObj);
+    }
+    return followArray;
+  }
+}
+
+
 export async function getFollowings(user) {
-  const doc = await firestore().collection('users/' + user + '/vanity_metrics').doc('followings').get()
+  const doc = await firestore().collection("users/" + user + "/vanity_metrics").doc("followings").get();
   if (doc.empty || doc.data() === undefined)
     return "";
   else {
@@ -201,15 +260,15 @@ export async function getFollowings(user) {
 }
 
 export async function addFollow(userFollower, userFollowing) {
-  await firestore().collection('users/' + userFollower + '/vanity_metrics').doc('followings').set({followings: FieldValue.arrayUnion(userFollowing)}, {merge: true})
-  await firestore().collection('users/' + userFollowing + '/vanity_metrics').doc('followers').set({followers: FieldValue.arrayUnion(userFollower)}, {merge: true})
+  await firestore().collection("users/" + userFollower + "/vanity_metrics").doc("followings").set({ followings: FieldValue.arrayUnion(userFollowing) }, { merge: true });
+  await firestore().collection("users/" + userFollowing + "/vanity_metrics").doc("followers").set({ followers: FieldValue.arrayUnion(userFollower) }, { merge: true });
 
-  return Math.random()
+  return Math.random();
 }
 
 export async function removeFollow(userFollower, userFollowing) {
-  await firestore().collection('users/' + userFollower + '/vanity_metrics').doc('followings').update({followings: FieldValue.arrayRemove(userFollowing)})
-  await firestore().collection('users/' + userFollowing + '/vanity_metrics').doc('followers').update({followers: FieldValue.arrayRemove(userFollower)})
+  await firestore().collection("users/" + userFollower + "/vanity_metrics").doc("followings").update({ followings: FieldValue.arrayRemove(userFollowing) });
+  await firestore().collection("users/" + userFollowing + "/vanity_metrics").doc("followers").update({ followers: FieldValue.arrayRemove(userFollower) });
 
-  return Math.random()
+  return Math.random();
 }

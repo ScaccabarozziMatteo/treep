@@ -29,7 +29,7 @@ export default function ExplorePage({ navigation }) {
                                                                                                               name={"newspaper"} />{"\n"}Trips</Text></Button>
             </HStack>
             <HStack width={"100%"}>
-              <Button backgroundColor={"#6AAE72"} style={styles.button}><Text style={styles.textButton}><Icon size={25}
+              <Button onPress={() => navigation.navigate({name: 'SearchUsers', params: { title: "People", typeSearch: "searchUsers" }})} backgroundColor={"#6AAE72"} style={styles.button}><Text style={styles.textButton}><Icon size={25}
                                                                                                               name={"people"} />{"\n"}People</Text></Button>
             </HStack>
           </VStack>

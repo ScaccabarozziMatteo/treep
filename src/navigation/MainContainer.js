@@ -23,6 +23,7 @@ import AddActivityPage from "../pages/AddActivityPage";
 import MyTripsPage from "../pages/MyTripsPage";
 import TripDetailsPage from "../pages/TripDetailsPage";
 import ConversationsPage from "../pages/ConversationsPage";
+import Following_Following_Page from "../pages/Following_Following_Page";
 
 // Pages names
 const homeName = "Homepage";
@@ -78,10 +79,7 @@ function TabContainer({ navigation }) {
         headerTitleAlign: "left",
       })}>
       <Tab.Screen name={homeName} options={{title: 'Home', headerRight: () => homepageRightButton(navigation)}} component={HomePage} />
-      <Tab.Screen options={{
-        headerRight: () => <Icon onPress={() => navigation.navigate({name: 'SearchUsers', params: { title: "Search users", typeSearch: "searchUsers" }})} style={{marginRight: 10}} color={"black"} size={30}
-                                 name={"account-search"} />,
-      }} name={exploreName} component={ExplorePage} />
+      <Tab.Screen name={exploreName} component={ExplorePage} />
       <Tab.Screen name={newTripName} options={{title: 'My Trips'}} component={MyTripsPage} />
       <Tab.Screen name={profileName} component={ProfilePage} />
     </Tab.Navigator>
@@ -147,6 +145,8 @@ export default function MainContainer() {
                       component={SearchUsers} />
         <Stack.Screen name="AddActivity" options={{ title: "Activity", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true }}
                       component={AddActivityPage} />
+        <Stack.Screen name="Follow" options={({ route }) => ({ title: route.params.title, presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true })}
+                      component={Following_Following_Page} />
         <Stack.Screen
           name="NewTripPage"
           options={{title: 'New Trip', headerTitleAlign: 'left', presentation: 'card', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false}}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text } from "@rneui/base";
-import { View, StyleSheet, Alert, FlatList } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { ListItem } from "@ui-kitten/components";
 import { retrieveAllChats } from "../api/ChatAPI";
 import LinearGradient from "react-native-linear-gradient";
@@ -10,7 +10,6 @@ import { Button } from "react-native-paper";
 export default function ConversationsPage({ navigation }) {
 
   const [chats, setChats] = useState(0);
-  const [usersInfo, setUsersInfo] = useState([]);
 
   useEffect(() => {
     const loadChats = async () => {
@@ -87,7 +86,6 @@ export default function ConversationsPage({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-      maxHeight: 80,
       backgroundColor: "white",
     },
     title: {

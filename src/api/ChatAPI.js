@@ -16,7 +16,6 @@ export async function retrieveAllChats() {
       mergedObj = {...mergedObj, lastMessage}
       chatArray.push(mergedObj)
     }
-    console.log(chatArray)
     chatArray.sort(function(a, b) {
       return new Date(b.lastMessage[0].timestamp) - new Date(a.lastMessage[0].timestamp);
     })
