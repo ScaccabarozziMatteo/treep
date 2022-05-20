@@ -65,7 +65,6 @@ export default function SearchUsers({ navigation, route }) {
 
 
   function renderItem({ item }) {
-    //console.log(item)
     return (
       <ListItem
         style={{ height: 80 }}

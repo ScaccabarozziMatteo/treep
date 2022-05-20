@@ -167,7 +167,7 @@ export default function LoginPage({ navigation, route }) {
 
           <View style={styles.boxButton}>
             <Button style={{backgroundColor: '#de5246', borderColor: '#de5246', borderRadius: 10, height: 50}}
-                    onPress={() => GoogleSignIn().catch(error => showToast('error', 'Google login error', error))}><Icon name={'google'} size={30} color={'white'} /></Button>
+                    onPress={() => GoogleSignIn().catch(error => showToast('error', 'Google login error', error.message))}><Icon name={'google'} size={30} color={'white'} /></Button>
           </View>
         </VStack>
       </ScrollView>

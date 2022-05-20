@@ -101,6 +101,7 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
       }
 
       await firestore().collection('trip').doc(ref.id).set(data, {merge: true})
+      await firestore().collection('users' + currentUser().uid + 'vanity_metrics').doc('trips').set({ trips: FieldValue.arrayUnion(ref.id) }, {merge: true})
       await firestore().collection('indexes').doc('trips').set({ countries: FieldValue.arrayUnion(places) }, { merge: true })
 
 
