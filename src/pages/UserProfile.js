@@ -7,7 +7,7 @@ import {
   StatusBar,
   StyleSheet,
   TouchableWithoutFeedback,
-  View,
+  View, TouchableOpacity,
 } from "react-native";
 import { HStack, VStack } from "native-base";
 import { Avatar, Button } from "react-native-ui-lib";
@@ -155,12 +155,22 @@ export default function UserProfile({ navigation, route }) {
                   <Text style={styles.textVanity}>Trips</Text>
                 </VStack>
                 <VStack alignItems={"center"}>
-                  <Text style={styles.numberVanity}>{followings.length}</Text>
-                  <Text style={styles.textVanity}>Following</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate({
+                    name: "Follow",
+                    params: { title: userData.first_name + "'s followings", userId: userID, type: 'followings' },
+                  })} style={{alignItems: 'center'}}>
+                    <Text style={styles.numberVanity}>{followings.length}</Text>
+                    <Text style={styles.textVanity}>Following</Text>
+                  </TouchableOpacity>
                 </VStack>
                 <VStack alignItems={"center"}>
-                  <Text style={styles.numberVanity}>{followers.length}</Text>
-                  <Text style={styles.textVanity}>Followers</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate({
+                    name: "Follow",
+                    params: { title: userData.first_name + "'s followers", userId: userID, type: 'followers'},
+                  })} style={{alignItems: 'center'}}>
+                    <Text style={styles.numberVanity}>{followers.length}</Text>
+                    <Text style={styles.textVanity}>Followers</Text>
+                  </TouchableOpacity>
                 </VStack>
               </HStack>
             </VStack>

@@ -7,6 +7,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import storage from "@react-native-firebase/storage";
 import { showToast } from "../utils/Utils";
 import React from "react";
+import { retrieveLastMessageChat } from "./ChatAPI";
 
 const FieldValue = firebase.firestore.FieldValue;
 
@@ -190,6 +191,25 @@ export async function getFollowers(user) {
     return doc.data().followers;
   }
 }
+
+export async function getFollowComplete(user, type) {
+  const doc = await firestore().collection('users/' + user + '/vanity_metrics').doc(type).get()
+  if (doc.empty || doc.data() === undefined)
+    return 0;
+  else {
+
+    let followArray = []
+    for (const follow of doc.data()[type]) {
+      const userData = await firestore().collection("users/" + follow + "/public_info").doc("personal_data").get();
+      const user = {userId: follow}
+      let mergedObj = {...user, ...userData.data()};
+      followArray.push(mergedObj)
+    }
+    return followArray
+  }
+}
+
+
 
 export async function getFollowings(user) {
   const doc = await firestore().collection('users/' + user + '/vanity_metrics').doc('followings').get()
