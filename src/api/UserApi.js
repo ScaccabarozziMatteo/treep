@@ -182,20 +182,29 @@ export async function searchUsers(username) {
     return "";
   else {
     let array = [];
+    let userArray = [];
     if (!doc1.empty)
       for (const a of doc1._docs) {
         const mergeObj = { ...a.data(), userID: a.ref._documentPath._parts[1] };
+        userArray.push(a.ref._documentPath._parts[1]);
+        console.log(userArray);
         array.push(mergeObj);
       }
     if (!doc2.empty)
       for (const b of doc2._docs) {
         const mergeObj = { ...b.data(), userID: b.ref._documentPath._parts[1] };
+        if (!userArray.includes(b.ref._documentPath._parts[1])) {
+          userArray.push(b.ref._documentPath._parts[1]);
           array.push(mergeObj);
+        }
       }
     if (!doc3.empty)
       for (const c of doc3._docs) {
         const mergeObj = { ...c.data(), userID: c.ref._documentPath._parts[1] };
+        if (!userArray.includes(b.ref._documentPath._parts[1])) {
+          userArray.push(b.ref._documentPath._parts[1]);
           array.push(mergeObj);
+        }
       }
     return array;
   }
