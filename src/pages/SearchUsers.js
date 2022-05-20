@@ -81,7 +81,7 @@ export default function SearchUsers({ navigation, route }) {
   return (
     <View style={{ backgroundColor: "white", height: "100%" }}>
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
-      <SearchBar lightTheme placeholder={"Username"} showLoading={showLoading}
+      <SearchBar lightTheme placeholder={"Search a user..."} showLoading={showLoading}
                  onChangeText={async (text) => {
                    setShowLoading(true);
                    setSearchedUsers(text);

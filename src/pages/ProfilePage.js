@@ -61,7 +61,6 @@ export default function ProfilePage(props) {
       };
       updateUser();
       return () => {
-        // Useful for cleanup functions
       };
     }, []),
   );

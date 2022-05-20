@@ -185,15 +185,16 @@ export async function searchUsers(username) {
     let userArray = [];
     if (!doc1.empty)
       for (const a of doc1._docs) {
-        const mergeObj = { ...a.data(), userID: a.ref._documentPath._parts[1] };
-        userArray.push(a.ref._documentPath._parts[1]);
-        console.log(userArray);
-        array.push(mergeObj);
+        if (currentUser().uid !== a.ref._documentPath._parts[1]) {
+          const mergeObj = { ...a.data(), userID: a.ref._documentPath._parts[1] };
+          userArray.push(a.ref._documentPath._parts[1]);
+          array.push(mergeObj);
+        }
       }
     if (!doc2.empty)
       for (const b of doc2._docs) {
         const mergeObj = { ...b.data(), userID: b.ref._documentPath._parts[1] };
-        if (!userArray.includes(b.ref._documentPath._parts[1])) {
+        if (!userArray.includes(b.ref._documentPath._parts[1]) && currentUser().uid !== b.ref._documentPath._parts[1]) {
           userArray.push(b.ref._documentPath._parts[1]);
           array.push(mergeObj);
         }
@@ -201,13 +202,25 @@ export async function searchUsers(username) {
     if (!doc3.empty)
       for (const c of doc3._docs) {
         const mergeObj = { ...c.data(), userID: c.ref._documentPath._parts[1] };
-        if (!userArray.includes(b.ref._documentPath._parts[1])) {
-          userArray.push(b.ref._documentPath._parts[1]);
+        if (!userArray.includes(c.ref._documentPath._parts[1]) &&  currentUser().uid !== c.ref._documentPath._parts[1]) {
+          userArray.push(c.ref._documentPath._parts[1]);
           array.push(mergeObj);
         }
       }
     return array;
   }
+}
+
+export async function sharePosition(position) {
+  const doc = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").set(position, { merge: true });
+
+  showToast("success", "Position shared!", "You have shared your position with all users!");
+}
+
+export async function deletePosition() {
+  const doc = await firestore().collection("users/" + currentUser().uid + "/public_info").doc("personal_data").update({ coords: FieldValue.delete() });
+
+  showToast("success", "Position deleted!", "You have deleted your position shared with all users!");
 }
 
 export async function getFollowers(user) {

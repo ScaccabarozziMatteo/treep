@@ -5,7 +5,6 @@ import { VStack } from "native-base";
 import { Button, DateTimePicker, TouchableOpacity, Chip } from "react-native-ui-lib";
 import { newTrip } from "../api/TripApi";
 import { TextInput } from "react-native-paper";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import ModalPhoto from "../utils/ModalPhoto";
 import CountryPicker  from 'react-native-country-picker-modal'
@@ -261,7 +260,7 @@ export default function NewTripPage({ navigation }) {
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   text2: {
     fontSize: 18,
     fontWeight: "bold",

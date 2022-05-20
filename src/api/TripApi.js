@@ -99,9 +99,10 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
       const data = {
         coverPhoto: url
       }
-      console.log(ref.id)
 
       await firestore().collection('trip').doc(ref.id).set(data, {merge: true})
+      await firestore().collection('indexes').doc('trips').set({ countries: FieldValue.arrayUnion(places) }, { merge: true })
+
 
       navigation.goBack()
       navigation.navigate("TripDetailsPage", ref.id)

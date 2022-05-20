@@ -79,10 +79,7 @@ function TabContainer({ navigation }) {
         headerTitleAlign: "left",
       })}>
       <Tab.Screen name={homeName} options={{title: 'Home', headerRight: () => homepageRightButton(navigation)}} component={HomePage} />
-      <Tab.Screen options={{
-        headerRight: () => <Icon onPress={() => navigation.navigate({name: 'SearchUsers', params: { title: "Search users", typeSearch: "searchUsers" }})} style={{marginRight: 10}} color={"black"} size={30}
-                                 name={"account-search"} />,
-      }} name={exploreName} component={ExplorePage} />
+      <Tab.Screen name={exploreName} component={ExplorePage} />
       <Tab.Screen name={newTripName} options={{title: 'My Trips'}} component={MyTripsPage} />
       <Tab.Screen name={profileName} component={ProfilePage} />
     </Tab.Navigator>
