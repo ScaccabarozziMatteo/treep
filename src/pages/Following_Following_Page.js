@@ -26,6 +26,7 @@ export default function ConversationsPage({ navigation, route }) {
     loadData();
     return () => {
       // Useful for cleanup functions
+      setFollow(0)
     };
   }, [route.params]);
 
