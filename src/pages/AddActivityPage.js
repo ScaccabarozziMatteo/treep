@@ -77,8 +77,14 @@ export default function AddActivityPage({ navigation, route }) {
                   fontSize: 18,
                   height: 60,
                   fontFamily: "Barlow",
-                  backgroundColor: "#F1F2F5",
-                  borderRadius: 4,
+                  backgroundColor: "white",
+                  borderWidth: 1,
+                  borderColor: '#F1F2F5',
+                  shadowColor: 'rgba(82, 130, 255, 0.5)',
+                  elevation: 8,
+                  borderRadius: 15,
+                  borderTopRightRadius: 15,
+                  borderTopLeftRadius: 1
                 },
                 description: {
                   color: "black",
@@ -112,10 +118,10 @@ export default function AddActivityPage({ navigation, route }) {
           backgroundColor={"white"}
           labelStyle={{ color: "black" }}
           useSizeAsMinimum
-          label={places.description}
+          label={places.activity_title}
         /> : null}
 
-        <VStack marginTop={0}>
+        <VStack marginTop={-7}>
           <Controller
             control={control}
             rules={{
@@ -128,7 +134,7 @@ export default function AddActivityPage({ navigation, route }) {
                 minimumDate={route.params.minDate}
                 maximumDate={route.params.maxDate}
                 floatingPlaceholderColor={"#938E8E"}
-                floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18 }}
+                floatingPlaceholderStyle={{ fontFamily: "Barlow", fontSize: 18, top: 35, left: 12 }}
                 value={value}
                 underlineColor={"transparent"}
                 floatingPlaceholder
@@ -252,12 +258,19 @@ const styles = StyleSheet.create({
   checkbox: {},
   input: {
     marginTop: 15,
-    backgroundColor: "#F1F2F5",
+    backgroundColor: "white",
     color: "white",
     width: "100%",
     fontFamily: "Barlow",
     fontSize: 18,
     alignSelf: "center",
+    borderWidth: 1,
+    borderColor: '#F1F2F5',
+    shadowColor: 'rgba(82, 130, 255, 0.5)',
+    elevation: 8,
+    borderRadius: 15,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 1
   },
   text: {
     color: "black",
@@ -307,16 +320,23 @@ const styles = StyleSheet.create({
     fontFamily: "Barlow",
   },
   pickerText: {
-    padding: 15,
-    color: "black",
+    padding: 17,
     marginBottom: -35,
     zIndex: -1,
-    borderRadius: 4,
-    backgroundColor: "#F1F2F5",
     width: "100%",
     fontFamily: "Barlow",
     fontSize: 18,
     alignSelf: "center",
+    marginTop: 15,
+    backgroundColor: "white",
+    color: "black",
+    borderWidth: 1,
+    borderColor: '#F1F2F5',
+    shadowColor: 'rgba(82, 130, 255, 0.5)',
+    elevation: 8,
+    borderRadius: 15,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 1
   },
   coverPhotoButton: {
     backgroundColor: "#F1F2F5",

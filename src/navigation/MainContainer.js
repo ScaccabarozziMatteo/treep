@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //Pages import
 import HomePage from "../pages/HomePage";
 import ExplorePage from "../pages/ExplorePage";
-import { Icon } from "@rneui/base";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import LoginPage from "../pages/LoginPage";
 import AroundMePage from "../pages/AroundMePage";
 import NewTripPage from "../pages/NewTripPage.js";
@@ -22,6 +22,8 @@ import ProfilePage from "../pages/ProfilePage";
 import AddActivityPage from "../pages/AddActivityPage";
 import MyTripsPage from "../pages/MyTripsPage";
 import TripDetailsPage from "../pages/TripDetailsPage";
+import ConversationsPage from "../pages/ConversationsPage";
+import Following_Following_Page from "../pages/Following_Following_Page";
 
 // Pages names
 const homeName = "Homepage";
@@ -31,6 +33,14 @@ const newTripName = "New Trip";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+function homepageRightButton(navigation) {
+  return(
+    <Icon onPress={() => navigation.navigate('Conversations')} style={{marginRight: 10}} color={"black"} size={30}
+          name={"bell-outline"} />
+  )
+}
+
 
 function TabContainer({ navigation }) {
   return (
@@ -45,14 +55,14 @@ function TabContainer({ navigation }) {
             case homeName:
               iconName = focused ? "home" : "home";
               break;
-            case profileName:
-              iconName = focused ? "person" : "person";
-              break;
             case exploreName:
-              iconName = focused ? "explore" : "explore";
+              iconName = focused ? "compass-outline" : "compass-outline";
               break;
             case newTripName:
-              iconName = focused ? "add" : "add";
+              iconName = focused ? "map-outline" : "map-outline";
+              break;
+            case profileName:
+              iconName = focused ? "account-circle-outline" : "account-circle-outline";
               break;
           }
 
@@ -68,11 +78,8 @@ function TabContainer({ navigation }) {
         headerTitleStyle: { fontFamily: "Barlow", fontWeight: "700" },
         headerTitleAlign: "left",
       })}>
-      <Tab.Screen name={homeName} options={{title: 'Home'}} component={HomePage} />
-      <Tab.Screen options={{
-        headerRight: () => <Icon onPress={() => navigation.navigate(SearchUsers)} color={"black"} size={30}
-                                 name={"person-search"} />,
-      }} name={exploreName} component={ExplorePage} />
+      <Tab.Screen name={homeName} options={{title: 'Home', headerRight: () => homepageRightButton(navigation)}} component={HomePage} />
+      <Tab.Screen name={exploreName} component={ExplorePage} />
       <Tab.Screen name={newTripName} options={{title: 'My Trips'}} component={MyTripsPage} />
       <Tab.Screen name={profileName} component={ProfilePage} />
     </Tab.Navigator>
@@ -82,7 +89,6 @@ function TabContainer({ navigation }) {
 export default function MainContainer() {
   return (
     <NavigationContainer>
-      <StatusBar/>
       <Stack.Navigator screenOptions={() => ({
         presentation: 'card',
         headerTintColor: "black",
@@ -97,55 +103,59 @@ export default function MainContainer() {
         <Stack.Screen
           name="Tab"
           component={TabContainer}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, presentation: 'card' }}
         />
         <Stack.Screen name="Login" options={({ navigation }) => ({
           title: "Sign In",
+          presentation: 'card',
           headerTintColor: 'white',
           headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
           headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
-          headerLeft: () => <Icon size={28} name={"arrow-back"} style={{padding: 10}} color={"white"} onPress={() => {
+          headerLeft: () => <Icon size={28} name={"arrow-left"} style={{padding: 10}} color={"white"} onPress={() => {
             navigation.navigate("Homepage");
           }} />,
         })} component={LoginPage} />
         <Stack.Screen name="Registration" options={{
           title: "Sign Up",
+          presentation: 'card',
           headerTintColor: 'white',
           headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
           headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
         }} component={RegistrationPage} />
-        <Stack.Screen name="AroundMe" options={{ title: "Around Me", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, }} component={AroundMePage} />
-        <Stack.Screen name="NewTrips" options={{ title: "New Trip", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, }} component={NewTripPage} />
+        <Stack.Screen name="AroundMe" options={{ title: "Around Me", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, }} component={AroundMePage} />
+        <Stack.Screen name="NewTrips" options={{ title: "New Trip", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, }} component={NewTripPage} />
+        <Stack.Screen name="Conversations" options={{ title: "Conversations", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, }} component={ConversationsPage} />
         <Stack.Screen name="ChatPage" component={ChatPage}
-                      options={({ route }) => ({ headerTitle: route.params.titlePage })}
+                      options={({ route }) => ({ headerTitle: route.params.titlePage, presentation: 'card', })}
         />
         <Stack.Screen name="CompleteRegistrationPage" options={({ navigation }) => ({
           title: "Complete Registration",
+          presentation: 'card',
           animationEnabled: true,
           headerTitleAlign: 'left',
           headerStyle: { backgroundColor: "#3F799D", shadowColor: '#3F799D', height: 100 },
           headerTitleStyle: { color: "white", fontFamily: "Barlow", fontSize: 30, fontWeight: "bold" },
-          headerLeft: () => <Icon size={28} name={"arrow-back"} style={{paddingLeft: 10}} color={"white"} onPress={async () => {
+          headerLeft: () => <Icon size={28} name={"arrow-left"} style={{paddingLeft: 10}} color={"white"} onPress={async () => {
             await logout();
           }} />,
         })} component={CompleteRegistrationPage} />
-        <Stack.Screen name="SearchUsers" options={{ title: "Search Users", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false }}
-                      component={SearchUsers} />
-        <Stack.Screen name="UserProfile" options={{ title: "Searched User", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true }}
+        <Stack.Screen name="UserProfile" options={{ title: "User Profile", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false }}
                       component={UserProfile} />
-        <Stack.Screen name="AddActivity" options={{ title: "Activity", headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true }}
+        <Stack.Screen name="SearchUsers" options={({ route }) => ({ title: route.params.title, presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true })}
+                      component={SearchUsers} />
+        <Stack.Screen name="AddActivity" options={{ title: "Activity", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true }}
                       component={AddActivityPage} />
+        <Stack.Screen name="Follow" options={({ route }) => ({ title: route.params.title, presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true })}
+                      component={Following_Following_Page} />
         <Stack.Screen
           name="NewTripPage"
-          options={{title: 'New Trip', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false}}
+          options={{title: 'New Trip', headerTitleAlign: 'left', presentation: 'card', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false}}
           component={NewTripPage}
         />
         <Stack.Screen name="TripDetailsPage"
-                      options={{title: '', animationEnabled: false, headerShown: false}}
+                      options={{title: '', presentation: 'card', animationEnabled: false, headerShown: false}}
                       component={TripDetailsPage}
-        >
-
-        </Stack.Screen>
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

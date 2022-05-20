@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar, StyleSheet } from "react-native";
+import { FlatList, StatusBar, StyleSheet } from "react-native";
 import { View } from "native-base";
 import { Avatar, Button } from "react-native-ui-lib";
-import { getUserData, searchUsers } from "../api/UserApi";
-import { Divider, List, ListItem } from "@ui-kitten/components";
+import { currentUser, getUserData, searchUsers } from "../api/UserApi";
+import { Divider, ListItem } from "@ui-kitten/components";
 import { SearchBar } from "react-native-elements";
 import UserProfile from "./UserProfile";
 import LinearGradient from "react-native-linear-gradient";
@@ -22,49 +22,66 @@ export default function SearchUsers({ navigation, route }) {
       const user = await getUserData();
       setLoggedUser(user);
     };
-    updateValue();
+    return () => updateValue();
   }, []);
 
   // If user search his/her profile, app show the own profile page
-  function renderButton(user, userID) {
-    if (loggedUser.username !== user.username)
+  function renderButton(user) {
+
+    if (currentUser().uid !== user.userID && route.params.typeSearch === "searchUsers")
       return (
-        <Button style={styles.button} size={'medium'} label={'Show Profile'} onPress={() => navigation.navigate("UserProfile", { userID })}/>
+        <Button style={styles.button} size={"medium"} label={"Show Profile"}
+                onPress={() => navigation.navigate("UserProfile", { userID: user.userID })} />
+      );
+    else if (currentUser().uid !== user.userID && route.params.typeSearch === "newChat") {
+      return (
+        <Button style={styles.buttonChat} size={"medium"} label={"Start chat"}
+                onPress={() => navigation.navigate({
+                  name: "ChatPage",
+                  params: { titlePage: "Chat with " + user.first_name, friendID: user.userID },
+                })} />
+      );
+    } else if (loggedUser.username === user.username)
+      return (
+        <Button style={styles.button} size={"medium"} label={"Show My Profile"}
+                onPress={() => navigation.navigate("Profile")} />
       );
     else
-      return (
-        <Button style={styles.button} size={'medium'} label={'Show My Profile'} onPress={() => navigation.navigate("Profile")} />
-      );
+      return (null);
   }
 
   const renderAvatar = (user) => (
     <View>
-      <LinearGradient style={{top: -20, width: 64, marginRight: 20, borderRadius: 15 }} colors={["#376AED", "#49B0E2", "#9CECFB"]}>
+      <LinearGradient style={{ top: -20, width: 64, marginRight: 20, borderRadius: 15 }}
+                      colors={["#376AED", "#49B0E2", "#9CECFB"]}>
         <View style={{ margin: 1.8, backgroundColor: "white", borderRadius: 13 }}>
           <Avatar animate imageStyle={{ borderRadius: 10, width: "84%", height: "84%", left: "8%", top: "8%" }}
-                  label={user.data().first_name.charAt(0) + user.data().last_name.charAt(0)}
-                  backgroundColor={'transparent'}
-                  source={user.data().photoURL !== undefined ? { uri: user.data().photoURL } : null} size={60} />
+                  label={user.first_name.charAt(0) + user.last_name.charAt(0)}
+                  backgroundColor={"transparent"}
+                  source={user.photoURL !== undefined ? { uri: user.photoURL } : null} size={60} />
         </View>
       </LinearGradient>
     </View>);
 
 
-  const renderItem = ({ item }) => (
-    <ListItem
-      style={{height: 80}}
-      title={() => <Text style={styles.title}>{item.data().first_name} {item.data().last_name}</Text>}
-      description={() => <Text style={styles.description}>@{item.data().username}</Text>}
-      accessoryLeft={renderAvatar(item)}
-      ItemSeparatorComponent={Divider}
-      accessoryRight={() => renderButton(item._data, item._ref._documentPath._parts[1])}
-    />
-  );
+  function renderItem({ item }) {
+    //console.log(item)
+    return (
+      <ListItem
+        style={{ height: 80 }}
+        title={() => <Text style={styles.title}>{item.first_name} {item.last_name}</Text>}
+        description={() => <Text style={styles.description}>@{item.username}</Text>}
+        accessoryLeft={renderAvatar(item)}
+        ItemSeparatorComponent={Divider}
+        accessoryRight={() => renderButton(item)}
+      />
+    );
+  }
 
   return (
-    <View>
+    <View style={{ backgroundColor: "white", height: "100%" }}>
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
-      <SearchBar lightTheme placeholder={"Username"} showLoading={showLoading}
+      <SearchBar lightTheme placeholder={"Search a user..."} showLoading={showLoading}
                  onChangeText={async (text) => {
                    setShowLoading(true);
                    setSearchedUsers(text);
@@ -73,9 +90,9 @@ export default function SearchUsers({ navigation, route }) {
                  }} value={searchedUsers} />
 
       {users ? (
-        <List
-          style={styles.container}
+        <FlatList
           data={users}
+          keyExtractor={(item) => item.userID}
           renderItem={renderItem}
         />) : null}
     </View>
@@ -96,7 +113,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   description: {
-    fontFamily: 'Barlow',
+    fontFamily: "Barlow",
     marginLeft: 40,
     color: "#2D4379",
     fontWeight: "500",
@@ -106,10 +123,15 @@ const styles = StyleSheet.create({
     letterSpacing: -0.24,
   },
   button: {
-    backgroundColor: '#386BED',
+    backgroundColor: "#386BED",
     borderColor: "transparent",
     borderRadius: 12,
-  }
+  },
+  buttonChat: {
+    backgroundColor: "#E05D5B",
+    borderColor: "transparent",
+    borderRadius: 12,
+  },
 
 });
 
