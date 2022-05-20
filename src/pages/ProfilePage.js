@@ -310,7 +310,7 @@ export default function ProfilePage(props) {
                       size={90}
                       label={(userData.first_name !== undefined && userData.last_name !== undefined) ? userData.first_name.charAt(0) + userData.last_name.charAt(0) : null}
                       source={
-                        user.photoURL !== null ? { uri: user.photoURL } : null
+                        userData.photoURL !== undefined ? { uri: userData.photoURL } : null
                       }
                     />
                   </View>
