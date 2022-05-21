@@ -13,7 +13,6 @@ export default function MyTripsPage({ navigation }) {
         <VStack style={styles.container}>
           <TouchableOpacity onPress={() => navigation.push("NewTrips")}>
             <Button
-              color={"grey"}
               icon={"plus"}
               uppercase={false}
               style={styles.topButton}
@@ -25,7 +24,6 @@ export default function MyTripsPage({ navigation }) {
 
           <TouchableOpacity onPress={() => navigation.push("AroundMe")}>
             <Button
-              color={"grey"}
               icon={"google-maps"}
               uppercase={false}
               style={styles.topButton}
@@ -116,12 +114,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   topButton: {
-    backgroundColor: "#D2D2D2",
-    borderRadius: 10,
+    backgroundColor: "white",
     borderColor: "rgba(0, 0, 0, 0)",
     marginTop: 20,
     width: "100%",
     alignItems: "flex-start",
+    shadowColor: 'rgba(82, 130, 255, 0.5)',
+    elevation: 10,
+    borderRadius: 15,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 1
   },
   labelButton: {
     fontFamily: "Barlow",

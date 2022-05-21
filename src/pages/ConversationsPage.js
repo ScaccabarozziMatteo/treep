@@ -72,7 +72,6 @@ export default function ConversationsPage({ navigation }) {
 
   return (
     <View style={{ backgroundColor: "white", height: '100%'}}>
-      {console.log(chats)}
       {chats !== 0 ? (
         <FlatList
           data={chats}

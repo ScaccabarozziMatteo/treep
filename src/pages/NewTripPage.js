@@ -91,7 +91,7 @@ export default function NewTripPage({ navigation }) {
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <VStack style={styles.mainContainer}>
 
-        <CountryPicker withAlphaFilter withCallingCodeButton style={{marginBottom: 30}} onSelect={(country => setPlaces(country))} withFilter/>
+        <CountryPicker modalProps={{animationType: 'slide'}} placeholder={'Click here to choose a country'} containerButtonStyle={styles.countryPicker} withAlphaFilter withCallingCodeButton onSelect={(country => setPlaces(country))} withFilter/>
 
         {placeError ? (
           <Text style={styles.errorText}>Missing trip country</Text>
@@ -392,4 +392,23 @@ const styles = StyleSheet.create({
     fontFamily: "Barlow",
     textAlign: "center",
   },
+  countryPicker: {
+    marginTop: 15,
+    backgroundColor: "white",
+    width: "100%",
+    fontFamily: "Barlow",
+    fontSize: 18,
+    alignSelf: "center",
+    borderWidth: 1,
+    borderColor: '#F1F2F5',
+    shadowColor: 'rgba(82, 130, 255, 0.5)',
+    elevation: 8,
+    borderRadius: 15,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 1,
+    paddingLeft: 10,
+    paddingTop: 22,
+    paddingBottom: 22,
+    marginBottom: 8
+  }
 });
