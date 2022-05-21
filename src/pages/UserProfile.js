@@ -43,7 +43,15 @@ export default function UserProfile({ navigation, route }) {
       setTrips(trips);
     };
     updateValue();
-  }, [dummyState]);
+    return () => {
+      setUserData("")
+    };
+  }, [dummyState, userID]);
+
+  useEffect(() => {
+    return () => {
+      setUserData("")
+    };    }, []);
 
   function badges() {
     return (
