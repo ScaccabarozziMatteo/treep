@@ -50,7 +50,7 @@ export default function ConversationsPage({ navigation, route }) {
   }
 
   function renderItem(item) {
-
+    console.log(item.item)
     return (
       <ListItem
         style={{ height: 80 }}
