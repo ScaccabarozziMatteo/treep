@@ -7,8 +7,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Text,
+
 } from "react-native";
-import { Text } from "native-base";
+
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -20,7 +22,7 @@ import TripsComponent from "../components/TripsComponent";
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function UserProfile({ navigation, route }) {
+export default function TripDetailsPage({ navigation, route }) {
 
   const tripID = route.params.tripId;
   const [tripData, setTripData] = useState("");
@@ -92,7 +94,7 @@ export default function UserProfile({ navigation, route }) {
 
 
             <Text style={styles.title}> {tripData.title} </Text>
-            <Text style={styles.locationText}> {tripData.location} </Text>
+            <Text style={styles.locationText}> {tripData.name}, {tripData.region} </Text>
 
             {/* FOLLOW BUTTON*/}
             <TouchableOpacity style={styles.followButton}>
@@ -124,7 +126,7 @@ export default function UserProfile({ navigation, route }) {
 
         <View style={styles.bottomPart}>
           <Tab.Navigator>
-            <Tab.Screen name="info" component={TripInfoComponent}/>
+            <Tab.Screen name="info" component={TripInfoComponent} initialParams={{location: tripData.location}}/>
             <Tab.Screen name="photos" component={TripPhotosComponent}/>
             <Tab.Screen name="trips" component={TripsComponent}/>
           </Tab.Navigator>

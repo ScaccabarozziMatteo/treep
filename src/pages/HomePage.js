@@ -4,12 +4,8 @@ import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 import {
   FlatList,
-  Text,
   StyleSheet,
   RefreshControl,
-  Image,
-  ScrollView,
-  TouchableOpacity,
   StatusBar,
 } from "react-native";
 import Post from "../components/Post";
@@ -22,8 +18,7 @@ export default function HomePage({navigation}) {
     {coverPhoto: "",
               userPhoto: "",
               userID: "",
-              location: "",
-              photoURL: "",
+              name: "",
               username: "",
               title: "",
               postID: "",
@@ -36,7 +31,6 @@ export default function HomePage({navigation}) {
     getAll().then(
       response => {
         setTrips(response);
-
       });
     }, []
   );
@@ -66,12 +60,12 @@ export default function HomePage({navigation}) {
             data={trips}
             renderItem={({ item }) => (
               <Post title={item.title}
-                    userImage={item.photoURL}
+                    userImage={item.userPhoto}
                     postImage={item.coverPhoto}
                     isLiked={item.isLiked}
                     isWished = {item.isWished}
                     username={item.username}
-                    location={item.location}
+                    name={item.name}
                     postID={item.postID}
                     userID ={item.userID}
                     navigation={navigation}

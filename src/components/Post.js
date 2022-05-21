@@ -19,7 +19,7 @@ const Post = (props) => {
       userID: props.userID,
       postImage: props.postImage,
       isLiked: props.isLiked,
-      location: props.location,
+      name: props.name,
       isWished: props.isWished,
       navigation: props.navigation,
     }
@@ -137,7 +137,7 @@ const Post = (props) => {
                      color: 'black',
                      opacity: 0.4,
                    }}>
-                     {data.location}
+                     {data.name}
                    </Text>
                  </View>
 
