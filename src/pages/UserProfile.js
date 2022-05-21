@@ -16,7 +16,7 @@ import {
   addFollow,
   currentUser,
   getFollowers,
-  getFollowings,
+  getFollowings, getTrips,
   getUserDataWithID,
   removeFollow,
 } from "../api/UserApi";
@@ -28,6 +28,7 @@ export default function UserProfile({ navigation, route }) {
   const [userData, setUserData] = useState("");
   const [followers, setFollowers] = useState("");
   const [followings, setFollowings] = useState("");
+  const [trips, setTrips] = useState("");
   const [dummyState, setDummyState] = useState(0.1); // Trigger that enable the followers/followings check
 
   useEffect(() => {
@@ -35,9 +36,11 @@ export default function UserProfile({ navigation, route }) {
       const userData = await getUserDataWithID(userID);
       const followers = await getFollowers(userID);
       const followings = await getFollowings(userID);
+      const trips = await getTrips(userID);
       setUserData(userData);
       setFollowers(followers);
       setFollowings(followings);
+      setTrips(trips);
     };
     updateValue();
   }, [dummyState]);
@@ -50,7 +53,7 @@ export default function UserProfile({ navigation, route }) {
           <Icon name={"airplane-takeoff"} color={isActiveBadge(1)} size={40} />
           <Icon name={"comment-text-outline"} color={isActiveBadge(2)} size={40} />
           <Icon name={"hand-heart"} color={isActiveBadge(3)} size={40} />
-          <Icon name={"professional-hexagon"} color={isActiveBadge(4)} size={40}/>
+          <Icon name={"professional-hexagon"} color={isActiveBadge(4)} size={40} />
         </HStack>
       </VStack>
     );
@@ -63,13 +66,18 @@ export default function UserProfile({ navigation, route }) {
           <HStack>
             {!followers.includes(currentUser().uid) ?
               <Button style={styles.button} labelStyle={styles.buttonText}
-                      onPress={async () => setDummyState(await addFollow(currentUser().uid, userID))} label={'Follow'}/> :
+                      onPress={async () => setDummyState(await addFollow(currentUser().uid, userID))}
+                      label={"Follow"} /> :
               <Button style={styles.button} labelStyle={styles.buttonText}
-                      onPress={async () => setDummyState(await removeFollow(currentUser().uid, userID))} label={'Unfollow'} />
+                      onPress={async () => setDummyState(await removeFollow(currentUser().uid, userID))}
+                      label={"Unfollow"} />
             }
           </HStack>
           <HStack>
-            <Button onPress={() => navigation.navigate({ name: 'ChatPage', params: {titlePage: 'Chat with ' + userData.first_name, friendID: userID} })} style={styles.button} labelStyle={styles.buttonText} label={'Message'} />
+            <Button onPress={() => navigation.navigate({
+              name: "ChatPage",
+              params: { titlePage: "Chat with " + userData.first_name, friendID: userID },
+            })} style={styles.button} labelStyle={styles.buttonText} label={"Message"} />
           </HStack>
         </HStack>
       );
@@ -77,7 +85,8 @@ export default function UserProfile({ navigation, route }) {
       return (
         <HStack justifyContent={"center"} alignContent={"center"}>
           <HStack>
-            <Button style={styles.button} onPress={() => navigation.navigate("Profile")} label={''}><Text style={styles.buttonText}>LOGIN to interact with {userData.first_name}</Text></Button>
+            <Button style={styles.button} onPress={() => navigation.navigate("Profile")} label={""}><Text
+              style={styles.buttonText}>LOGIN to interact with {userData.first_name}</Text></Button>
           </HStack>
         </HStack>
       );
@@ -106,7 +115,7 @@ export default function UserProfile({ navigation, route }) {
                 <View style={{ margin: 1.8, backgroundColor: "white", borderRadius: 28 }}>
                   <Avatar backgroundColor={"transparent"}
                           imageStyle={{ borderRadius: 22, width: "84%", height: "84%", left: "8%", top: "8%" }}
-                          label={userData !== '' ? userData.first_name.charAt(0) + userData.last_name.charAt(0) : null}
+                          label={userData !== "" ? userData.first_name.charAt(0) + userData.last_name.charAt(0) : null}
                           animate size={90} source={userData.photoURL !== null ? { uri: userData.photoURL } : null} />
                 </View>
               </LinearGradient>
@@ -118,7 +127,8 @@ export default function UserProfile({ navigation, route }) {
                 </View>
                 <View>
                   {/* Show name*/}
-                  <Text style={styles.name}>{userData !== '' ? userData.first_name + " " + userData.last_name : null}</Text>
+                  <Text
+                    style={styles.name}>{userData !== "" ? userData.first_name + " " + userData.last_name : null}</Text>
                 </View>
                 <View>
                   {/* Show name*/}
@@ -151,14 +161,16 @@ export default function UserProfile({ navigation, route }) {
                       alignItems={"center"}
                       justifyContent={"space-between"} alignContent={"stretch"}>
                 <VStack alignItems={"center"}>
-                  <Text style={styles.numberVanity}>23</Text>
-                  <Text style={styles.textVanity}>Trips</Text>
+                  <TouchableOpacity onPress={null} style={{ alignItems: "center" }}>
+                    <Text style={styles.numberVanity}>{trips.length}</Text>
+                    <Text style={styles.textVanity}>Trips</Text>
+                  </TouchableOpacity>
                 </VStack>
                 <VStack alignItems={"center"}>
                   <TouchableOpacity onPress={() => navigation.navigate({
                     name: "Follow",
-                    params: { title: userData.first_name + "'s followings", userId: userID, type: 'followings' },
-                  })} style={{alignItems: 'center'}}>
+                    params: { title: userData.first_name + "'s followings", userId: userID, type: "followings" },
+                  })} style={{ alignItems: "center" }}>
                     <Text style={styles.numberVanity}>{followings.length}</Text>
                     <Text style={styles.textVanity}>Following</Text>
                   </TouchableOpacity>
@@ -166,8 +178,8 @@ export default function UserProfile({ navigation, route }) {
                 <VStack alignItems={"center"}>
                   <TouchableOpacity onPress={() => navigation.navigate({
                     name: "Follow",
-                    params: { title: userData.first_name + "'s followers", userId: userID, type: 'followers'},
-                  })} style={{alignItems: 'center'}}>
+                    params: { title: userData.first_name + "'s followers", userId: userID, type: "followers" },
+                  })} style={{ alignItems: "center" }}>
                     <Text style={styles.numberVanity}>{followers.length}</Text>
                     <Text style={styles.textVanity}>Followers</Text>
                   </TouchableOpacity>
@@ -228,7 +240,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     padding: "4%",
-    maxWidth: '85%',
+    maxWidth: "85%",
     alignSelf: "center",
     backgroundColor: "white",
     margin: "3%",
@@ -242,12 +254,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   buttonText: {
-    fontFamily: 'Barlow',
+    fontFamily: "Barlow",
     fontSize: 18,
     fontWeight: "bold",
-    color: 'white',
+    color: "white",
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
   username: {
     color: "#2D4379",

@@ -41,7 +41,7 @@ export default function MyTripsPage({ navigation }) {
         <View style={styles.body}>
           <ScrollView horizontal={true}>
             <HStack space={3} alignItems="center">
-              <Pressable onPress={() => navigation.navigate("AroundMe")}>
+              <Pressable onPress={null}>
                 <View size={120} bg="primary.400" rounded="md" />
               </Pressable>
               <View size={120} bg="secondary.400" rounded="md" />

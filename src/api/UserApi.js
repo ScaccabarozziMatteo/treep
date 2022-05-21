@@ -259,6 +259,15 @@ export async function getFollowings(user) {
   }
 }
 
+export async function getTrips(user) {
+  const doc = await firestore().collection("users/" + user + "/vanity_metrics").doc("trips").get();
+  if (doc.empty || doc.data() === undefined)
+    return "";
+  else {
+    return doc.data().trips;
+  }
+}
+
 export async function addFollow(userFollower, userFollowing) {
   await firestore().collection("users/" + userFollower + "/vanity_metrics").doc("followings").set({ followings: FieldValue.arrayUnion(userFollowing) }, { merge: true });
   await firestore().collection("users/" + userFollowing + "/vanity_metrics").doc("followers").set({ followers: FieldValue.arrayUnion(userFollower) }, { merge: true });
