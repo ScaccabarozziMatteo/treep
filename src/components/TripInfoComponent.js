@@ -55,15 +55,15 @@ const TripInfoComponent = (props) => {
               {/* ITINERARY BOX*/}
               <View style={[styles.box, {height: '53%'}]}>
                 <MapView
-                  provider={PROVIDER_GOOGLE}
-                  style={{flex: 1}}
-                  region={{
-                    latitude: latitude,
-                    longitude: longitude,
-                    latitudeDelta: nearbyRadius*0.0922,
-                    longitudeDelta: nearbyRadius*0.0421
-                  }}
-                  showsUserLocation>
+                    provider={PROVIDER_GOOGLE}
+                    style={{flex: 1}}
+                    region={{
+                      latitude: latitude,
+                      longitude: longitude,
+                      latitudeDelta: nearbyRadius*0.0922,
+                      longitudeDelta: nearbyRadius*0.0421
+                    }}
+                    showsUserLocation>
                   <Marker
                     onPress={requestLocationPermission}
                     coordinate={{latitude: latitude, longitude: longitude}}
