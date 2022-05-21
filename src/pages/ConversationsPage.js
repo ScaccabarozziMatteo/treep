@@ -72,10 +72,12 @@ export default function ConversationsPage({ navigation }) {
 
   return (
     <View style={{ backgroundColor: "white", height: '100%'}}>
+      {console.log(chats)}
       {chats !== 0 ? (
         <FlatList
           data={chats}
           renderItem={renderItem}
+          keyExtractor={item => item.chatID}
         />) : noChats()}
       <Button style={styles.button} uppercase={false} labelStyle={styles.labelButton} icon={"plus"}
               onPress={pressButton}>New message</Button>

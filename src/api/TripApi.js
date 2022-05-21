@@ -8,7 +8,7 @@ import { showToast } from "../utils/Utils";
 const FieldValue = firebase.firestore.FieldValue;
 
 // Retrieves ALL the trips on the server
-export async function getAll () {
+export async function getAll() {
   let trips = [];
 
   //First call in order to retrieve all the info needed about the trips
@@ -20,16 +20,16 @@ export async function getAll () {
   for (const t of tripsData) {
     //Calls firebase to get the user data
     const postID = t._ref._documentPath._parts[1];
-    const isLiked = (t.data().likes).includes(currentUser().uid)
-    const isWished = (t.data().wishes).includes(currentUser().uid)
+    const isLiked = (t.data().likes).includes(currentUser().uid);
+    const isWished = (t.data().wishes).includes(currentUser().uid);
     const userData = await firestore().collection("users/" + t.data().userID + "/public_info").doc("personal_data").get();
     //Merges together the info about the trip and the info about the user
-    let mergedObj = {...t.data(), ...userData.data()};
+    let mergedObj = { ...t.data(), ...userData.data() };
     //Add postID
-    mergedObj = {...mergedObj, postID}
+    mergedObj = { ...mergedObj, postID };
     //Add isLiked and Wishes
-    mergedObj = {...mergedObj, isLiked}
-    mergedObj = {...mergedObj, isWished}
+    mergedObj = { ...mergedObj, isLiked };
+    mergedObj = { ...mergedObj, isWished };
     //Pushes the retrieved info into an array
     trips.push(mergedObj);
   }
@@ -37,10 +37,10 @@ export async function getAll () {
 }
 
 //Gets all the trips of a specified user
-export async function getUserTrips (userId) {
+export async function getUserTrips(userId) {
   let trips = [];
   const tripsData = (await firestore().collection("Trip").where("userID", "==", userId).get()).docs;
-  for (const t of tripsData){
+  for (const t of tripsData) {
     trips.push(t.data());
   }
   return trips;
@@ -54,19 +54,19 @@ export async function getCoverPhoto(tripId) {
 }
 
 export async function setLike(tripID) {
-  await firestore().collection('Trip').doc(tripID).set({likes: FieldValue.arrayUnion(currentUser().uid)}, {merge: true})
+  await firestore().collection("Trip").doc(tripID).set({ likes: FieldValue.arrayUnion(currentUser().uid) }, { merge: true });
 }
 
 export async function removeLike(tripID) {
-  await firestore().collection('Trip').doc(tripID).update({likes: FieldValue.arrayRemove(currentUser().uid)})
+  await firestore().collection("Trip").doc(tripID).update({ likes: FieldValue.arrayRemove(currentUser().uid) });
 }
 
-export async function  setWish(tripID) {
-  await firestore().collection('Trip').doc(tripID).set({wishes: FieldValue.arrayUnion(currentUser().uid)}, {merge: true})
+export async function setWish(tripID) {
+  await firestore().collection("Trip").doc(tripID).set({ wishes: FieldValue.arrayUnion(currentUser().uid) }, { merge: true });
 }
 
 export async function removeWish(tripID) {
-  await firestore().collection('Trip').doc(tripID).update({wishes: FieldValue.arrayRemove(currentUser().uid)})
+  await firestore().collection("Trip").doc(tripID).update({ wishes: FieldValue.arrayRemove(currentUser().uid) });
 }
 
 
@@ -83,31 +83,31 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
     status: false,
     wishes: [],
     location: places,
-    activities: activities
-  }
+    activities: activities,
+  };
 
 
   firestore()
-    .collection('trip')
+    .collection("trip")
     .add(tripData)
     .then(async function(ref) {
-      const imagePath = 'trips/' + ref.id + "/cover_photo";
+      const imagePath = "trips/" + ref.id + "/cover_photo";
       const reference = storage().ref(imagePath);
-      await reference.putFile(coverPhoto.assets[0].uri)
+      await reference.putFile(coverPhoto.assets[0].uri);
       const url = await reference.getDownloadURL();
 
       const data = {
-        coverPhoto: url
-      }
+        coverPhoto: url,
+      };
 
-      await firestore().collection('trip').doc(ref.id).set(data, {merge: true})
-      await firestore().collection('users' + currentUser().uid + 'vanity_metrics').doc('trips').set({ trips: FieldValue.arrayUnion(ref.id) }, {merge: true})
-      await firestore().collection('indexes').doc('trips').set({ countries: FieldValue.arrayUnion(places) }, { merge: true })
+      await firestore().collection("trip").doc(ref.id).set(data, { merge: true });
+      await firestore().collection("users/" + currentUser().uid + "/vanity_metrics").doc("trips").set({ trips: FieldValue.arrayUnion(ref.id) }, { merge: true });
+      await firestore().collection("indexes").doc("trips").set({ countries: FieldValue.arrayUnion(places) }, { merge: true });
 
 
-      navigation.goBack()
-      navigation.navigate("TripDetailsPage", ref.id)
-      showToast('success', 'Success', 'Trip added! :)')
+      navigation.goBack();
+      navigation.navigate("TripDetailsPage", ref.id);
+      showToast("success", "Success", "Trip added! :)");
 
     });
 }
@@ -123,20 +123,21 @@ export async function setActivities(form) {
   };
 
   await firestore()
-    .collection('Trip/' + '/activities')
+    .collection("Trip/" + "/activities")
     .add(activity)
     .then(() => {
-      console.log('Activity added!');
+      console.log("Activity added!");
     });
 }
-export async function getTripById (id) {
-  const tripData = await firestore().collection('Trip').doc(id).get();
 
-  const isLiked = (tripData.data().likes).includes(currentUser().uid)
-  const isWished = (tripData.data().wishes).includes(currentUser().uid)
+export async function getTripById(id) {
+  const tripData = await firestore().collection("Trip").doc(id).get();
 
-  let mergedObj = {...tripData.data(), isLiked};
-  mergedObj = {...mergedObj, isWished};
+  const isLiked = (tripData.data().likes).includes(currentUser().uid);
+  const isWished = (tripData.data().wishes).includes(currentUser().uid);
+
+  let mergedObj = { ...tripData.data(), isLiked };
+  mergedObj = { ...mergedObj, isWished };
 
   return mergedObj;
 }

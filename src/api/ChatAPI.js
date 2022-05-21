@@ -42,13 +42,18 @@ export async function retrieveLastMessageChat(chatID) {
 }
 
 export async function setChatsFirestore(friendID, chatID) {
-  const data = {
+  const data1 = {
     chatID: chatID,
     userID: friendID
   };
 
-  await firestore().collection("users/" + currentUser().uid + "/chats").doc(friendID).set(data, {merge: true})
-  await firestore().collection("users/" + friendID + "/chats").doc(currentUser().uid).set(data, {merge: true})
+  const data2 = {
+    chatID: chatID,
+    userID: currentUser().uid
+  };
+
+  await firestore().collection("users/" + currentUser().uid + "/chats").doc(friendID).set(data1, {merge: true})
+  await firestore().collection("users/" + friendID + "/chats").doc(currentUser().uid).set(data2, {merge: true})
 
 }
 
