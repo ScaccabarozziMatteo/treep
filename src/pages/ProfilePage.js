@@ -15,7 +15,7 @@ import { Avatar, Button } from "react-native-ui-lib";
 import {
   currentUser,
   getFollowers,
-  getFollowings,
+  getFollowings, getTrips,
   getUserData,
   logout,
   onAuthStateChange,
@@ -35,6 +35,7 @@ export default function ProfilePage(props) {
   const [userData, setUserData] = useState("");
   const [followers, setFollowers] = useState("");
   const [followings, setFollowings] = useState("");
+  const [trips, setTrips] = useState("");
   const [dummyUser, setDummyUser] = useState();
   const [dummyRestoreData, setDummyRestoreData] = useState();
   const [showModal, setShowModal] = useState(false);
@@ -89,8 +90,10 @@ export default function ProfilePage(props) {
         setUser(user);
         const followers = await getFollowers(user.uid);
         const followings = await getFollowings(user.uid);
+        const trips = await getTrips(currentUser().uid);
         setFollowers(followers);
         setFollowings(followings);
+        setTrips(trips);
       }
     };
     updateUserData();
@@ -105,9 +108,11 @@ export default function ProfilePage(props) {
         const userData = await getUserData();
         const followers = await getFollowers(user.uid);
         const followings = await getFollowings(user.uid);
+        const trips = await getTrips(currentUser().uid);
         setUserData(userData);
         setFollowers(followers);
         setFollowings(followings);
+        setTrips(trips);
       }
       return onAuthStateChange(onAuthStateChanged); // unsubscribe on unmount
     };
@@ -303,8 +308,9 @@ export default function ProfilePage(props) {
                       }}
                       badgePosition={"BOTTOM_RIGHT"}
                       size={90}
+                      label={(userData.first_name !== undefined && userData.last_name !== undefined) ? userData.first_name.charAt(0) + userData.last_name.charAt(0) : null}
                       source={
-                        user.photoURL !== null ? { uri: user.photoURL } : null
+                        userData.photoURL !== undefined ? { uri: userData.photoURL } : null
                       }
                     />
                   </View>
@@ -444,14 +450,20 @@ export default function ProfilePage(props) {
                   justifyContent={"space-between"}
                   alignContent={"stretch"}>
                   <VStack alignItems={"center"}>
-                    <Text style={styles.numberVanity}>23</Text>
-                    <Text style={styles.textVanity}>Trips</Text>
+                    <TouchableOpacity onPress={null} style={{ alignItems: "center" }}>
+                      <Text style={styles.numberVanity}>{trips.length}</Text>
+                      <Text style={styles.textVanity}>Trips</Text>
+                    </TouchableOpacity>
                   </VStack>
                   <VStack alignItems={"center"}>
                     <TouchableOpacity onPress={() => navigation.navigate({
                       name: "Follow",
-                      params: { title: userData.first_name + "'s followings", userId: currentUser().uid, type: 'followings' },
-                    })} style={{alignItems: 'center'}}>
+                      params: {
+                        title: userData.first_name + "'s followings",
+                        userId: currentUser().uid,
+                        type: "followings",
+                      },
+                    })} style={{ alignItems: "center" }}>
                       <Text style={styles.numberVanity}>{followings.length}</Text>
                       <Text style={styles.textVanity}>Following</Text>
                     </TouchableOpacity>
@@ -459,8 +471,12 @@ export default function ProfilePage(props) {
                   <VStack alignItems={"center"}>
                     <TouchableOpacity onPress={() => navigation.navigate({
                       name: "Follow",
-                      params: { title: userData.first_name + "'s followers", userId: currentUser().uid, type: 'followers'},
-                    })} style={{alignItems: 'center'}}>
+                      params: {
+                        title: userData.first_name + "'s followers",
+                        userId: currentUser().uid,
+                        type: "followers",
+                      },
+                    })} style={{ alignItems: "center" }}>
                       <Text style={styles.numberVanity}>{followers.length}</Text>
                       <Text style={styles.textVanity}>Followers</Text>
                     </TouchableOpacity>
