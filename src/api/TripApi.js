@@ -162,7 +162,7 @@ export async function getTripById(id) {
   const region = t.location.region;
   const name = t.location.name;
   const status = t.status;
-  const addedDate = t.addedDate;
+  const startDate = t.startDate;
   const endDate = t.endDate;
   const isLiked = (t.likes).includes(currentUser().uid);
   const isWished = (t.wishes).includes(currentUser().uid);
@@ -174,12 +174,13 @@ export async function getTripById(id) {
   res = {...res, region};
   res = {...res, name};
   res = {...res, status};
-  res = {...res, addedDate};
+  res = {...res, startDate};
   res = {...res, endDate};
   res = {...res, isLiked};
   res = {...res, isWished};
   res = {...res, likes};
   res = {...res, wishes};
+  console.log(startDate);
 
   return res;
 }

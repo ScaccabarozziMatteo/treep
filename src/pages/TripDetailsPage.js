@@ -126,7 +126,11 @@ export default function TripDetailsPage({ navigation, route }) {
 
         <View style={styles.bottomPart}>
           <Tab.Navigator>
-            <Tab.Screen name="info" component={TripInfoComponent} initialParams={{location: tripData.location}}/>
+            <Tab.Screen name="info" component={TripInfoComponent} initialParams={{
+              status: tripData.status,
+              startDate : tripData.startDate,
+            }}/>
+
             <Tab.Screen name="photos" component={TripPhotosComponent}/>
             <Tab.Screen name="trips" component={TripsComponent}/>
           </Tab.Navigator>

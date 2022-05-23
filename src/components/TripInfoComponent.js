@@ -2,27 +2,24 @@ import React, { useEffect, useState } from "react";
 import {StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { requestLocationPermission } from "../pages/AroundMePage";
+import { getTripById } from "../api/TripApi";
 
-const TripInfoComponent = (props) => {
+const TripInfoComponent = ({route}) => {
 
-  const [tripInfo, setTripInfo] = useState([
-    {
-      status: props.status,
-      duration: props.duration,
-      location: props.location,
-      itinerary: props.itinerary,
-    }
-  ]);
+  const status = route.params.status;
+  const startDate = route.params.startDate;
 
+  useEffect(  () => {
+    const getTripData = async () => {
+      console.log(addedDate);
+    };
+    getTripData();
+  }, []);
   const latitude = 45.4642;
   const longitude = 9.1900;
   const nearbyRadius = 4;
 
   return(
-    <View>
-      {
-        tripInfo.map((data, index) => {
-          return(
             <View>
               {/* STATUS BOX*/}
               <View style={[styles.box, {height: '10%'}]}>
@@ -30,23 +27,23 @@ const TripInfoComponent = (props) => {
                   <Text style={styles.title}>STATUS</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>{data.status}</Text>
+                  <Text style={{color: 'black'}}>{status ? "Finished" : "Active"}</Text>
                 </View>
               </View>
 
               {/* LOCATION BOX*/}
               <View style={[styles.box, {height: '10%'}]}>
                 <View style={{flex: 1, justifyContent: "center", paddingHorizontal: 20,}}>
-                  <Text style={styles.title}>LOCATION</Text>
+                  <Text style={styles.title}>START DATE</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>{data.location}</Text>
+                  <Text style={{color: 'black'}}>{startDate}</Text>
                 </View>
               </View>
               {/* DURATION BOX*/}
               <View style={[styles.box, {height: '10%'}]}>
                 <View style={{flex: 1, justifyContent: "center", paddingHorizontal: 20,}}>
-                  <Text style={styles.title}>DURATION</Text>
+                  <Text style={styles.title}>END DATE</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
                   <Text style={{color: 'black'}}>2 days</Text>
@@ -75,10 +72,6 @@ const TripInfoComponent = (props) => {
               </View>
 
             </View>
-          )
-        })
-      }
-    </View>
   )
 }
 
