@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
-const TripsComponent = (props) => {
+const ActivitiesComponent = (props) => {
 
   return(
     <View>
@@ -10,4 +10,4 @@ const TripsComponent = (props) => {
   )
 }
 
-export default TripsComponent;
+export default ActivitiesComponent;

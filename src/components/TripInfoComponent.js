@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { requestLocationPermission } from "../pages/AroundMePage";
+import {DetailsInfoContext} from "../contexts/DetailsInfoContext";
 import { getTripById } from "../api/TripApi";
 
 const TripInfoComponent = ({route}) => {
 
-  const status = route.params.status;
-  const startDate = route.params.startDate;
+  const status = useContext(DetailsInfoContext).status;
+  const startDate = useContext(DetailsInfoContext).startDate;
+  const endDate = useContext(DetailsInfoContext).endDate;
 
-  useEffect(  () => {
-    const getTripData = async () => {
-      console.log(addedDate);
-    };
-    getTripData();
-  }, []);
+
   const latitude = 45.4642;
   const longitude = 9.1900;
   const nearbyRadius = 4;
@@ -27,7 +24,10 @@ const TripInfoComponent = ({route}) => {
                   <Text style={styles.title}>STATUS</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>{status ? "Finished" : "Active"}</Text>
+
+                  <Text style={{color: 'black'}}>{status ? "Active" : "Finished"}</Text>
+
+
                 </View>
               </View>
 
@@ -46,7 +46,7 @@ const TripInfoComponent = ({route}) => {
                   <Text style={styles.title}>END DATE</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>2 days</Text>
+                  <Text style={{color: 'black'}}>{endDate}</Text>
                 </View>
               </View>
               {/* ITINERARY BOX*/}

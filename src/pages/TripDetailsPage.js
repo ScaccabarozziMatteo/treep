@@ -2,15 +2,12 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { getTripById, removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import {
-  Image,
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
   View,
   Text,
-
 } from "react-native";
-
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -18,7 +15,8 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import TripInfoComponent from "../components/TripInfoComponent";
 import TripPhotosComponent from "../components/TripPhotosComponent";
-import TripsComponent from "../components/TripsComponent";
+import ActivitiesComponent from "../components/ActivitiesComponent";
+import {DetailsInfoContext} from "../contexts/DetailsInfoContext";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -31,6 +29,9 @@ export default function TripDetailsPage({ navigation, route }) {
   const [l, setL] = useState(0);
   const [w, setW] = useState(0);
 
+  const [_status, _setStatus] = useState(false);
+  const [_startDate, _setStartDate] = useState(new Date());
+  const [_endDate, _setEndDate] = useState(new Date());
 
   useEffect(  () => {
     const getTripData = async () => {
@@ -40,6 +41,9 @@ export default function TripDetailsPage({ navigation, route }) {
         _setWish(tripData.isWished);
         setL(tripData.likes.length);
         setW(tripData.wishes.length);
+        _setStatus(tripData.status);
+        _setStartDate(tripData.startDate);
+        _setEndDate(tripData.endDate);
     };
     getTripData();
     }, []);
@@ -125,15 +129,17 @@ export default function TripDetailsPage({ navigation, route }) {
         </View>
 
         <View style={styles.bottomPart}>
-          <Tab.Navigator>
-            <Tab.Screen name="info" component={TripInfoComponent} initialParams={{
-              status: tripData.status,
-              startDate : tripData.startDate,
-            }}/>
-
-            <Tab.Screen name="photos" component={TripPhotosComponent}/>
-            <Tab.Screen name="trips" component={TripsComponent}/>
-          </Tab.Navigator>
+          <DetailsInfoContext.Provider value={{
+            status: _status,
+            startDate: _startDate.getDate().toString()+' / '+_startDate.getMonth().toString()+' / '+_startDate.getFullYear().toString(),
+            endDate: _endDate.getDate().toString()+' / '+_endDate.getMonth().toString()+' / '+_endDate.getFullYear().toString(),
+          }}>
+            <Tab.Navigator>
+              <Tab.Screen name="info" component={TripInfoComponent}/>
+              <Tab.Screen name="photos" component={TripPhotosComponent}/>
+              <Tab.Screen name="Activities" component={ActivitiesComponent}/>
+            </Tab.Navigator>
+          </DetailsInfoContext.Provider>
         </View>
     </SafeAreaView>
   );
