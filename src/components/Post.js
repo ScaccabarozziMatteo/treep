@@ -29,11 +29,10 @@ const Post = (props) => {
   const [wish, _setWish] = useState(false);
 
   useEffect(() => {
-    const mappedData = postInfo.map((data, index) => {
-      _setLike(data.isLiked);
-      _setWish(data.isWished);
-    });
+    _setLike(props.isLiked);
+    _setWish(props.isWished);
   })
+
   function likePost(postID) {
     setLike(postID).then(_setLike(!like));
   }

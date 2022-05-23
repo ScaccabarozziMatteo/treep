@@ -49,19 +49,19 @@ export default function TripDetailsPage({ navigation, route }) {
     }, []);
 
   function likePost(postID) {
-    setLike(postID).then(_setLike(!like));
+    setLike(postID).then(_setLike(!like)).then(setL(l+1));
   }
 
   function dislikePost(postID) {
-    removeLike(postID).then(_setLike(!like));
+    removeLike(postID).then(_setLike(!like)).then(setL(l-1));
   }
 
   function addToWishList(postID){
-    setWish(postID).then(_setWish(!wish));
+    setWish(postID).then(_setWish(!wish)).then(setW(w+1));
   }
 
   function removeFromWishList(postID) {
-    removeWish(postID).then(_setWish(!wish));
+    removeWish(postID).then(_setWish(!wish)).then(setW(w-1));
   }
 
   return (
