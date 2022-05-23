@@ -13,25 +13,48 @@ export async function getAll() {
 
   //First call in order to retrieve all the info needed about the trips
 
-  const tripsData = (await firestore().collection("Trip").limit(3).get()).docs;
+  const tripsData = (await firestore().collection("trip").limit(5).get()).docs;
 
 
   //For each trip, we also need to get the relative info about its user
-  for (const t of tripsData) {
-    //Calls firebase to get the user data
-    const postID = t._ref._documentPath._parts[1];
-    const isLiked = (t.data().likes).includes(currentUser().uid);
-    const isWished = (t.data().wishes).includes(currentUser().uid);
-    const userData = await firestore().collection("users/" + t.data().userID + "/public_info").doc("personal_data").get();
+  for (const trip of tripsData) {
+    const t = trip.data();
+
+
+    let isLiked = false;
+    if(t.likes != null) {
+      isLiked = (t.likes).includes(currentUser().uid);
+    }
+    //Retrieves the subregion of the location
+    const postID = trip._ref._documentPath._parts[1];
+    const name = t.location.name;
+    const title = t.title;
+    const coverPhoto = t.coverPhoto;
+
+
+    //Now we have to remove the location object
+    const isWished = (t.wishes).includes(currentUser().uid);
+
+    const userData = await firestore().collection("users/" + t.userID + "/public_info").doc("personal_data").get();
+    const userPhoto = userData.data().photoURL;
+    const userID = userData.data().userID;
+
+    let result = {title};
+    result = { ...result, coverPhoto }
+    result = { ...result, name };
     //Merges together the info about the trip and the info about the user
-    let mergedObj = { ...t.data(), ...userData.data() };
+    result = { ...result, userPhoto};
+    result = { ...result, userID };
+
     //Add postID
-    mergedObj = { ...mergedObj, postID };
+    result = { ...result, postID };
     //Add isLiked and Wishes
-    mergedObj = { ...mergedObj, isLiked };
-    mergedObj = { ...mergedObj, isWished };
+    result = { ...result, isLiked };
+    result = { ...result, isWished };
+
     //Pushes the retrieved info into an array
-    trips.push(mergedObj);
+    trips.push(result);
+
   }
   return trips;
 }
@@ -39,7 +62,7 @@ export async function getAll() {
 //Gets all the trips of a specified user
 export async function getUserTrips(userId) {
   let trips = [];
-  const tripsData = (await firestore().collection("Trip").where("userID", "==", userId).get()).docs;
+  const tripsData = (await firestore().collection("trip").where("userID", "==", userId).get()).docs;
   for (const t of tripsData) {
     trips.push(t.data());
   }
@@ -54,19 +77,19 @@ export async function getCoverPhoto(tripId) {
 }
 
 export async function setLike(tripID) {
-  await firestore().collection("Trip").doc(tripID).set({ likes: FieldValue.arrayUnion(currentUser().uid) }, { merge: true });
+  await firestore().collection("trip").doc(tripID).set({ likes: FieldValue.arrayUnion(currentUser().uid) }, { merge: true });
 }
 
 export async function removeLike(tripID) {
-  await firestore().collection("Trip").doc(tripID).update({ likes: FieldValue.arrayRemove(currentUser().uid) });
+  await firestore().collection("trip").doc(tripID).update({ likes: FieldValue.arrayRemove(currentUser().uid) });
 }
 
 export async function setWish(tripID) {
-  await firestore().collection("Trip").doc(tripID).set({ wishes: FieldValue.arrayUnion(currentUser().uid) }, { merge: true });
+  await firestore().collection("trip").doc(tripID).set({ wishes: FieldValue.arrayUnion(currentUser().uid) }, { merge: true });
 }
 
 export async function removeWish(tripID) {
-  await firestore().collection("Trip").doc(tripID).update({ wishes: FieldValue.arrayRemove(currentUser().uid) });
+  await firestore().collection("trip").doc(tripID).update({ wishes: FieldValue.arrayRemove(currentUser().uid) });
 }
 
 
@@ -123,7 +146,7 @@ export async function setActivities(form) {
   };
 
   await firestore()
-    .collection("Trip/" + "/activities")
+    .collection("trip/" + "/activities")
     .add(activity)
     .then(() => {
       console.log("Activity added!");
@@ -131,14 +154,33 @@ export async function setActivities(form) {
 }
 
 export async function getTripById(id) {
-  const tripData = await firestore().collection("Trip").doc(id).get();
+  const tripData = await firestore().collection("trip").doc(id).get();
+  const t = tripData.data();
 
-  const isLiked = (tripData.data().likes).includes(currentUser().uid);
-  const isWished = (tripData.data().wishes).includes(currentUser().uid);
+  const coverPhoto = t.coverPhoto;
+  const title = t.title;
+  const region = t.location.region;
+  const name = t.location.name;
+  const status = t.status;
+  const addedDate = t.addedDate;
+  const endDate = t.endDate;
+  const isLiked = (t.likes).includes(currentUser().uid);
+  const isWished = (t.wishes).includes(currentUser().uid);
+  const likes = t.likes;
+  const wishes = t.wishes;
 
-  let mergedObj = { ...tripData.data(), isLiked };
-  mergedObj = { ...mergedObj, isWished };
+  let res = {title};
+  res = {...res, coverPhoto};
+  res = {...res, region};
+  res = {...res, name};
+  res = {...res, status};
+  res = {...res, addedDate};
+  res = {...res, endDate};
+  res = {...res, isLiked};
+  res = {...res, isWished};
+  res = {...res, likes};
+  res = {...res, wishes};
 
-  return mergedObj;
+  return res;
 }
 

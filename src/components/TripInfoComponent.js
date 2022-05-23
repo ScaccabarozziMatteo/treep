@@ -30,7 +30,7 @@ const TripInfoComponent = (props) => {
                   <Text style={styles.title}>STATUS</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>Finished</Text>
+                  <Text style={{color: 'black'}}>{data.status}</Text>
                 </View>
               </View>
 
@@ -40,7 +40,7 @@ const TripInfoComponent = (props) => {
                   <Text style={styles.title}>LOCATION</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>India</Text>
+                  <Text style={{color: 'black'}}>{data.location}</Text>
                 </View>
               </View>
               {/* DURATION BOX*/}
