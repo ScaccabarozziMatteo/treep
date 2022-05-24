@@ -6,57 +6,124 @@ import auth from "@react-native-firebase/auth";
 import { showToast } from "../utils/Utils";
 
 const FieldValue = firebase.firestore.FieldValue;
+const n = 4;
 
-// Retrieves ALL the trips on the server
-export async function getAll() {
-  let trips = [];
+// Retrieves the first trips on the server to be displayed
+export async function getFirstPosts() {
+  try{
+    //First call in order to retrieve all the info needed about the trips
+    const tripsData = (await firestore().collection("trip")
+      .orderBy('addedDate', 'desc')
+      .limit(n)
+      .get()).docs;
 
-  //First call in order to retrieve all the info needed about the trips
+    let trips = [];
+    let lastKey = "";
 
-  const tripsData = (await firestore().collection("trip").limit(5).get()).docs;
+    //For each trip, we also need to get the relative info about its user
+    for (const trip of tripsData) {
+      const t = trip.data();
+
+      let isLiked = false;
+      if(t.likes != null) {
+        isLiked = (t.likes).includes(currentUser().uid);
+      }
+      //Retrieves the subregion of the location
+      const postID = trip._ref._documentPath._parts[1];
+      const name = t.location.name;
+      const title = t.title;
+      const coverPhoto = t.coverPhoto;
 
 
-  //For each trip, we also need to get the relative info about its user
-  for (const trip of tripsData) {
-    const t = trip.data();
+      //Now we have to remove the location object
+      const isWished = (t.wishes).includes(currentUser().uid);
 
+      const userData = await firestore().collection("users/" + t.userID + "/public_info").doc("personal_data").get();
+      const userPhoto = userData.data().photoURL;
 
-    let isLiked = false;
-    if(t.likes != null) {
-      isLiked = (t.likes).includes(currentUser().uid);
+      const userID = t.userID;
+
+      let result = {title};
+      result = { ...result, coverPhoto }
+      result = { ...result, name };
+      //Merges together the info about the trip and the info about the user
+      result = { ...result, userPhoto};
+      result = { ...result, userID };
+
+      //Add postID
+      result = { ...result, postID };
+      //Add isLiked and Wishes
+      result = { ...result, isLiked };
+      result = { ...result, isWished };
+      //Pushes the retrieved info into an array
+      trips.push(result);
+
+      lastKey = t.addedDate;
     }
-    //Retrieves the subregion of the location
-    const postID = trip._ref._documentPath._parts[1];
-    const name = t.location.name;
-    const title = t.title;
-    const coverPhoto = t.coverPhoto;
+    return {trips, lastKey};
 
-
-    //Now we have to remove the location object
-    const isWished = (t.wishes).includes(currentUser().uid);
-
-    const userData = await firestore().collection("users/" + t.userID + "/public_info").doc("personal_data").get();
-    const userPhoto = userData.data().photoURL;
-    const userID = userData.data().userID;
-
-    let result = {title};
-    result = { ...result, coverPhoto }
-    result = { ...result, name };
-    //Merges together the info about the trip and the info about the user
-    result = { ...result, userPhoto};
-    result = { ...result, userID };
-
-    //Add postID
-    result = { ...result, postID };
-    //Add isLiked and Wishes
-    result = { ...result, isLiked };
-    result = { ...result, isWished };
-
-    //Pushes the retrieved info into an array
-    trips.push(result);
-
+  } catch (e) {
+    console.log(e);
   }
-  return trips;
+}
+
+export async function getNextBatch(key) {
+
+  try{
+    //First call in order to retrieve all the info needed about the trips
+    const tripsData = (await firestore().collection("trip")
+      .orderBy('addedDate', 'desc')
+      .startAfter(key)
+      .limit(n)
+      .get()).docs;
+
+    let trips = [];
+    let lastKey = "";
+
+    //For each trip, we also need to get the relative info about its user
+    for (const trip of tripsData) {
+      const t = trip.data();
+
+      let isLiked = false;
+      if(t.likes != null) {
+        isLiked = (t.likes).includes(currentUser().uid);
+      }
+      //Retrieves the subregion of the location
+      const postID = trip._ref._documentPath._parts[1];
+      const name = t.location.name;
+      const title = t.title;
+      const coverPhoto = t.coverPhoto;
+
+
+      //Now we have to remove the location object
+      const isWished = (t.wishes).includes(currentUser().uid);
+
+      const userData = await firestore().collection("users/" + t.userID + "/public_info").doc("personal_data").get();
+      const userPhoto = userData.data().photoURL;
+
+      const userID = t.userID;
+
+      let result = {title};
+      result = { ...result, coverPhoto }
+      result = { ...result, name };
+      //Merges together the info about the trip and the info about the user
+      result = { ...result, userPhoto};
+      result = { ...result, userID };
+
+      //Add postID
+      result = { ...result, postID };
+      //Add isLiked and Wishes
+      result = { ...result, isLiked };
+      result = { ...result, isWished };
+
+      //Pushes the retrieved info into an array
+      trips.push(result);
+      lastKey = t.addedDate;
+    }
+    return {trips, lastKey};
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 //Gets all the trips of a specified user
