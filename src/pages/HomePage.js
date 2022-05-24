@@ -56,10 +56,11 @@ export default function HomePage({navigation}) {
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <SafeAreaView>
           <FlatList
-            keyExtractor={(item, index)=>index.toString()}
+            keyExtractor={(item, index)=>{return index.toString()}}
             data={trips}
             renderItem={({ item }) => (
-              <Post title={item.title}
+              <Post
+                    title={item.title}
                     userImage={item.userPhoto}
                     postImage={item.coverPhoto}
                     isLiked={item.isLiked}
