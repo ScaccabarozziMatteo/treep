@@ -174,6 +174,7 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
     wishes: [],
     location: places,
     activities: activities,
+    likes: []
   };
 
 
