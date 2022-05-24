@@ -10,8 +10,6 @@ const ActivitiesComponent = (props) => {
   const trip = useContext(DetailsInfoContext).trip;
   const tripID = useContext(DetailsInfoContext).tripID;
 
-  console.log(trip.activities)
-
   function bodyMessage(item) {
 
     return (

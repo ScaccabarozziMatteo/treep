@@ -52,6 +52,9 @@ export default function ModalPhoto(props) {
           case ("newTrip_cover"):
             addNewTripPhoto(response);
             break;
+          case ("trip_photo"):
+            addTripPhoto(response);
+            break;
         }
       }
     });
@@ -99,6 +102,9 @@ export default function ModalPhoto(props) {
 
   async function changeProfilePhoto(response) {
     await changeProfileImage(response, props);
+  }
+
+  async function addTripPhoto(response) {
   }
 
   async function addNewTripPhoto(response) {

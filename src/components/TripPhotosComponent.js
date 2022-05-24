@@ -4,6 +4,7 @@ import { Button } from "react-native-ui-lib";
 import { newTrip } from "../api/TripApi";
 import { currentUser } from "../api/UserApi";
 import { DetailsInfoContext } from "../contexts/DetailsInfoContext";
+import ModalPhoto from "../utils/ModalPhoto";
 
 const TripPhotosComponent = (props) => {
 
@@ -12,6 +13,8 @@ const TripPhotosComponent = (props) => {
 
 
   const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
 
   return(
     <ScrollView style={{backgroundColor: 'white'}}>
@@ -20,10 +23,15 @@ const TripPhotosComponent = (props) => {
               labelStyle={styles.labelButton}
               disabled={isLoading}
               iconSource={!isLoading ? null : () => <ActivityIndicator style={{marginLeft: 20}} color={'white'} size={30}/> }
-              onPress={null}
-              style={styles.addPhotoButton} /> : null}
+              onPress={() => setShowModal(true)}
+              style={styles.addPhotoButton} /> : null }
 
-      <Text>Here the trip info</Text>
+      <ModalPhoto
+        typeOfUpload="trip_photo"
+        show={showModal}
+        updateShow={(response) => setShowModal(response)}
+        modalResponse
+      />
     </ScrollView>
   )
 }
