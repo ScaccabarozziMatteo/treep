@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import {StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { requestLocationPermission } from "../pages/AroundMePage";
-import {DetailsInfoContext} from "../contexts/DetailsInfoContext";
-import { getTripById } from "../api/TripApi";
+import { DetailsInfoContext } from "../contexts/DetailsInfoContext";
 
 const TripInfoComponent = ({route}) => {
 
