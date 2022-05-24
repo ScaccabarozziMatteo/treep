@@ -40,7 +40,7 @@ export default function NewTripPage({ navigation }) {
   function addActivityPage() {
     if (getValues("startDate") !== undefined && getValues("endDate") !== undefined) {
       setDateError(false);
-      navigation.push("AddActivity", { onCallBack, minDate: getValues("startDate"), maxDate: getValues("endDate") });
+      navigation.push("AddActivity", { onCallBack, minDate: getValues("startDate"), maxDate: getValues("endDate"), type: 'new_trip' });
     } else
       setDateError(true);
   }
@@ -62,7 +62,7 @@ export default function NewTripPage({ navigation }) {
                 flexWrap: "wrap",
               }}>
                 <Chip
-                  key={item.place_id}
+                  key={index}
                   mode="flat" //changing display mode, default is flat.
                   onDismiss={() => setActivities([...activities.slice(0, index), ...activities.slice(index + 1)])}
                   backgroundColor={"white"}
@@ -241,8 +241,8 @@ export default function NewTripPage({ navigation }) {
 
           <Button label={!isLoading ? "Create New Trip" : ""}
                   labelStyle={styles.labelButton}
+                  disabled={isLoading}
                   iconSource={!isLoading ? null : () => <ActivityIndicator style={{marginLeft: 20}} color={'white'} size={30}/> }
-
                   onPress={handleSubmit(async form => {
                     setIsLoading(true)
                     await newTrip(form, places, activities, coverPhoto, navigation);

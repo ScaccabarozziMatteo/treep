@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { requestLocationPermission } from "../pages/AroundMePage";
@@ -16,7 +16,7 @@ const TripInfoComponent = ({route}) => {
   const nearbyRadius = 4;
 
   return(
-            <View>
+            <View style={{backgroundColor: 'white'}}>
               {/* STATUS BOX*/}
               <View style={[styles.box, {height: '10%'}]}>
                 <View style={{flex: 1, justifyContent: "center", paddingHorizontal: 20,}}>
@@ -24,7 +24,7 @@ const TripInfoComponent = ({route}) => {
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
 
-                  <Text style={{color: 'black'}}>{status ? "Active" : "Finished"}</Text>
+                  <Text style={{color: 'black', fontFamily: 'barlow'}}>{status ? "Active" : "Finished"}</Text>
 
 
                 </View>
@@ -36,7 +36,7 @@ const TripInfoComponent = ({route}) => {
                   <Text style={styles.title}>START DATE</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>{startDate}</Text>
+                  <Text style={{color: 'black', fontFamily: 'barlow'}}>{startDate}</Text>
                 </View>
               </View>
               {/* DURATION BOX*/}
@@ -45,7 +45,7 @@ const TripInfoComponent = ({route}) => {
                   <Text style={styles.title}>END DATE</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>{endDate}</Text>
+                  <Text style={{color: 'black', fontFamily: 'barlow'}}>{endDate}</Text>
                 </View>
               </View>
               {/* ITINERARY BOX*/}
@@ -81,19 +81,20 @@ const styles = StyleSheet.create({
     marginHorizontal: '5%',
     borderRadius: 35,
     marginTop: 15,
-    shadowColor: '#000',
     shadowOffset: {width: 1},
     shadowOpacity: 0.4,
     shadowRadius: 3,
-    elevation: 3,
+    shadowColor: "rgba(82, 130, 255, 0.5)",
+    elevation: 8,
     flexDirection: 'row',
+    fontFamily: 'barlow'
 
   },
   title: {
     color: 'blue',
     fontSize: 17,
     fontWeight: "bold",
-
+    fontFamily: 'barlow'
   }
 })
 

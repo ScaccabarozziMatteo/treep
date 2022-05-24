@@ -174,7 +174,8 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
     wishes: [],
     location: places,
     activities: activities,
-    likes: []
+    likes: [],
+    photos: []
   };
 
 
@@ -197,7 +198,7 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
 
 
       navigation.goBack();
-      navigation.navigate("TripDetailsPage", ref.id);
+      navigation.navigate("TripDetailsPage", {tripId: ref.id});
       showToast("success", "Success", "Trip added! :)");
 
     });
@@ -205,20 +206,25 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
 
 // this does not connect, think it should be close to the right solution
 // link to documentation https://rnfirebase.io/firestore/usage
-export async function setActivities(form) {
-  const activity = {
-    date: form.date,
-    activity_title: form.activity_title,
-    description: form.description,
-    link: form.link,
-  };
+export async function setActivities(tripID, form, navigation) {
+  let link;
 
-  await firestore()
-    .collection("trip/" + "/activities")
-    .add(activity)
-    .then(() => {
-      console.log("Activity added!");
-    });
+  if (form.link !== undefined)
+    link = form.link
+  else
+    link = null
+
+  const data =
+    {
+      activity_title: form.activity_title,
+      date: form.date,
+      description: form.description,
+      link: link,
+      registrationDate: new Date(),
+    }
+
+  await firestore().collection("trip").doc(tripID).set({activities: FieldValue.arrayUnion(data)}, { merge: true });
+  navigation.navigate("TripDetailsPage", {tripId: tripID, updateTrip: Math.random()});
 }
 
 export async function getTripById(id) {
@@ -236,6 +242,8 @@ export async function getTripById(id) {
   const isWished = (t.wishes).includes(currentUser().uid);
   const likes = t.likes;
   const wishes = t.wishes;
+  const userID = t.userID;
+  const activities = t.activities;
 
   let res = {title};
   res = {...res, coverPhoto};
@@ -248,6 +256,9 @@ export async function getTripById(id) {
   res = {...res, isWished};
   res = {...res, likes};
   res = {...res, wishes};
+  res = {...res, userID};
+  res = {...res, activities}
+
 
 
   return res;

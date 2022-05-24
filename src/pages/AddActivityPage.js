@@ -1,5 +1,5 @@
-import React, {useRef, useState} from "react";
-import { ScrollView, StatusBar, StyleSheet, View } from "react-native";
+import React, { useRef, useState } from "react";
+import { ActivityIndicator, ScrollView, StatusBar, StyleSheet, View } from "react-native";
 import { Text } from "@rneui/base";
 import { VStack } from "native-base";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -7,17 +7,18 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Controller, useForm } from "react-hook-form";
 import { TextInput } from "react-native-paper";
 import { Button, Chip, DateTimePicker } from "react-native-ui-lib";
+import { setActivities } from "../api/TripApi";
 
 export default function AddActivityPage({ navigation, route }) {
 
   const [places, setPlaces] = useState(null);
   const [placeError, setPlaceError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
     handleSubmit,
     setValue,
-    getValues,
     reset,
     clearErrors,
     formState: { errors },
@@ -32,20 +33,25 @@ export default function AddActivityPage({ navigation, route }) {
   const ref = useRef();
 
   function clearData() {
-    setPlaceError(false)
-    setPlaces(null)
+    setPlaceError(false);
+    setPlaces(null);
     ref.current.clear();
     reset();
   }
 
-    function submit(data) {
-    if(places === null)
-      setPlaceError(true)
+  function submit(data) {
+    if (places === null)
+      setPlaceError(true);
     else {
-      let info = {...places, data}
-      route.params.onCallBack(info)
-      clearData()
-      navigation.goBack()
+      if (route.params.type === "new_trip") {
+        let info = { ...places, data };
+        route.params.onCallBack(info);
+        clearData();
+        navigation.goBack();
+      } else if (route.params.type === 'existing_trip') {
+        setIsLoading(true)
+        setActivities(route.params.tripID, data, navigation)
+      }
     }
   }
 
@@ -64,7 +70,7 @@ export default function AddActivityPage({ navigation, route }) {
               renderRightButton={() => <Icon name={"close"} onPress={() => {
                 ref.current.clear();
                 ref.current.blur();
-              }} style={{ marginTop: 15 }} size={30} color={"black"} />}
+              }} style={{ marginTop: 15, zIndex: 4 }} size={30} color={"black"} />}
               styles={{
                 listView: {
                   backgroundColor: "grey",
@@ -79,12 +85,13 @@ export default function AddActivityPage({ navigation, route }) {
                   fontFamily: "Barlow",
                   backgroundColor: "white",
                   borderWidth: 1,
-                  borderColor: '#F1F2F5',
-                  shadowColor: 'rgba(82, 130, 255, 0.5)',
+                  borderColor: "#F1F2F5",
+                  shadowColor: "rgba(82, 130, 255, 0.5)",
                   elevation: 8,
+                  zIndex: 4,
                   borderRadius: 15,
                   borderTopRightRadius: 15,
-                  borderTopLeftRadius: 1
+                  borderTopLeftRadius: 1,
                 },
                 description: {
                   color: "black",
@@ -97,7 +104,7 @@ export default function AddActivityPage({ navigation, route }) {
                 returnKeyType: "search",
               }} nearbyPlacesAPI={"GoogleReverseGeocoding"}
               onPress={(data) => {
-                setPlaces(data)
+                setPlaces(data);
               }}
               query={{
                 key: "AIzaSyBmBppizINlbWovLovBSm3KT4lElW5lt5g",
@@ -108,20 +115,20 @@ export default function AddActivityPage({ navigation, route }) {
         </ScrollView>
 
         {placeError ? (
-        <Text style={styles.errorText}>Missing activity place</Text>
+          <Text style={styles.errorText}>Missing activity place</Text>
         ) : null}
 
         {places !== null ?
-        <Chip
-          mode="flat" //changing display mode, default is flat.
-          onDismiss={() => setPlaces(null)}
-          backgroundColor={"white"}
-          labelStyle={{ color: "black" }}
-          useSizeAsMinimum
-          label={places.activity_title}
-        /> : null}
+          <Chip
+            mode="flat" //changing display mode, default is flat.
+            onDismiss={() => setPlaces(null)}
+            backgroundColor={"white"}
+            labelStyle={{ color: "black"}}
+            useSizeAsMinimum
+            label={places.description}
+          /> : null}
 
-        <VStack marginTop={-7}>
+        <VStack marginTop={-7} zIndex={-1}>
           <Controller
             control={control}
             rules={{
@@ -219,8 +226,10 @@ export default function AddActivityPage({ navigation, route }) {
 
         <VStack alignItems={"center"}>
 
-          <Button label={"Add Activity"}
+          <Button label={!isLoading ? "Add Activity" : ""}
                   labelStyle={styles.labelButton}
+                  disabled={isLoading}
+                  iconSource={!isLoading ? null : () => <ActivityIndicator style={{marginLeft: 20}} color={'white'} size={30}/> }
                   onPress={handleSubmit(submit)}
                   style={styles.createButton} />
 
@@ -265,12 +274,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     alignSelf: "center",
     borderWidth: 1,
-    borderColor: '#F1F2F5',
-    shadowColor: 'rgba(82, 130, 255, 0.5)',
+    borderColor: "#F1F2F5",
+    shadowColor: "rgba(82, 130, 255, 0.5)",
     elevation: 8,
     borderRadius: 15,
     borderTopRightRadius: 15,
-    borderTopLeftRadius: 1
+    borderTopLeftRadius: 1,
   },
   text: {
     color: "black",
@@ -307,7 +316,7 @@ const styles = StyleSheet.create({
     fontFamily: "Barlow",
     fontWeight: "700",
     fontSize: 18,
-    color: '#938E8E'
+    color: "#938E8E",
   },
   labelButton: {
     fontFamily: "Barlow",
@@ -331,12 +340,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     color: "black",
     borderWidth: 1,
-    borderColor: '#F1F2F5',
-    shadowColor: 'rgba(82, 130, 255, 0.5)',
+    borderColor: "#F1F2F5",
+    shadowColor: "rgba(82, 130, 255, 0.5)",
     elevation: 8,
     borderRadius: 15,
     borderTopRightRadius: 15,
-    borderTopLeftRadius: 1
+    borderTopLeftRadius: 1,
   },
   coverPhotoButton: {
     backgroundColor: "#F1F2F5",
