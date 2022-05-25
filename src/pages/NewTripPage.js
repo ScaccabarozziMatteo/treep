@@ -158,7 +158,7 @@ export default function NewTripPage({ navigation }) {
             }}
             style={styles.coverPhotoButton}>
             <Image resizeMode={"center"} style={{ height: "100%" }}
-                   source={coverPhoto !== null ? { uri: coverPhoto.assets[0].uri } : null} />
+                   source={coverPhoto !== null ? { uri: coverPhoto } : null} />
             <Text style={styles.coverPhotoText}>Choose cover photo</Text>
           </TouchableOpacity>
         </VStack>

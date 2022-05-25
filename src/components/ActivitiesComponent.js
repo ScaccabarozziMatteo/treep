@@ -32,7 +32,7 @@ const ActivitiesComponent = (props) => {
   }
 
   return(
-    <ScrollView style={{backgroundColor: 'white'}}>
+    <View style={{backgroundColor: 'white', height: '100%'}}>
       {trip.activities ? (
         <FlatList
           style={{marginTop: 15}}
@@ -40,7 +40,7 @@ const ActivitiesComponent = (props) => {
           keyExtractor={(item) => item.registrationDate}
           renderItem={renderItem}
         />) : null}
-    </ScrollView>
+    </View>
   )
 }
 

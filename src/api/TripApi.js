@@ -2,8 +2,8 @@ import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
 import { currentUser } from "./UserApi";
 import firebase from "@react-native-firebase/app";
-import auth from "@react-native-firebase/auth";
 import { showToast } from "../utils/Utils";
+
 
 const FieldValue = firebase.firestore.FieldValue;
 const n = 4;
@@ -204,6 +204,28 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
     });
 }
 
+export async function addPhotoToTrip(photo, tripID, navigation) {
+
+  let r = (Math.random() + 1).toString(36).substring(2);
+
+  const imagePath = "trips/" + tripID + "/additional_photos/" + r;
+  const reference = storage().ref(imagePath);
+  await reference.putFile(photo);
+  const url = await reference.getDownloadURL();
+
+  const data = {
+      uri: url,
+    }
+
+  await firestore().collection("trip").doc(tripID).set({ photos: FieldValue.arrayUnion(data) }, { merge: true }).catch(error => showToast('error', 'Storage error', error.message));
+
+  navigation.navigate("TripDetailsPage", {tripId: tripID, updateTrip: Math.random()});
+
+  showToast('success', 'Photo uploaded!', 'Photo is just been added to your trip! :)')
+
+}
+
+
 // this does not connect, think it should be close to the right solution
 // link to documentation https://rnfirebase.io/firestore/usage
 export async function setActivities(tripID, form, navigation) {
@@ -244,6 +266,7 @@ export async function getTripById(id) {
   const wishes = t.wishes;
   const userID = t.userID;
   const activities = t.activities;
+  const photos = t.photos
 
   let res = {title};
   res = {...res, coverPhoto};
@@ -258,7 +281,7 @@ export async function getTripById(id) {
   res = {...res, wishes};
   res = {...res, userID};
   res = {...res, activities}
-
+  res = {...res, photos}
 
 
   return res;
