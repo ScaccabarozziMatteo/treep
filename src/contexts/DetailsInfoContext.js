@@ -4,4 +4,6 @@ export const DetailsInfoContext = createContext({
   status: false,
   startDate: "",
   endDate: "",
+  trip: "",
+  tripID: ""
 });

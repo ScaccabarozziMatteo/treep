@@ -2,8 +2,8 @@ import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
 import { currentUser } from "./UserApi";
 import firebase from "@react-native-firebase/app";
-import auth from "@react-native-firebase/auth";
 import { showToast } from "../utils/Utils";
+
 
 const FieldValue = firebase.firestore.FieldValue;
 const n = 4;
@@ -188,6 +188,8 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
     wishes: [],
     location: places,
     activities: activities,
+    likes: [],
+    photos: []
   };
 
 
@@ -210,28 +212,55 @@ export async function newTrip(form, places, activities, coverPhoto, navigation) 
 
 
       navigation.goBack();
-      navigation.navigate("TripDetailsPage", ref.id);
+      navigation.navigate("TripDetailsPage", {tripId: ref.id});
       showToast("success", "Success", "Trip added! :)");
 
     });
 }
 
+export async function addPhotoToTrip(photo, tripID, navigation) {
+
+  let r = (Math.random() + 1).toString(36).substring(2);
+
+  const imagePath = "trips/" + tripID + "/additional_photos/" + r;
+  const reference = storage().ref(imagePath);
+  await reference.putFile(photo);
+  const url = await reference.getDownloadURL();
+
+  const data = {
+      uri: url,
+    }
+
+  await firestore().collection("trip").doc(tripID).set({ photos: FieldValue.arrayUnion(data) }, { merge: true }).catch(error => showToast('error', 'Storage error', error.message));
+
+  navigation.navigate("TripDetailsPage", {tripId: tripID, updateTrip: Math.random()});
+
+  showToast('success', 'Photo uploaded!', 'Photo is just been added to your trip! :)')
+
+}
+
+
 // this does not connect, think it should be close to the right solution
 // link to documentation https://rnfirebase.io/firestore/usage
-export async function setActivities(form) {
-  const activity = {
-    date: form.date,
-    activity_title: form.activity_title,
-    description: form.description,
-    link: form.link,
-  };
+export async function setActivities(tripID, form, navigation) {
+  let link;
 
-  await firestore()
-    .collection("trip/" + "/activities")
-    .add(activity)
-    .then(() => {
-      console.log("Activity added!");
-    });
+  if (form.link !== undefined)
+    link = form.link
+  else
+    link = null
+
+  const data =
+    {
+      activity_title: form.activity_title,
+      date: form.date,
+      description: form.description,
+      link: link,
+      registrationDate: new Date(),
+    }
+
+  await firestore().collection("trip").doc(tripID).set({activities: FieldValue.arrayUnion(data)}, { merge: true });
+  navigation.navigate("TripDetailsPage", {tripId: tripID, updateTrip: Math.random()});
 }
 
 export async function getTripById(id) {
@@ -249,6 +278,9 @@ export async function getTripById(id) {
   const isWished = (t.wishes).includes(currentUser().uid);
   const likes = t.likes;
   const wishes = t.wishes;
+  const userID = t.userID;
+  const activities = t.activities;
+  const photos = t.photos
 
   let res = {title};
   res = {...res, coverPhoto};
@@ -261,6 +293,9 @@ export async function getTripById(id) {
   res = {...res, isWished};
   res = {...res, likes};
   res = {...res, wishes};
+  res = {...res, userID};
+  res = {...res, activities}
+  res = {...res, photos}
 
   return res;
 }
