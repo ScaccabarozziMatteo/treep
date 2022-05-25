@@ -9,46 +9,42 @@ import {
   StatusBar,
 } from "react-native";
 import Post from "../components/Post";
-import { getAll } from "../api/TripApi";
+import { getAll, getFirstPosts, getNextBatch } from "../api/TripApi";
 
 
 export default function HomePage({navigation}) {
 
-  const [trips, setTrips] = useState(
-    {coverPhoto: "",
-              userPhoto: "",
-              userID: "",
-              name: "",
-              username: "",
-              title: "",
-              postID: "",
-              isLiked: false,
-              isWished: false,
-    }
-  )
+  const [trips, setTrips] = useState([]);
+  const [lastKey, setLastKey] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect( () => {
-    getAll().then(
-      response => {
-        setTrips(response);
-      });
-    }, []
-  );
+    setTrips([]);
+    getFirstPosts()
+      .then((response) => {
+        setTrips(response.trips);
+        setLastKey(response.lastKey);
+      })
+      .catch((err) => {console.log(err)})
+    ;
+    }, []);
 
+  const fetchMorePosts = (key) => {
+    if(key != null) {
 
-
-  const [refreshing, setRefreshing] = useState(false)
-
-  const onRefresh = () => {
-    setRefreshing(true);
-
-    getAll().then(
-      response => {
-        setTrips(response);
-      }
-    );
-
-    setRefreshing(false);
+      setRefreshing(true);
+      getNextBatch(key)
+        .then((res) => {
+          setLastKey(res.lastKey);
+          //Add posts to the old ones
+          setTrips(trips.concat(res.trips));
+          setRefreshing(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setRefreshing(false);
+        });
+    }
   }
 
   return (
@@ -56,10 +52,11 @@ export default function HomePage({navigation}) {
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <SafeAreaView>
           <FlatList
-            keyExtractor={(item, index)=>index.toString()}
+            keyExtractor={(item, index)=>{return index.toString()}}
             data={trips}
             renderItem={({ item }) => (
-              <Post title={item.title}
+              <Post
+                    title={item.title}
                     userImage={item.userPhoto}
                     postImage={item.coverPhoto}
                     isLiked={item.isLiked}
@@ -73,9 +70,11 @@ export default function HomePage({navigation}) {
             )}
             refreshControl = {<RefreshControl
               refreshing={refreshing}
-              onRefresh={onRefresh}
+              onRefresh={() => getFirstPosts}
               colors={['#ff00ff']}
             />}
+            onEndReached={() => fetchMorePosts(lastKey)}
+            onEndReachedThreshold={0.5}
           />
 
       </SafeAreaView>

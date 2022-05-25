@@ -1,55 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { requestLocationPermission } from "../pages/AroundMePage";
+import { DetailsInfoContext } from "../contexts/DetailsInfoContext";
 
-const TripInfoComponent = (props) => {
+const TripInfoComponent = ({route}) => {
 
-  const [tripInfo, setTripInfo] = useState([
-    {
-      status: props.status,
-      duration: props.duration,
-      location: props.location,
-      itinerary: props.itinerary,
-    }
-  ]);
+  const status = useContext(DetailsInfoContext).status;
+  const startDate = useContext(DetailsInfoContext).startDate;
+  const endDate = useContext(DetailsInfoContext).endDate;
+
 
   const latitude = 45.4642;
   const longitude = 9.1900;
   const nearbyRadius = 4;
 
   return(
-    <View>
-      {
-        tripInfo.map((data, index) => {
-          return(
-            <View>
+            <View style={{backgroundColor: 'white'}}>
               {/* STATUS BOX*/}
               <View style={[styles.box, {height: '10%'}]}>
                 <View style={{flex: 1, justifyContent: "center", paddingHorizontal: 20,}}>
                   <Text style={styles.title}>STATUS</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>{data.status}</Text>
+
+                  <Text style={{color: 'black', fontFamily: 'barlow'}}>{status ? "Active" : "Finished"}</Text>
+
+
                 </View>
               </View>
 
               {/* LOCATION BOX*/}
               <View style={[styles.box, {height: '10%'}]}>
                 <View style={{flex: 1, justifyContent: "center", paddingHorizontal: 20,}}>
-                  <Text style={styles.title}>LOCATION</Text>
+                  <Text style={styles.title}>START DATE</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>{data.location}</Text>
+                  <Text style={{color: 'black', fontFamily: 'barlow'}}>{startDate}</Text>
                 </View>
               </View>
               {/* DURATION BOX*/}
               <View style={[styles.box, {height: '10%'}]}>
                 <View style={{flex: 1, justifyContent: "center", paddingHorizontal: 20,}}>
-                  <Text style={styles.title}>DURATION</Text>
+                  <Text style={styles.title}>END DATE</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <Text style={{color: 'black'}}>2 days</Text>
+                  <Text style={{color: 'black', fontFamily: 'barlow'}}>{endDate}</Text>
                 </View>
               </View>
               {/* ITINERARY BOX*/}
@@ -75,10 +71,6 @@ const TripInfoComponent = (props) => {
               </View>
 
             </View>
-          )
-        })
-      }
-    </View>
   )
 }
 
@@ -89,19 +81,20 @@ const styles = StyleSheet.create({
     marginHorizontal: '5%',
     borderRadius: 35,
     marginTop: 15,
-    shadowColor: '#000',
     shadowOffset: {width: 1},
     shadowOpacity: 0.4,
     shadowRadius: 3,
-    elevation: 3,
+    shadowColor: "rgba(82, 130, 255, 0.5)",
+    elevation: 8,
     flexDirection: 'row',
+    fontFamily: 'barlow'
 
   },
   title: {
     color: 'blue',
     fontSize: 17,
     fontWeight: "bold",
-
+    fontFamily: 'barlow'
   }
 })
 

@@ -24,6 +24,7 @@ import MyTripsPage from "../pages/MyTripsPage";
 import TripDetailsPage from "../pages/TripDetailsPage";
 import ConversationsPage from "../pages/ConversationsPage";
 import Following_Following_Page from "../pages/Following_Following_Page";
+import TripInfoComponent from "../components/TripInfoComponent";
 
 // Pages names
 const homeName = "Homepage";
@@ -155,6 +156,11 @@ export default function MainContainer() {
         <Stack.Screen name="TripDetailsPage"
                       options={{title: '', presentation: 'card', animationEnabled: false, headerShown: false}}
                       component={TripDetailsPage}
+        />
+
+        <Stack.Screen name="TripInfoComponent"
+                      options={{title: '', presentation: 'card', animationEnabled: false, headerShown: false}}
+                      component={TripInfoComponent}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -54,7 +54,7 @@ export async function changeProfileImage(image, props) {
   let url;
   const imagePath = "users/" + user.uid + "/profile_image";
   const reference = storage().ref(imagePath);
-  await reference.putFile(image.assets[0].uri)
+  await reference.putFile(image)
     .then().done(async () => {
       url = await reference.getDownloadURL();
       await auth().currentUser.updateProfile({ photoURL: await reference.getDownloadURL() });

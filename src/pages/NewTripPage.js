@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, StatusBar, ScrollView, Image, Alert } from "react-native";
+import { View, StyleSheet, Text, StatusBar, ScrollView, Image, Alert, ActivityIndicator } from "react-native";
 import React, { useRef, useState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { VStack } from "native-base";
@@ -18,6 +18,7 @@ export default function NewTripPage({ navigation }) {
   const [showModal, setShowModal] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [placeError, setPlaceError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const {
@@ -39,7 +40,7 @@ export default function NewTripPage({ navigation }) {
   function addActivityPage() {
     if (getValues("startDate") !== undefined && getValues("endDate") !== undefined) {
       setDateError(false);
-      navigation.push("AddActivity", { onCallBack, minDate: getValues("startDate"), maxDate: getValues("endDate") });
+      navigation.push("AddActivity", { onCallBack, minDate: getValues("startDate"), maxDate: getValues("endDate"), type: 'new_trip' });
     } else
       setDateError(true);
   }
@@ -61,7 +62,7 @@ export default function NewTripPage({ navigation }) {
                 flexWrap: "wrap",
               }}>
                 <Chip
-                  key={item.place_id}
+                  key={index}
                   mode="flat" //changing display mode, default is flat.
                   onDismiss={() => setActivities([...activities.slice(0, index), ...activities.slice(index + 1)])}
                   backgroundColor={"white"}
@@ -157,7 +158,7 @@ export default function NewTripPage({ navigation }) {
             }}
             style={styles.coverPhotoButton}>
             <Image resizeMode={"center"} style={{ height: "100%" }}
-                   source={coverPhoto !== null ? { uri: coverPhoto.assets[0].uri } : null} />
+                   source={coverPhoto !== null ? { uri: coverPhoto } : null} />
             <Text style={styles.coverPhotoText}>Choose cover photo</Text>
           </TouchableOpacity>
         </VStack>
@@ -238,9 +239,12 @@ export default function NewTripPage({ navigation }) {
             <Text style={styles.errorText}>Please, select dates before add activities</Text>
           ) : null}
 
-          <Button label={"Create New Trip"}
+          <Button label={!isLoading ? "Create New Trip" : ""}
                   labelStyle={styles.labelButton}
+                  disabled={isLoading}
+                  iconSource={!isLoading ? null : () => <ActivityIndicator style={{marginLeft: 20}} color={'white'} size={30}/> }
                   onPress={handleSubmit(async form => {
+                    setIsLoading(true)
                     await newTrip(form, places, activities, coverPhoto, navigation);
                   })}
                   style={styles.createButton} />

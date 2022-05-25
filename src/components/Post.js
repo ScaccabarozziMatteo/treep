@@ -4,7 +4,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import center from "native-base/src/theme/components/center";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
+import { getTripById, removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 
 
@@ -29,17 +29,16 @@ const Post = (props) => {
   const [wish, _setWish] = useState(false);
 
   useEffect(() => {
-    const mappedData = postInfo.map((data, index) => {
-      _setLike(data.isLiked);
-      _setWish(data.isWished);
-    });
-  })
+      _setLike(props.isLiked);
+      _setWish(props.isWished);
+  }, []);
+
   function likePost(postID) {
-    setLike(postID).then(_setLike(!like));
+    setLike(postID).then(_setLike(true));
   }
 
   function dislikePost(postID) {
-    removeLike(postID).then(_setLike(!like));
+    removeLike(postID).then(_setLike(false));
   }
 
   function addToWishList(postID){
@@ -64,8 +63,8 @@ const Post = (props) => {
        postInfo.map((data, index) => {
 
          return (
-           <View style={{overflow: 'hidden', paddingBottom: 5}}>
-             <View key={index} style={{
+           <View key={index} style={{overflow: 'hidden', paddingBottom: 5}}>
+             <View  style={{
                backgroundColor: '#fff',
                width: '90%',
                left: '5%',
