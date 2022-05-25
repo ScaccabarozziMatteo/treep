@@ -9,7 +9,7 @@ import {
   StatusBar,
 } from "react-native";
 import Post from "../components/Post";
-import { getAll, getFirstPosts, getNextBatch } from "../api/TripApi";
+import { getFirstPosts, getNextBatch } from "../api/TripApi";
 
 
 export default function HomePage({navigation}) {
@@ -83,9 +83,6 @@ export default function HomePage({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  image: {
-
-  },
 
   text: {
     fontFamily: "Barlow",

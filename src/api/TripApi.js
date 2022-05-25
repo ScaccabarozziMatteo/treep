@@ -130,8 +130,19 @@ export async function getNextBatch(key) {
 export async function getUserTrips(userId) {
   let trips = [];
   const tripsData = (await firestore().collection("trip").where("userID", "==", userId).get()).docs;
-  for (const t of tripsData) {
-    trips.push(t.data());
+
+  for (const trip of tripsData) {
+    const t = trip.data();
+
+    const userData = await firestore().collection("users/" + userId + "/public_info").doc("personal_data").get();
+    const userPhoto = userData.data().photoURL;
+    const name = t.location.name;
+
+    let res = {t};
+    res = {...t, userPhoto};
+    res = {...res, name};
+
+    trips.push(res);
   }
   return trips;
 }
@@ -153,10 +164,13 @@ export async function removeLike(tripID) {
 
 export async function setWish(tripID) {
   await firestore().collection("trip").doc(tripID).set({ wishes: FieldValue.arrayUnion(currentUser().uid) }, { merge: true });
+  await firestore().collection("users/" + currentUser().uid + "/vanity_metrics").doc("wishlist").set({ trips: FieldValue.arrayUnion(tripID) }, { merge: true });
 }
 
 export async function removeWish(tripID) {
   await firestore().collection("trip").doc(tripID).update({ wishes: FieldValue.arrayRemove(currentUser().uid) });
+  await firestore().collection("users/" + currentUser().uid + "/vanity_metrics").doc("wishlist").update({ trips: FieldValue.arrayRemove(tripID) });
+
 }
 
 
@@ -248,7 +262,28 @@ export async function getTripById(id) {
   res = {...res, likes};
   res = {...res, wishes};
 
-
   return res;
 }
 
+export async function getTripsFromUserWishList (userId) {
+  const tripIds = await firestore().collection("users/" + currentUser().uid + "/vanity_metrics").doc("wishlist").get();
+  let trips = [];
+
+  for (const id of tripIds.data().trips){
+
+    const tripData = await firestore().collection("trip").doc(id).get();
+    const t = tripData.data();
+
+    const userData = await firestore().collection("users/" + t.userID + "/public_info").doc("personal_data").get();
+    const userPhoto = userData.data().photoURL;
+    const name = t.location.name;
+
+    let res = {t};
+    res = {...t, userPhoto};
+    res = {...res, name};
+
+    trips.push(res);
+  }
+
+  return trips;
+}

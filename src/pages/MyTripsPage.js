@@ -1,11 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { HStack, Pressable, ScrollView, View, VStack } from "native-base";
-import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "@rneui/base";
 import { Button } from "react-native-paper";
+import { getFirstPosts, getTripsFromUserWishList, getUserTrips } from "../api/TripApi";
+import { currentUser } from "../api/UserApi";
+import Post from "../components/Post";
+import SmallPost from "../components/SmallPost";
+import WishListComponent from "../components/WishListComponent";
+import { SafeAreaConsumer } from "react-native-safe-area-context";
 
 export default function MyTripsPage({ navigation }) {
-  const [trips, setTrips] = useState({ description: "", coverPhoto: "" });
+  const [trips, setTrips] = useState([]);
+  const [wishList, setWishList] = useState([]);
+
+  useEffect( () => {
+    setTrips([]);
+    getUserTrips(currentUser().uid)
+      .then((response) => {
+        setTrips(response);
+      })
+      .catch((err) => {console.log(err)})
+    ;
+  }, []);
+
+  useEffect( () => {
+    setTrips([]);
+    getTripsFromUserWishList(currentUser().uid)
+      .then((response) => {
+        setWishList(response);
+      })
+      .catch((err) => {console.log(err)})
+    ;
+  }, []);
+
+  const Separator = () => {
+    return(
+      <View
+        style={{
+          width: 20,
+          backgroundColor: 'white',
+        }}
+      />
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,43 +75,48 @@ export default function MyTripsPage({ navigation }) {
         {/* Latest trips */}
         <Text style={styles.text}>Latest Trips</Text>
         <View style={styles.body}>
-          <ScrollView horizontal={true}>
-            <HStack space={3} alignItems="center">
-              <Pressable onPress={null}>
-                <View size={120} bg="primary.400" rounded="md" />
-              </Pressable>
-              <View size={120} bg="secondary.400" rounded="md" />
-              <View size={120} bg="emerald.400" rounded="md" />
-              <View size={120} bg="primary.400" rounded="md" />
-            </HStack>
-          </ScrollView>
+          <FlatList
+            horizontal={true}
+            data={trips}
+            renderItem={({ item }) => (
+              <SmallPost
+                title={item.title}
+                userImage={item.userPhoto}
+                postImage={item.coverPhoto}
+                username={item.username}
+                name={item.name}
+                postID={item.postID}
+                userID ={item.userID}
+                navigation={navigation}
+              />
+            )}>
+          </FlatList>
         </View>
 
-        {/* Countries */}
-        <Text style={styles.text}>Countries</Text>
-        <View style={styles.body}>
-          <ScrollView horizontal={true}>
-            <HStack space={3} alignItems="center">
-              <View size={120} bg="primary.400" rounded="md" />
-              <View size={120} bg="secondary.400" rounded="md" />
-              <View size={120} bg="emerald.400" rounded="md" />
-              <View size={120} bg="primary.400" rounded="md" />
-            </HStack>
-          </ScrollView>
-        </View>
 
-        {/* All trips */}
-        <Text style={styles.text}>All Trips</Text>
-        <View style={styles.body}>
-          <ScrollView horizontal={true}>
-            <HStack space={3} alignItems="center">
-              <View size={120} bg="primary.400" rounded="md" />
-              <View size={120} bg="secondary.400" rounded="md" />
-              <View size={120} bg="emerald.400" rounded="md" />
-              <View size={120} bg="primary.400" rounded="md" />
-            </HStack>
-          </ScrollView>
-        </View>
+
+        {/* Wishlist */}
+        <Text style={styles.text}>Wishlist</Text>
+        <SafeAreaView style={styles.body}>
+          <FlatList
+            horizontal={true}
+            data={wishList}
+            ItemSeparatorComponent={Separator}
+            renderItem={({ item }) => (
+              <WishListComponent
+                title={item.title}
+                userImage={item.userPhoto}
+                postImage={item.coverPhoto}
+                username={item.username}
+                name={item.name}
+                postID={item.postID}
+                userID ={item.userID}
+                navigation={navigation}
+              />
+            )}>
+          </FlatList>
+
+        </SafeAreaView>
 
       </ScrollView>
     </SafeAreaView>
@@ -83,10 +126,9 @@ export default function MyTripsPage({ navigation }) {
 const styles = StyleSheet.create({
   body: {
     width: "95%",
-    height: 150,
+    margin: 15,
     alignSelf: "center",
     justifyContent: "center",
-    marginBottom: 10,
   },
   text: {
     flex: 1,
