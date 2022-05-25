@@ -3,7 +3,7 @@ import { HStack, Pressable, ScrollView, View, VStack } from "native-base";
 import { FlatList, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "@rneui/base";
 import { Button } from "react-native-paper";
-import { getFirstPosts, getTripsFromUserWishList, getUserTrips } from "../api/TripApi";
+import { getFirstPosts, getTripById, getTripsFromUserWishList, getUserTrips } from "../api/TripApi";
 import { currentUser } from "../api/UserApi";
 import Post from "../components/Post";
 import SmallPost from "../components/SmallPost";
@@ -24,6 +24,7 @@ export default function MyTripsPage({ navigation }) {
     ;
   }, []);
 
+
   useEffect( () => {
     setTrips([]);
     getTripsFromUserWishList(currentUser().uid)
@@ -33,6 +34,8 @@ export default function MyTripsPage({ navigation }) {
       .catch((err) => {console.log(err)})
     ;
   }, []);
+
+
 
   const Separator = () => {
     return(

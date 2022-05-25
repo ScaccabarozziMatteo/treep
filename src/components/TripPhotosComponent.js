@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Button } from "react-native-ui-lib";
 import { newTrip } from "../api/TripApi";
 import { currentUser } from "../api/UserApi";
@@ -24,7 +24,7 @@ const TripPhotosComponent = (props) => {
   console.log(trip.photos)
 
   return(
-    <ScrollView style={{backgroundColor: 'white'}}>
+    <FlatList style={{backgroundColor: 'white'}} numColumns='2'>
       {currentUser().uid === trip.userID ?
       <Button label={!isLoading ? "Add new photo" : ""}
               labelStyle={styles.labelButton}
@@ -67,7 +67,7 @@ const TripPhotosComponent = (props) => {
         updateShow={(response) => setShowModal(response)}
         modalResponse
       />
-    </ScrollView>
+    </FlatList>
   )
 }
 
