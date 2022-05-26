@@ -9,14 +9,15 @@ import {
   StatusBar,
 } from "react-native";
 import Post from "../components/Post";
-import { getAll, getFirstPosts, getNextBatch } from "../api/TripApi";
+import { getFirstPosts, getNextBatch } from "../api/TripApi";
 
 
-export default function HomePage({navigation}) {
+export default function HomePage({navigation, route}) {
 
   const [trips, setTrips] = useState([]);
   const [lastKey, setLastKey] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+  const [updateControl, setUpdateControl] = useState(0);
 
   useEffect( () => {
     setTrips([]);
@@ -27,7 +28,7 @@ export default function HomePage({navigation}) {
       })
       .catch((err) => {console.log(err)})
     ;
-    }, []);
+    }, [updateControl]);
 
   const fetchMorePosts = (key) => {
     if(key != null) {
@@ -70,7 +71,7 @@ export default function HomePage({navigation}) {
             )}
             refreshControl = {<RefreshControl
               refreshing={refreshing}
-              onRefresh={() => getFirstPosts}
+              onRefresh={() => setUpdateControl(Math.random())}
               colors={['#ff00ff']}
             />}
             onEndReached={() => fetchMorePosts(lastKey)}
@@ -83,9 +84,6 @@ export default function HomePage({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  image: {
-
-  },
 
   text: {
     fontFamily: "Barlow",

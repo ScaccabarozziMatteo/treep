@@ -142,6 +142,8 @@ export default function MainContainer() {
         })} component={CompleteRegistrationPage} />
         <Stack.Screen name="UserProfile" options={{ title: "User Profile", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false }}
                       component={UserProfile} />
+        <Stack.Screen name="ProfilePage" options={{ title: "Profile Page", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false }}
+                      component={ProfilePage} />
         <Stack.Screen name="SearchUsers" options={({ route }) => ({ title: route.params.title, presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true })}
                       component={SearchUsers} />
         <Stack.Screen name="AddActivity" options={{ title: "Activity", presentation: 'card', headerTitleAlign: 'left', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: true }}
@@ -150,12 +152,13 @@ export default function MainContainer() {
                       component={Following_Following_Page} />
         <Stack.Screen
           name="NewTripPage"
-          options={{title: 'New Trip', headerTitleAlign: 'left', presentation: 'card', headerTitleStyle: { fontFamily: "Barlow", fontWeight: "bold" }, animationEnabled: false}}
+          options={{title: '', presentation: 'card', headerShown: false, animationEnabled: false}}
           component={NewTripPage}
         />
-        <Stack.Screen name="TripDetailsPage"
-                      options={{title: '', presentation: 'card', animationEnabled: false, headerShown: false}}
-                      component={TripDetailsPage}
+        <Stack.Screen
+          name="TripDetailsPage"
+          options={{title: '', presentation: 'card', headerShown: false, animationEnabled: false}}
+          component={TripDetailsPage}
         />
 
         <Stack.Screen name="TripInfoComponent"

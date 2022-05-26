@@ -4,13 +4,13 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import center from "native-base/src/theme/components/center";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { getTripById, removeLike, removeWish, setLike, setWish } from "../api/TripApi";
+import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-
+import { currentUser } from "../api/UserApi";
 
 const Post = (props) => {
 
-  const [postInfo, setPostInfo] = useState([
+  const [postInfo] = useState([
     {
       postID: props.postID,
       title: props.title,
@@ -54,7 +54,11 @@ const Post = (props) => {
   }
 
   function moveToUserProfilePage (nav, userID) {
-    nav.navigate("UserProfile", {userID});
+    if(userID === currentUser().uid){
+      nav.navigate("ProfilePage");
+    } else {
+      nav.navigate("UserProfile", {userID});
+    }
   }
 
   return(
@@ -117,7 +121,6 @@ const Post = (props) => {
                  borderBottomRightRadius: 35,
                  marginTop: 265,
                  backgroundColor: 'white',
-                 borderColor: 'gray',
                }}>
 
                  <TouchableOpacity style={{flex: 1, paddingHorizontal: 10}}
