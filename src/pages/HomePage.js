@@ -32,7 +32,6 @@ export default function HomePage({navigation, route}) {
 
   const fetchMorePosts = (key) => {
     if(key != null) {
-
       setRefreshing(true);
       getNextBatch(key)
         .then((res) => {
