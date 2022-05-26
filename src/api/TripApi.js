@@ -25,7 +25,7 @@ export async function getFirstPosts() {
       const t = trip.data();
 
       let isLiked = false;
-      if(t.likes != null) {
+      if(currentUser() != null) {
         isLiked = (t.likes).includes(currentUser().uid);
       }
       //Retrieves the subregion of the location
@@ -36,7 +36,10 @@ export async function getFirstPosts() {
 
 
       //Now we have to remove the location object
-      const isWished = (t.wishes).includes(currentUser().uid);
+      let isWished = false;
+      if(currentUser() != null) {
+        isWished = (t.wishes).includes(currentUser().uid);
+      }
 
       const userData = await firestore().collection("users/" + t.userID + "/public_info").doc("personal_data").get();
       const userPhoto = userData.data().photoURL;

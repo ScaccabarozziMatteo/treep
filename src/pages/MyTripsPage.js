@@ -14,34 +14,41 @@ export default function MyTripsPage({ navigation }) {
 
   useEffect( () => {
     setTrips([]);
-    getUserTrips(currentUser().uid)
-      .then((response) => {
-        setTrips(response);
-      })
-      .catch((err) => {console.log(err)})
-    ;
+    if(currentUser() != null){
+      getUserTrips(currentUser().uid)
+        .then((response) => {
+          setTrips(response);
+        })
+        .catch((err) => {console.log(err)})
+      ;
+    }
   }, []);
 
 
   useEffect( () => {
     setWishList([]);
-    getTripsFromUserWishList(currentUser().uid)
-      .then((response) => {
-        setWishList(response);
-      })
-      .catch((err) => {console.log(err)})
-    ;
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      setWishList([]);
+    if(currentUser() != null){
       getTripsFromUserWishList(currentUser().uid)
         .then((response) => {
           setWishList(response);
         })
         .catch((err) => {console.log(err)})
       ;
+    }
+
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setWishList([]);
+      if(currentUser() != null){
+        getTripsFromUserWishList(currentUser().uid)
+          .then((response) => {
+            setWishList(response);
+          })
+          .catch((err) => {console.log(err)})
+        ;
+      }
     })
     return unsubscribe
   }, [navigation])
