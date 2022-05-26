@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button } from "react-native-ui-lib";
-import { newTrip } from "../api/TripApi";
 import { currentUser } from "../api/UserApi";
 import { DetailsInfoContext } from "../contexts/DetailsInfoContext";
 import ModalPhoto from "../utils/ModalPhoto";
@@ -24,7 +23,7 @@ const TripPhotosComponent = (props) => {
   console.log(trip.photos)
 
   return(
-    <FlatList style={{backgroundColor: 'white'}} numColumns='2'>
+    <ScrollView style={{backgroundColor: 'white'}} numColumns='2'>
       {currentUser().uid === trip.userID ?
       <Button label={!isLoading ? "Add new photo" : ""}
               labelStyle={styles.labelButton}
@@ -54,11 +53,11 @@ const TripPhotosComponent = (props) => {
       </View>
 
       <ImageView
-      images={trip.photos}
-      imageIndex={index}
-      visible={visible}
-      onRequestClose={() => setIsVisible(false)}
-      animationType={'fade'}/>
+        images={trip.photos}
+        imageIndex={index}
+        visible={visible}
+        onRequestClose={() => setIsVisible(false)}
+        animationType={'fade'}/>
 
       <ModalPhoto
         typeOfUpload="trip_photo"
@@ -67,7 +66,7 @@ const TripPhotosComponent = (props) => {
         updateShow={(response) => setShowModal(response)}
         modalResponse
       />
-    </FlatList>
+    </ScrollView>
   )
 }
 
@@ -86,6 +85,7 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     height: 200,
+
     margin: "3%",
     shadowColor: "rgba(82, 130, 255, 0.5)",
     elevation: 8,

@@ -8,7 +8,6 @@ import { removeLike, removeWish, setLike, setWish } from "../api/TripApi";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { currentUser } from "../api/UserApi";
 
-
 const Post = (props) => {
 
   const [postInfo] = useState([

@@ -301,21 +301,25 @@ export async function getTripById(id) {
 }
 
 export async function getTripsFromUserWishList (userId) {
-  const tripIds = await firestore().collection("users/" + currentUser().uid + "/vanity_metrics").doc("wishlist").get();
+  const tripIds = await firestore().collection("users/" + userId + "/vanity_metrics").doc("wishlist").get();
   let trips = [];
+  let ids = tripIds.data().trips;
 
-  for (const id of tripIds.data().trips){
+  for (let i = 0; i < ids.length ; i++){
 
-    const tripData = await firestore().collection("trip").doc(id).get();
+    const tripData = await firestore().collection("trip").doc(ids[i]).get();
     const t = tripData.data();
 
     const userData = await firestore().collection("users/" + t.userID + "/public_info").doc("personal_data").get();
     const userPhoto = userData.data().photoURL;
     const name = t.location.name;
+    const postID = ids[i];
+
 
     let res = {t};
     res = {...t, userPhoto};
     res = {...res, name};
+    res = {...res, postID};
 
     trips.push(res);
   }
