@@ -94,6 +94,7 @@ export default function MyTripsPage({ navigation }) {
           <FlatList
             horizontal={true}
             data={trips}
+            ItemSeparatorComponent={Separator}
             renderItem={({ item }) => (
               <SmallPost
                 title={item.title}
