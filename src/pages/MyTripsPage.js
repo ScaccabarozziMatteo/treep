@@ -5,10 +5,8 @@ import { Text } from "@rneui/base";
 import { Button } from "react-native-paper";
 import { getFirstPosts, getTripById, getTripsFromUserWishList, getUserTrips } from "../api/TripApi";
 import { currentUser } from "../api/UserApi";
-import Post from "../components/Post";
 import SmallPost from "../components/SmallPost";
 import WishListComponent from "../components/WishListComponent";
-import { SafeAreaConsumer } from "react-native-safe-area-context";
 
 export default function MyTripsPage({ navigation }) {
   const [trips, setTrips] = useState([]);
@@ -62,7 +60,7 @@ export default function MyTripsPage({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.mainContainer}>
       <ScrollView style={styles.scrollView}>
         <VStack style={styles.container}>
           <TouchableOpacity onPress={() => navigation.push("NewTrips")}>
@@ -144,6 +142,7 @@ const styles = StyleSheet.create({
   body: {
     width: "95%",
     margin: 15,
+    minHeight: 190,
     alignSelf: "center",
     justifyContent: "center",
   },
@@ -160,6 +159,14 @@ const styles = StyleSheet.create({
     height: 38,
     alignSelf: "center",
     margin: 3,
+  },
+  mainContainer: {
+    alignSelf: "center",
+    width: "100%",
+    height: '100%',
+    backgroundColor: 'white',
+    paddingTop: 0,
+    padding: 10,
   },
   container: {
     alignSelf: "center",
