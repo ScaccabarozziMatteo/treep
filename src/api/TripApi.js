@@ -6,7 +6,7 @@ import { showToast } from "../utils/Utils";
 
 
 const FieldValue = firebase.firestore.FieldValue;
-const n = 4;
+const n = 6;
 
 // Retrieves the first trips on the server to be displayed
 export async function getFirstPosts() {
@@ -134,7 +134,9 @@ export async function getUserTrips(userId) {
   let trips = [];
   const tripsData = (await firestore().collection("trip").where("userID", "==", userId).get()).docs;
 
+
   for (const trip of tripsData) {
+    const postID = trip._ref._documentPath._parts[1];
     const t = trip.data();
 
     const userData = await firestore().collection("users/" + userId + "/public_info").doc("personal_data").get();
@@ -144,6 +146,7 @@ export async function getUserTrips(userId) {
     let res = {t};
     res = {...t, userPhoto};
     res = {...res, name};
+    res = {...res, postID};
 
     trips.push(res);
   }

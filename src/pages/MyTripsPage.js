@@ -41,13 +41,18 @@ export default function MyTripsPage({ navigation }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setWishList([]);
+      setTrips([]);
       if(currentUser() != null){
         getTripsFromUserWishList(currentUser().uid)
           .then((response) => {
             setWishList(response);
           })
           .catch((err) => {console.log(err)})
-        ;
+        getUserTrips(currentUser().uid)
+          .then((response) => {
+            setTrips(response);
+          })
+          .catch((err) => {console.log(err)})
       }
     })
     return unsubscribe
