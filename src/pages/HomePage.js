@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { View } from "native-base";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
@@ -9,10 +9,14 @@ import {
   StatusBar,
 } from "react-native";
 import Post from "../components/Post";
-import { getFirstPosts, getNextBatch } from "../api/TripApi";
+import { getFirstPosts, getNextBatch, getTripsFromUserWishList, getUserTrips } from "../api/TripApi";
+import { LoginContext } from "../contexts/LoginContext";
+import { currentUser } from "../api/UserApi";
 
 
 export default function HomePage({navigation, route}) {
+
+  const logged = useContext(LoginContext).logged;
 
   const [trips, setTrips] = useState([]);
   const [lastKey, setLastKey] = useState("");
@@ -21,14 +25,31 @@ export default function HomePage({navigation, route}) {
 
   useEffect( () => {
     setTrips([]);
-    getFirstPosts()
-      .then((response) => {
-        setTrips(response.trips);
-        setLastKey(response.lastKey);
-      })
-      .catch((err) => {console.log(err)})
-    ;
+    if(currentUser() != null){
+      getFirstPosts()
+        .then((response) => {
+          setTrips(response.trips);
+          setLastKey(response.lastKey);
+        })
+        .catch((err) => {console.log(err)})
+    }
     }, [updateControl]);
+
+  //Retrieves new trips when the user logs in/out
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setTrips([]);
+      if(currentUser() != null){
+        getFirstPosts()
+          .then((response) => {
+            setTrips(response.trips);
+            setLastKey(response.lastKey);
+          })
+          .catch((err) => {console.log(err)})
+      }
+    })
+    return unsubscribe
+  }, [navigation])
 
   const fetchMorePosts = (key) => {
     if(key != null) {

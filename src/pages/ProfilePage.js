@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Keyboard,
   RefreshControl,
@@ -28,6 +28,7 @@ import ModalPhoto from "../utils/ModalPhoto";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import LinearGradient from "react-native-linear-gradient";
+import { LoginContext, LoginContextProvider } from "../contexts/LoginContext";
 
 export default function ProfilePage(props) {
   const [initializing, setInitializing] = useState(true);
@@ -496,12 +497,14 @@ export default function ProfilePage(props) {
             </VStack>
 
             <View style={styles.boxButton}>
-              <Button
-                label={"Logout"}
-                style={styles.button}
-                labelStyle={styles.buttonText}
-                onPress={Logout}
-              />
+              <LoginContext.Provider value={{logged: false}}>
+                <Button
+                  label={"Logout"}
+                  style={styles.button}
+                  labelStyle={styles.buttonText}
+                  onPress={Logout}
+                />
+              </LoginContext.Provider>
             </View>
             <ModalPhoto
               typeOfUpload="profile_photo"

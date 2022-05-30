@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StatusBar, StyleSheet, ScrollView, View, BackHandler } from "react-native";
 import { Pressable, VStack, HStack } from "native-base";
 import { Controller, useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import CompleteRegistrationPage from "./CompleteRegistrationPage";
 import { Text } from "@rneui/base";
 import { Button } from "react-native-ui-lib";
 import { TextInput } from "react-native-paper";
+import { LoginContext, LoginContextProvider } from "../contexts/LoginContext";
 
 GoogleSignin.configure({
   webClientId: "890037553856-u31q3091loeoqf2gelsme90vtef5qr24.apps.googleusercontent.com",
@@ -54,7 +55,8 @@ export default function LoginPage({ navigation, route }) {
 
   // Login using email and password
   async function EmailLogin(userData) {
-    const value = await emailLogin(userData).catch(error1 => showToast("error", "Error", error1.message));
+    const value = await emailLogin(userData)
+      .catch(error1 => showToast("error", "Error", error1.message));
     if(value === 0)
       navigation.goBack()
   }
@@ -156,8 +158,9 @@ export default function LoginPage({ navigation, route }) {
           <Text style={{color: 'rgba(255, 255, 255, 0.7)', alignSelf: 'flex-end'}}>Forgot password?</Text>
 
           <View>
-            <Button onPress={handleSubmit(EmailLogin)} style={styles.button} labelStyle={styles.loginButton} label={'LOGIN'} />
-
+            <LoginContext.Provider value={{logged: true}}>
+              <Button onPress={handleSubmit(EmailLogin)} style={styles.button} labelStyle={styles.loginButton} label={'LOGIN'} />
+            </LoginContext.Provider>
             <HStack alignItems={"center"} justifyContent={"center"} alignContent={"stretch"} marginBottom={21}>
               <Text style={styles.text}>Don't have an account?</Text><Pressable
               onPress={() => {reset(); navigation.push("Registration")}}><Text style={{ color: "white", fontWeight: "bold", fontFamily: 'Barlow'}}> Sign
@@ -166,9 +169,11 @@ export default function LoginPage({ navigation, route }) {
           </View>
 
           <View style={styles.boxButton}>
-            <Button style={{backgroundColor: '#de5246', borderColor: '#de5246', borderRadius: 10, height: 50}}
-                    onPress={() => GoogleSignIn().catch(error => showToast('error', 'Google login error', error.message))}><Icon name={'google'} size={30} color={'white'} /></Button>
-          </View>
+            <LoginContext.Provider value={{logged: true}}>
+              <Button style={{backgroundColor: '#de5246', borderColor: '#de5246', borderRadius: 10, height: 50}}
+                      onPress={() => GoogleSignIn().catch(error => showToast('error', 'Google login error', error.message))}><Icon name={'google'} size={30} color={'white'} /></Button>
+            </LoginContext.Provider>
+                 </View>
         </VStack>
       </ScrollView>
     );
