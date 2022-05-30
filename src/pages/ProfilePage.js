@@ -437,10 +437,15 @@ export default function ProfilePage(props) {
               {/* Vanity metrics */}
               <VStack alignItems={"center"}>
                 <HStack
+                  shadowColor={'#000'}
+                  shadowOffset={1}
+                  shadowOpacity={0.4}
+                  shadowRadius={3}
+                  elevation={5}
                   backgroundColor={"white"}
                   top={44}
                   borderColor={"black"}
-                  borderWidth={0.5}
+                  borderWidth={1}
                   borderRadius={12}
                   width={"80%"}
                   paddingLeft={5}
@@ -556,7 +561,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "white",
     margin: "4%",
-    shadowColor: "rgba(82, 130, 255, 0.5)",
+    shadowColor: '#575353',
+    shadowOffset: {width: 1},
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
     elevation: 8,
     borderRadius: 16,
     marginBottom: 50,

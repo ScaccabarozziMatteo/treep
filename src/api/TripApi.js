@@ -6,7 +6,7 @@ import { showToast } from "../utils/Utils";
 
 
 const FieldValue = firebase.firestore.FieldValue;
-const n = 4;
+const n = 6;
 
 // Retrieves the first trips on the server to be displayed
 export async function getFirstPosts() {

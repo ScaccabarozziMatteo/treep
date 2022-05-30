@@ -70,7 +70,7 @@ export default function UserProfile({ navigation, route }) {
   function buttons() {
     if (currentUser() != null)
       return (
-        <HStack justifyContent={"space-between"} alignContent={"stretch"}>
+        <HStack justifyContent={"space-between"} alignContent={"space-around"}>
           <HStack>
             {!followers.includes(currentUser().uid) ?
               <Button style={styles.button} labelStyle={styles.buttonText}
@@ -164,7 +164,17 @@ export default function UserProfile({ navigation, route }) {
 
             {/* Vanity metrics */}
             <VStack alignItems={"center"}>
-              <HStack backgroundColor={"white"} top={41} borderColor={"black"} borderWidth={0.5} borderRadius={12}
+              <HStack
+                      shadowColor={'#000'}
+                      shadowOffset={1}
+                      shadowOpacity={0.4}
+                      shadowRadius={3}
+                      elevation={5}
+                      backgroundColor={"white"}
+                      top={41}
+                      borderColor={"black"}
+                      borderWidth={0.5}
+                      borderRadius={12}
                       width={"80%"} paddingLeft={5} paddingRight={5} paddingBottom={1} paddingTop={1}
                       alignItems={"center"}
                       justifyContent={"space-between"} alignContent={"stretch"}>
@@ -198,8 +208,8 @@ export default function UserProfile({ navigation, route }) {
 
           {/* Badges*/}
           <VStack>
-            <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"}>
-              <Text style={styles.title}>My Badges</Text>
+            <HStack alignItems={"center"} justifyContent={"space-between"} alignContent={"stretch"} marginTop={5}>
+              <Text style={styles.title}/>
             </HStack>
             {badges()}
           </VStack>
@@ -252,7 +262,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "white",
     margin: "3%",
-    shadowColor: "rgba(82, 130, 255, 0.5)",
+    shadowColor: '#575353',
+    shadowOffset: {width: 1},
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
     elevation: 8,
     borderRadius: 16,
   },
