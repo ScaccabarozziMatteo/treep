@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "white",
     margin: "4%",
-    shadowColor: '#575353',
+    shadowColor: "rgba(82, 130, 255, 0.5)",
     shadowOffset: {width: 1},
     shadowOpacity: 0.4,
     shadowRadius: 3,
